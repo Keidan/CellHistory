@@ -229,26 +229,34 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
   public void onResume() {
     super.onResume();
     app.getProviderCtx().clear();
+    chart.clear();
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       txtGeoProvider.setVisibility(View.GONE);
       spiGeoProvider.setVisibility(View.VISIBLE);
-    } else {
-      txtGeoProvider.setVisibility(View.VISIBLE);
-      spiGeoProvider.setVisibility(View.GONE);
-    }
-    
-    if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_DISTANCE,
-        PreferencesGeolocation.PREFS_DEFAULT_DISTANCE)) {
-      txtDistance.setTextColor(color_red);
-      if (lm == null) {
-        lm = (LocationManager) getActivity().getSystemService(
-            Context.LOCATION_SERVICE);
-        if (lm != null)
-          lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f,
-              this);
+      if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_DISTANCE,
+          PreferencesGeolocation.PREFS_DEFAULT_DISTANCE)) {
+        txtDistance.setTextColor(color_red);
+        if (lm == null) {
+          lm = (LocationManager) getActivity().getSystemService(
+              Context.LOCATION_SERVICE);
+          if (lm != null)
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f,
+                this);
+        }
+      } else {
+        lastLocation = null;
+        if (lm != null) {
+          lm.removeUpdates(this);
+          lm = null;
+        }
+        txtDistance.setText(txtDistanceDisabledOption);
+        txtDistance.setTextColor(color_orange);
       }
     } else {
+      lastLocation = null;
+      txtGeoProvider.setVisibility(View.VISIBLE);
+      spiGeoProvider.setVisibility(View.GONE);
       if (lm != null) {
         lm.removeUpdates(this);
         lm = null;
