@@ -1,0 +1,32 @@
+<resources
+    xmlns:lib="http://schemas.android.com/apk/res-auto">
+
+    <style name="themeLight" parent="AppBaseThemeLight">
+      <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
+    </style>
+
+    <style name="themeDark" parent="AppBaseThemeDark">
+      <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
+    </style>
+
+    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+      <item name="android:textAppearance">@style/textAppearanceSpinnerItem</item>
+    </style>
+
+    <style name="textAppearanceSpinnerItem" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+      <item name="android:textColor">@color/purple</item>
+    </style>
+    
+    <style name="textStyleThemeLight" parent="@android:Widget.TextView">
+        <item name="android:textColor">@color/green</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    
+    <style name="textStyleThemeDark" parent="@android:Widget.TextView">
+        <item name="android:textColor">@color/green</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    
+</resources>

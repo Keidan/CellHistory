@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+        android:id="@+id/sharing"
+        android:actionProviderClass="android.widget.ShareActionProvider"
+        android:title="@string/action_sharing"
+        android:showAsAction="always"/>
+    <item
+        android:id="@+id/action_clear"
+        android:title="@string/action_clear"
+        android:showAsAction="ifRoom"/>
+</menu>

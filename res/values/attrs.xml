@@ -1,0 +1,5 @@
+<resources>
+
+    <attr name="textAppearanceTheme" format="reference" />
+
+</resources>

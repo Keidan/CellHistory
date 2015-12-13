@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CellHistory</string>
+    <string name="file_name">cell_history</string>
+	<string name="empty"></string>
+	
+	<string name="toggleOn">Record ON</string>
+	<string name="toggleOff">Record OFF</string>
+	
+	<string name="lblOperator">Operator: </string>
+	<string name="lblMCC">MCC: </string>
+	<string name="lblMNC">MNC: </string>
+	<string name="lblCellId">Cell ID: </string>
+	<string name="lblLAC">LAC: </string>
+	<string name="lblPSC">PSC: </string>
+	<string name="lblType">Type: </string>
+	<string name="lblNetwork">Network: </string>
+	<string name="lblASU">ASU: </string>
+	<string name="lblLVL">LVL: </string>
+	<string name="lblSS">SS: </string>
+	<string name="lblSSP">SSP: </string>
+	
+	<string name="lblGeolocation">Geolocation: </string>
+	<string name="geoloc_disabled">Geolocation disabled.</string>
+	<string name="lblGeoProvider">Provider: </string>
+	<string name="lblSpeed">Speed: </string>
+	<string name="lblDistance">Distance: </string>
+	<string name="txtDistanceDisabled">GPS service disabled.</string>
+	<string name="txtDistanceOutOfService">GPS out of service.</string>
+	<string name="txtDistanceTemporarilyUnavailable">GPS temporarily unavailable.</string>
+	<string name="txtDistanceGPSInvalid">GPS input.</string>
+	
+	<string name="lblRecords">Record: </string>
+	<string name="lblBuffer">Buffer: </string>
+	<string name="lblSize">Size: </string>
+	
+	<string name="action_cancel">Cancel</string>
+	<string name="action_settings">Settings</string>
+	<string name="action_clear">Clear</string>
+    <string name="action_sharing">Share</string>
+    
+	<string name="notificationtext">Record in progress</string>
+	
+    <string name="pref_ui_title">User Interface</string>
+    <string name="pref_geolocation_management_title">Geolocation</string>
+    <string name="pref_recorder_title">Recorder</string>
+    <string name="pref_ui_summary">Configure the user interface.</string>
+    <string name="pref_geolocation_management_summary">Configure the geolocation.</string>
+    <string name="pref_recorder_summary">Configure the recorder.</string>
+    <string name="pref_technician_code_title">Technician menu</string>
+    <string name="pref_technician_code_summary">This can take a few seconds to display the widow.\nHandle with extreme care!!!\nAlso I\'m not responsible for any damage caused to your device through the secret menu.</string>
+    
+	
+	<string name="pref_title_ui">User Interface</string>
+	<string name="pref_title_recorder">Recorder</string>
+    <string name="pref_title_geolocation">Geolocation</string>
+    <string name="pref_title_settings">Settings</string>
+    <string name="pref_title_infos">Informations</string>
+    
+	<string name="pref_title_geolocation_opencellid">Geolocation OpenCellID</string>
+	<string name="pref_title_geolocation_google">Geolocation Google</string>
+    
+    <string name="pref_chart_enable_title">Chart</string>
+	<string name="pref_chart_enable_summary">Display or hide the chart area.</string>
+
+	<string name="pref_keep_screen_on_title">Keep screen turned on</string>
+    <string name="pref_keep_screen_on_summary">As long as the application is visible to the user, keep the device\'s screen turned on and bright.</string>
+    <string name="pref_themes_title">Themes</string>
+    <string name="pref_themes_summary">Change the application theme.</string>
+    <string name="pref_animations_title">Animations</string>
+    <string name="pref_animations_summary">Change the application animation.</string>
+    
+    <string name="pref_delete_file_title">Previous file</string>
+    <string name="pref_delete_file_summary">Removes the previous session file before starting.</string>
+	<string name="pref_save_path_title">Saving path</string>
+    <string name="pref_save_path_summary">Click to select the saving folder.</string>
+	<string name="pref_flush_title">Flush</string>
+    <string name="pref_flush_summary">Maximum of items before flushing the temporary buffer.</string>
+	<string name="pref_sep_title">Separator</string>
+    <string name="pref_sep_summary">The separator to use to separate each words into the CSV file.</string>
+	<string name="pref_neighboring_sep_title">Neighboring separator</string>
+    <string name="pref_neighboring_sep_summary">The separator to use to separate each "neighboring entries" into the current CSV line.</string>
+	<string name="pref_detect_change_title">Change only</string>
+    <string name="pref_detect_change_summary">Writes the entry only if a signal change is detected.</string>
+    
+    <string name="pref_geolocation_title">Cell location</string>
+    <string name="pref_geolocation_summary">Locates the current telephony cell using the network requests.</string>
+    <string name="pref_geolocation_timeout_title">Request timeout</string>
+    <string name="pref_geolocation_timeout_summary">Avoids that some requests take too much time when the target is unavailable(in second).</string>
+    <string name="pref_geolocation_opencellid_summary">Configure the OpenCellID provider.</string>
+    <string name="pref_geolocation_opencellid_title">OpenCellID</string>
+    <string name="pref_geolocation_key_opencellid_summary">Your OpenCellID API.</string>
+    <string name="pref_geolocation_key_opencellid_title">OpenCellID API Key</string>
+    <string name="pref_geolocation_get_key_opencellid_title">Click to obtain the OpenCellID API Key</string>
+    
+    
+	<string name="pref_log_title">Logs</string>
+	<string name="pref_log_summary">Last application logs.</string>
+
+</resources>

@@ -1,0 +1,161 @@
+package org.kei.android.phone.cellhistory.prefs;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.kei.android.atk.utils.Tools;
+import org.kei.android.atk.view.EffectPreferenceActivity;
+import org.kei.android.atk.view.chooser.FileChooser;
+import org.kei.android.atk.view.chooser.FileChooserActivity;
+import org.kei.android.phone.cellhistory.R;
+import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
+import org.kei.android.phone.cellhistory.towers.TowerInfo;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Bundle;
+import android.os.Environment;
+import android.preference.EditTextPreference;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+
+/**
+ *******************************************************************************
+ * @file PreferencesRecorder.java
+ * @author Keidan
+ * @date 04/12/2015
+ * @par Project
+ * CellHistory
+ *
+ * @par 
+ * Copyright 2015 Keidan, all right reserved
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY.
+ *
+ * License summary : 
+ *    You can modify and redistribute the sources code and binaries.
+ *    You can send me the bug-fix
+ *
+ * Term of the license in in the file license.txt.
+ *
+ *******************************************************************************
+ */
+public class PreferencesRecorder extends EffectPreferenceActivity implements OnSharedPreferenceChangeListener {
+  public static final String   PREFS_KEY_SAVE_PATH              = "recorderSavePath";
+  public static final String   PREFS_KEY_FLUSH                  = "recorderFlush";
+  public static final String   PREFS_KEY_SEP                    = "recorderSep";
+  public static final String   PREFS_KEY_NEIGHBORING_SEP        = "recorderNeighboringSep";
+  public static final String   PREFS_KEY_DEL_PREV_FILE          = "recorderDeletePrevFile";
+  public static final String   PREFS_KEY_DETECT_CHANGE          = "recorderDetectChange";
+  public static final String   PREFS_DEFAULT_FLUSH              = "25";
+  public static final String   PREFS_DEFAULT_SEP                = TowerInfo.DEFAULT_TOSTRING_SEP;
+  public static final String   PREFS_DEFAULT_NEIGHBORING_SEP    = NeighboringInfo.DEFAULT_TOSTRING_SEP;
+  public static final String   PREFS_DEFAULT_SAVE_PATH          = Environment.getExternalStorageDirectory().getAbsolutePath();
+  public static final boolean  PREFS_DEFAULT_SAVE               = true;
+  public static final boolean  PREFS_DEFAULT_DEL_PREV_FILE      = true;
+  public static final boolean  PREFS_DEFAULT_DETECT_CHANGE      = true;
+  private MyPreferenceFragment prefFrag                         = null;
+  private SharedPreferences    prefs                            = null;
+
+  @Override
+  public void onCreate(final Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    prefFrag = new MyPreferenceFragment();
+    getFragmentManager().beginTransaction().replace(android.R.id.content, prefFrag).commit();
+    checkValues();
+  }
+  
+  @Override
+  protected boolean exitOnDoubleBack() {
+    return false;
+  }
+  
+  public void themeUpdate() {
+    Preferences.performTheme(this);
+  }
+  
+  private void updateSummaries() {
+    Preference pref = (Preference)prefFrag.findPreference(PREFS_KEY_SAVE_PATH);
+    String summary = getResources().getString(R.string.pref_save_path_summary);
+    summary += "\nDir: " + prefs.getString(PREFS_KEY_SAVE_PATH, PREFS_DEFAULT_SAVE_PATH);
+    pref.setSummary(summary);
+    EditTextPreference flush = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_FLUSH);
+    summary = getResources().getString(R.string.pref_flush_summary);
+    summary += "\nFlush: " + prefs.getString(PREFS_KEY_FLUSH, PREFS_DEFAULT_FLUSH);
+    flush.setSummary(summary);
+    EditTextPreference sep = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_SEP);
+    summary = getResources().getString(R.string.pref_sep_summary);
+    summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_SEP, PREFS_DEFAULT_SEP) + "'";
+    sep.setSummary(summary);
+    sep = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_NEIGHBORING_SEP);
+    summary = getResources().getString(R.string.pref_neighboring_sep_summary);
+    summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_NEIGHBORING_SEP, PREFS_DEFAULT_NEIGHBORING_SEP) + "'";
+    sep.setSummary(summary);
+  }
+  
+  private void checkValues() {
+    // addPreferencesFromResource is not done at the start
+    getFragmentManager().executePendingTransactions();
+    Preference pref = (Preference)prefFrag.findPreference(PREFS_KEY_SAVE_PATH);
+    updateSummaries();
+    pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+      @Override
+      public boolean onPreferenceClick(Preference preference) {
+        Map<String, String> extra = new HashMap<String, String>();
+        extra.put(FileChooser.FILECHOOSER_TYPE_KEY, "" + FileChooser.FILECHOOSER_TYPE_DIRECTORY_ONLY);
+        extra.put(FileChooser.FILECHOOSER_TITLE_KEY, "Save");    
+        extra.put(FileChooser.FILECHOOSER_MESSAGE_KEY, "Use this folder:? ");
+        extra.put(FileChooser.FILECHOOSER_DEFAULT_DIR, prefs.getString(PREFS_KEY_SAVE_PATH, PREFS_DEFAULT_SAVE_PATH));
+        extra.put(FileChooser.FILECHOOSER_SHOW_KEY, "" + FileChooser.FILECHOOSER_SHOW_DIRECTORY_ONLY);
+        Tools.switchToForResult(PreferencesRecorder.this, FileChooserActivity.class,
+            extra, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY);
+        return true;
+      }
+    });
+  }
+  @Override
+  public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP)) {
+      updateSummaries();
+    }
+  }
+  
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    // Check which request we're responding to
+    if (requestCode == FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY) {
+      if (resultCode == RESULT_OK) {
+        final String dir = data.getStringExtra(FileChooserActivity.FILECHOOSER_SELECTION_KEY);
+        final SharedPreferences.Editor edit = prefs.edit();
+        edit.putString(PREFS_KEY_SAVE_PATH, dir);
+        edit.commit();
+        updateSummaries();
+      }
+    }
+  }
+
+  private static class MyPreferenceFragment extends PreferenceFragment {
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setRetainInstance(true);
+      addPreferencesFromResource(R.xml.preferences_recorder);
+    }
+  }
+  
+  @Override
+  protected void onResume() {
+    super.onResume();
+    prefs.registerOnSharedPreferenceChangeListener(this);
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    prefs.unregisterOnSharedPreferenceChangeListener(this);
+  }
+}

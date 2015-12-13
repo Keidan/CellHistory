@@ -1,0 +1,236 @@
+package org.kei.android.phone.cellhistory.activities;
+
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.kei.android.atk.utils.Tools;
+import org.kei.android.atk.utils.fx.Fx;
+import org.kei.android.atk.view.IThemeActivity;
+import org.kei.android.phone.cellhistory.CellHistoryApp;
+import org.kei.android.phone.cellhistory.R;
+import org.kei.android.phone.cellhistory.adapters.ScreenSlidePagerAdapter;
+import org.kei.android.phone.cellhistory.fragments.ProviderFragment;
+import org.kei.android.phone.cellhistory.fragments.NeighboringFragment;
+import org.kei.android.phone.cellhistory.fragments.RecorderFragment;
+import org.kei.android.phone.cellhistory.fragments.TowerFragment;
+import org.kei.android.phone.cellhistory.fragments.UITaskFragment;
+import org.kei.android.phone.cellhistory.prefs.Preferences;
+import org.kei.android.phone.cellhistory.prefs.PreferencesUI;
+import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
+import org.kei.android.phone.cellhistory.utils.ZoomOutPageTransformer;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.WindowManager;
+
+/**
+ *******************************************************************************
+ * @file ScreenSlidePagerActivity.java
+ * @author Keidan
+ * @date 11/12/2015
+ * @par Project CellHistory
+ *
+ * @par Copyright 2015 Keidan, all right reserved
+ *
+ *      This software is distributed in the hope that it will be useful, but
+ *      WITHOUT ANY WARRANTY.
+ *
+ *      License summary : You can modify and redistribute the sources code and
+ *      binaries. You can send me the bug-fix
+ *
+ *      Term of the license in in the file license.txt.
+ *
+ *******************************************************************************
+ */
+public class CellHistoryPagerActivity extends FragmentActivity implements
+    IThemeActivity, OnPageChangeListener {
+  public static final int             TASK_DELAY      = 1;
+  private static final int            BACK_TIME_DELAY = 2000;
+  private static long                 lastBackPressed = -1;
+  private ViewPager                   mPager;
+  private PagerAdapter                mPagerAdapter;
+  /* context */
+  private SharedPreferences           prefs           = null;
+  private CellHistoryApp              app             = null;
+  /* tasks */
+  private ScheduledThreadPoolExecutor execUpdateUI    = null;
+  private List<Fragment>              fragments       = null;
+  
+  static {
+    Fx.default_animation = Fx.ANIMATION_FADE;
+    Fx.default_theme = PreferencesUI.THEME_DARK;
+  }
+  
+  @Override
+  protected void onCreate(final Bundle savedInstanceState) {
+    themeUpdate();
+    super.onCreate(savedInstanceState);
+    Fx.updateTransition(this, true);
+    setContentView(R.layout.activity_cellhistorypager);
+    /* context */
+    app = CellHistoryApp.getApp(this);
+    prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    app.getProviderTask().initialize(this, prefs);
+    app.getTowerTask().initialize(this, prefs);
+    
+    fragments = new Vector<Fragment>();
+    fragments.add(new TowerFragment());
+    fragments.add(new ProviderFragment());
+    fragments.add(new NeighboringFragment());
+    fragments.add(new RecorderFragment());
+
+    mPager = (ViewPager) findViewById(R.id.pager);
+    mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+    mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(),
+        fragments);
+    mPager.setAdapter(mPagerAdapter);
+    mPager.setCurrentItem(prefs.getInt(Preferences.PREFS_KEY_CURRENT_TAB, Preferences.PREFS_DEFAULT_CURRENT_TAB));
+    mPager.setOnPageChangeListener(this);
+    /* task */
+    if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
+      app.getProviderTask().start(TASK_DELAY);
+    }
+    app.getTowerTask().start(TASK_DELAY);
+  }
+  
+  @Override
+  protected void onPause() {
+    if (execUpdateUI != null) {
+      execUpdateUI.shutdownNow();
+      execUpdateUI = null;
+    }
+    super.onPause();
+    Fx.updateTransition(this, false);
+  }
+  
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (prefs.getBoolean(PreferencesUI.PREFS_KEY_KEEP_SCREEN,
+        PreferencesUI.PREFS_DEFAULT_KEEP_SCREEN))
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    else
+      getWindow().clearFlags(
+          WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+
+    if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE))
+      app.getProviderTask().start(TASK_DELAY);
+    else
+      app.getProviderTask().stop();
+    execUpdateUI = new ScheduledThreadPoolExecutor(1);
+    execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, TASK_DELAY, TimeUnit.SECONDS);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    if (execUpdateUI != null) {
+      execUpdateUI.shutdownNow();
+      execUpdateUI = null;
+    }
+    app.getProviderTask().stop();
+    app.getTowerTask().stop();
+    app.getRecorderCtx().flushAndClose();
+  }
+  
+  private final Runnable uiTask = new Runnable() {
+    @Override
+    public void run() {
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          for (final Fragment f : fragments) {
+            app.getGlobalTowerInfo().lock();
+            try {
+              final UITaskFragment tf = (UITaskFragment) f;
+              tf.processUI(app
+                  .getGlobalTowerInfo());
+            } finally {
+              app.getGlobalTowerInfo().unlock();
+            }
+          }
+        }
+      });
+    }
+  };
+  
+  @Override
+  public void onBackPressed() {
+    if (!exitOnDoubleBack()) {
+      super.onBackPressed();
+    } else {
+      if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+        super.onBackPressed();
+      } else {
+        Tools.toast(getBaseContext(), getToastIconId(),
+            getResources().getText(getOnDoubleBackExitTextId()));
+      }
+      lastBackPressed = System.currentTimeMillis();
+    }
+  }
+
+  protected boolean exitOnDoubleBack() {
+    return true;
+  }
+
+  protected int getToastIconId() {
+    return R.drawable.ic_launcher;
+  }
+
+  protected int getOnDoubleBackExitTextId() {
+    return org.kei.android.atk.R.string.onDoubleBackExitText;
+  }
+  
+  @Override
+  public void themeUpdate() {
+    Preferences.performTheme(this);
+  }
+
+  @Override
+  public int getAnime(final AnimationType at) {
+    return Fx.getAnimationFromPref(this, at);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(final Menu menu) {
+    getMenuInflater().inflate(R.menu.activity_cellhistorypager, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(final MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.action_settings:
+        final Intent intent = new Intent(this, Preferences.class);
+        startActivity(intent);
+        return true;
+    }
+    return false;
+  }
+
+  @Override
+  public void onPageScrollStateChanged(int state) { }
+
+  @Override
+  public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+  @Override
+  public void onPageSelected(int position) {
+    Editor e = prefs.edit();
+    e.putInt(Preferences.PREFS_KEY_CURRENT_TAB, position);
+    e.commit();
+  }
+  
+}

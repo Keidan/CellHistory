@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/pref_title_settings" >
+        <Preference
+            android:key="prefUI"
+            android:summary="@string/pref_ui_summary"
+            android:title="@string/pref_ui_title">
+        </Preference>
+        <CheckBoxPreference
+            android:key="prefChartEnable"
+            android:defaultValue="true"
+            android:summary="@string/pref_chart_enable_summary"
+            android:title="@string/pref_chart_enable_title" />
+        <Preference
+            android:key="prefGeolocation"
+            android:title="@string/pref_geolocation_management_title"
+            android:summary="@string/pref_geolocation_management_summary">
+        </Preference>
+        <Preference
+            android:key="prefRecorder"
+            android:title="@string/pref_recorder_title"
+            android:summary="@string/pref_recorder_summary">
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_infos" >
+        <Preference
+            android:key="prefLogs"
+            android:title="@string/pref_log_title"
+            android:summary="@string/pref_log_summary">
+        </Preference>
+        <Preference
+            android:key="prefTechnician"
+            android:title="@string/pref_technician_code_title"
+            android:summary="@string/pref_technician_code_summary">
+        </Preference>
+        <Preference
+            android:key="prefVersion"
+		    android:enabled="false" 
+		    android:selectable="false"
+		    android:persistent="false"
+		    android:shouldDisableView="false">
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>
+    

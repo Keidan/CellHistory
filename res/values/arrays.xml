@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_themes">
+        <item name="0">Light</item>
+        <item name="1">Dark</item>
+    </string-array>
+    <string-array name="values_themes">
+        <item name="0">org.kei.android.phone.cellhistory.prefs.THEME_LIGHT</item>
+        <item name="1">org.kei.android.phone.cellhistory.prefs.THEME_DARK</item>
+    </string-array>
+    
+    <string-array name="entries_animations">
+        <item name="0">Fade</item>
+        <item name="1">Slide RightToLeft</item>
+        <item name="2">Slide LeftToRight</item>
+    </string-array>
+    <string-array name="values_animations">
+        <item name="0">org.kei.android.atk.utils.fx.ANIMATION_FADE</item>
+        <item name="1">org.kei.android.atk.utils.fx.ANIMATION_SLIDE_RIGHT_TO_LEFT</item>
+        <item name="2">org.kei.android.atk.utils.fx.ANIMATION_SLIDE_LEFT_TO_RIGHT</item>
+    </string-array>
+</resources>

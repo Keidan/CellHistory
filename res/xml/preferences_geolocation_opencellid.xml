@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/pref_title_geolocation_opencellid" >
+        <EditTextPreference
+            android:key="geolocationOpenCellIDKey"
+            android:defaultValue=""
+            android:summary="@string/pref_geolocation_key_opencellid_summary"
+            android:title="@string/pref_geolocation_key_opencellid_title"/>
+        <Preference 
+            android:key="geolocationOpenCellIDGet"
+            android:title="@string/pref_geolocation_get_key_opencellid_title">
+            <intent 
+                android:action="android.intent.action.VIEW"
+                android:data="http://opencellid.org/#action=database.requestForApiKey"/>
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

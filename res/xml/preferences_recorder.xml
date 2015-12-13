@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/pref_title_recorder" >
+        <Preference
+            android:key="recorderSavePath"
+            android:summary="@string/pref_save_path_summary"
+            android:title="@string/pref_save_path_title" />
+        <EditTextPreference
+            android:key="recorderSep"
+            android:maxLength="1"
+            android:defaultValue=";"
+            android:summary="@string/pref_sep_summary"
+            android:title="@string/pref_sep_title"   
+    		android:inputType="text" />
+        <EditTextPreference
+            android:key="recorderNeighboringSep"
+            android:maxLength="1"
+            android:defaultValue=","
+            android:summary="@string/pref_neighboring_sep_summary"
+            android:title="@string/pref_neighboring_sep_title"   
+    		android:inputType="text" />
+        <EditTextPreference
+            android:key="recorderFlush"
+            android:defaultValue="25"
+            android:summary="@string/pref_flush_summary"
+            android:title="@string/pref_flush_title"   
+    		android:inputType="number" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderDetectChange"
+            android:summary="@string/pref_detect_change_summary"
+            android:title="@string/pref_detect_change_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderDeletePrevFile"
+            android:summary="@string/pref_delete_file_summary"
+            android:title="@string/pref_delete_file_title" />
+    </PreferenceCategory>
+</PreferenceScreen>
