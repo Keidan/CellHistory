@@ -89,9 +89,11 @@ public class PreferencesGeolocation extends EffectPreferenceActivity implements 
     timeout.setSummary(summary);
     
     Preference povider = prefFrag.findPreference(PREFS_KEY_OPENCELLID_PROVIDER);
+    Preference gps = prefFrag.findPreference(PREFS_KEY_DISTANCE);
     boolean en = prefs.getBoolean(PREFS_KEY_LOCATE, PREFS_DEFAULT_LOCATE);
     povider.setEnabled(en);
     timeout.setEnabled(en);
+    gps.setEnabled(en);
   }
   
   private void checkValues() {
