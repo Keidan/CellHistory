@@ -102,9 +102,20 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     /* task */
     if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       app.getProviderTask().start(
-          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 
-          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
+          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
+      if(!prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED)) {
+        app.getProviderTask().startSensor(
+            Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, 
+                PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
+      } else
+        app.getProviderTask().stopSensor();
     }
+    else {
+      app.getProviderTask().stop();
+      app.getProviderTask().stopSensor();
+    }
+    
     app.getTowerTask().start(
         Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
             PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
@@ -130,13 +141,21 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
       getWindow().clearFlags(
           WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
 
-    if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE))
+    if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       app.getProviderTask().start(
           Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)), 
-          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
-    else
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
+      if(!prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED)) {
+        app.getProviderTask().startSensor(
+            Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, 
+                PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
+      } else
+        app.getProviderTask().stopSensor();
+    }
+    else {
       app.getProviderTask().stop();
+      app.getProviderTask().stopSensor();
+    }
     execUpdateUI = new ScheduledThreadPoolExecutor(1);
     execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, 
         Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)), 
@@ -151,6 +170,7 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
       execUpdateUI = null;
     }
     app.getProviderTask().stop();
+    app.getProviderTask().stopSensor();
     app.getTowerTask().stop();
     app.getRecorderCtx().flushAndClose();
   }

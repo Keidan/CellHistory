@@ -26,11 +26,11 @@
 	<string name="lblGeoProvider">Provider: </string>
 	<string name="lblSpeed">Speed: </string>
 	<string name="lblDistance">Distance: </string>
-	<string name="txtDistanceDisabled">GPS service disabled.</string>
-	<string name="txtDistanceDisabledOption">GPS option disabled.</string>
-	<string name="txtDistanceOutOfService">GPS out of service.</string>
-	<string name="txtDistanceTemporarilyUnavailable">GPS temporarily unavailable.</string>
-	<string name="txtDistanceGPSInvalid">GPS input.</string>
+	<string name="txtGpsDisabled">GPS service disabled.</string>
+	<string name="txtGpsDisabledOption">GPS option disabled.</string>
+	<string name="txtGpsOutOfService">GPS out of service.</string>
+	<string name="txtGpsTemporarilyUnavailable">GPS temporarily unavailable.</string>
+	<string name="txtGpsInvalid">GPS input.</string>
 	
 	<string name="lblRecords">Record: </string>
 	<string name="lblBuffer">Buffer: </string>
@@ -100,8 +100,10 @@
     <string name="pref_geolocation_title">Cell location</string>
     <string name="pref_geolocation_summary">Locates the current telephony cell using the network requests.</string>
     
-    <string name="pref_geolocation_distance_title">GPS Service</string>
-    <string name="pref_geolocation_distance_summary">Use the GPS service to determine the distance between the phone and the cell.</string>
+    <string name="pref_geolocation_gps_title">GPS Service</string>
+    <string name="pref_geolocation_gps_summary">Use the GPS service to determine the distance between the phone and the cell.</string>
+    <string name="pref_geolocation_speed_gps_title">Speed by GPS</string>
+    <string name="pref_geolocation_speed_gps_summary">Evaluate the speed through the GPS datas or the accelerometer.</string>
     <string name="pref_geolocation_timeout_title">Request timeout</string>
     <string name="pref_geolocation_timeout_summary">Avoids that some requests take too much time when the target is unavailable(in second).</string>
     <string name="pref_geolocation_opencellid_summary">Configure the OpenCellID provider.</string>

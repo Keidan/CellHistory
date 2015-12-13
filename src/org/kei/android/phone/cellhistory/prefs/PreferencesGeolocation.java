@@ -37,13 +37,15 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesGeolocation extends EffectPreferenceActivity implements OnSharedPreferenceChangeListener {
-  public static final String   PREFS_KEY_DISTANCE               = "geolocationDistance";
+  public static final String   PREFS_KEY_GPS                    = "geolocationGPS";
+  public static final String   PREFS_KEY_GPS_SPEED              = "geolocationSpeedGps";
   public static final String   PREFS_KEY_LOCATE                 = "geolocationLocate";
   public static final String   PREFS_KEY_OPENCELLID_PROVIDER    = "geolocationOpenCellIdProvider";
   public static final String   PREFS_KEY_LOCATION_TIMEOUT       = "geolocationLocateTimeout";
   public static final String   PREFS_KEY_CURRENT_PROVIDER       = "currentProvider";
   public static final boolean  PREFS_DEFAULT_LOCATE             = true;
-  public static final boolean  PREFS_DEFAULT_DISTANCE           = true;
+  public static final boolean  PREFS_DEFAULT_GPS                = true;
+  public static final boolean  PREFS_DEFAULT_GPS_SPEED          = true;
   public static final int      PREFS_DEFAULT_LOCATION_TIMEOUT   = 30;
   public static final String   PREFS_DEFAULT_CURRENT_PROVIDER   = CellIdHelper.GOOGLE_HIDDENT_API;
   private MyPreferenceFragment prefFrag                         = null;
@@ -89,11 +91,15 @@ public class PreferencesGeolocation extends EffectPreferenceActivity implements 
     timeout.setSummary(summary);
     
     Preference povider = prefFrag.findPreference(PREFS_KEY_OPENCELLID_PROVIDER);
-    Preference gps = prefFrag.findPreference(PREFS_KEY_DISTANCE);
+    Preference gps = prefFrag.findPreference(PREFS_KEY_GPS);
+    Preference gpsSpeed = prefFrag.findPreference(PREFS_KEY_GPS_SPEED);
     boolean en = prefs.getBoolean(PREFS_KEY_LOCATE, PREFS_DEFAULT_LOCATE);
     povider.setEnabled(en);
     timeout.setEnabled(en);
     gps.setEnabled(en);
+    if(en && !prefs.getBoolean(PREFS_KEY_GPS, PREFS_DEFAULT_GPS))
+      en = false;
+    gpsSpeed.setEnabled(en);
   }
   
   private void checkValues() {
@@ -111,7 +117,7 @@ public class PreferencesGeolocation extends EffectPreferenceActivity implements 
   }
   @Override
   public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-    if (key.equals(PREFS_KEY_LOCATE) || key.equals(PREFS_KEY_LOCATION_TIMEOUT)) {
+    if (key.equals(PREFS_KEY_LOCATE) || key.equals(PREFS_KEY_LOCATION_TIMEOUT) || key.equals(PREFS_KEY_GPS) || key.equals(PREFS_KEY_GPS_SPEED)) {
       updateSummaries();
     }
   }

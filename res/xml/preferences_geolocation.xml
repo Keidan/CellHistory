@@ -8,9 +8,14 @@
             android:title="@string/pref_geolocation_title" />
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="geolocationDistance"
-            android:summary="@string/pref_geolocation_distance_summary"
-            android:title="@string/pref_geolocation_distance_title" />
+            android:key="geolocationGPS"
+            android:summary="@string/pref_geolocation_gps_summary"
+            android:title="@string/pref_geolocation_gps_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="geolocationSpeedGps"
+            android:summary="@string/pref_geolocation_speed_gps_summary"
+            android:title="@string/pref_geolocation_speed_gps_title" />
         <EditTextPreference
             android:key="geolocationLocateTimeout"
             android:defaultValue="15"

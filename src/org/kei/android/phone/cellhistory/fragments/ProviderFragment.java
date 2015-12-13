@@ -78,11 +78,12 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
   private int               color_blue_dark_transparent       = Color.BLACK;
   private LocationManager   lm                                = null;
   private Location          lastLocation                      = null;
-  private String            txtDistanceDisabled               = "";
-  private String            txtDistanceDisabledOption         = "";
-  private String            txtDistanceOutOfService           = "";
-  private String            txtDistanceTemporarilyUnavailable = "";
-  private String            txtDistanceGPSInvalid             = "";
+  private String            txtGpsDisabled               = "";
+  private String            txtGpsDisabledOption         = "";
+  private String            txtGpsOutOfService           = "";
+  private String            txtGpsTemporarilyUnavailable = "";
+  private String            txtGpsInvalid                = "";
+  private int               default_color                = android.graphics.Color.TRANSPARENT;
   
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -106,15 +107,16 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
     color_blue_dark = resources.getColor(Color.BLUE_DARK);
     color_blue_dark_transparent = resources
         .getColor(Color.BLUE_DARK_TRANSPARENT);
+    default_color = new TextView(getActivity()).getTextColors().getDefaultColor();
     /* texts */
-    txtDistanceDisabled = resources.getString(R.string.txtDistanceDisabled);
-    txtDistanceDisabledOption = resources
-        .getString(R.string.txtDistanceDisabledOption);
-    txtDistanceOutOfService = resources
-        .getString(R.string.txtDistanceOutOfService);
-    txtDistanceTemporarilyUnavailable = resources
-        .getString(R.string.txtDistanceTemporarilyUnavailable);
-    txtDistanceGPSInvalid = resources.getString(R.string.txtDistanceGPSInvalid);
+    txtGpsDisabled = resources.getString(R.string.txtGpsDisabled);
+    txtGpsDisabledOption = resources
+        .getString(R.string.txtGpsDisabledOption);
+    txtGpsOutOfService = resources
+        .getString(R.string.txtGpsOutOfService);
+    txtGpsTemporarilyUnavailable = resources
+        .getString(R.string.txtGpsTemporarilyUnavailable);
+    txtGpsInvalid = resources.getString(R.string.txtGpsInvalid);
     
     /* UI */
     spiGeoProvider = (Spinner) getView().findViewById(R.id.spiGeoProvider);
@@ -122,7 +124,7 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
     txtGeolocation = (TextView) getView().findViewById(R.id.txtGeolocation);
     txtSpeed = (TextView) getView().findViewById(R.id.txtSpeed);
     txtDistance = (TextView) getView().findViewById(R.id.txtDistance);
-    txtDistance.setText(getResources().getString(R.string.txtDistanceDisabled));
+    txtDistance.setText(getResources().getString(R.string.txtGpsDisabled));
     txtDistance.setTextColor(color_red);
     txtGeolocation.setOnClickListener(this);
     final List<String> list = new ArrayList<String>();
@@ -191,13 +193,13 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
     updateLocation();
     if (lastLocation != null) {
       final double dist = app.getGlobalTowerInfo().getDistance();
-      txtDistance.setTextColor(txtSpeed.getTextColors().getDefaultColor());
+      txtDistance.setTextColor(default_color);
       if (dist > 1000)
         txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
       else
         txtDistance.setText(String.format("%.02f", dist) + " m");
     } else if (!txtDistance.getText().toString()
-        .equals(txtDistanceDisabledOption))
+        .equals(txtGpsDisabledOption))
       txtDistance.setTextColor(color_red);
   }
   
@@ -215,8 +217,7 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
       app.getProviderCtx().clear();
       app.getProviderTask().start(
           Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 
-          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
     }
   }
 
@@ -242,8 +243,8 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       txtGeoProvider.setVisibility(View.GONE);
       spiGeoProvider.setVisibility(View.VISIBLE);
-      if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_DISTANCE,
-          PreferencesGeolocation.PREFS_DEFAULT_DISTANCE)) {
+      if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
+          PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
         txtDistance.setTextColor(color_red);
         if (lm == null) {
           lm = (LocationManager) getActivity().getSystemService(
@@ -252,14 +253,24 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f,
                 this);
         }
+        if(!prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED)) {
+          app.getProviderTask().startSensor(
+              Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, 
+                  PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
+        } else {
+          app.getProviderTask().stopSensor();
+        }
       } else {
         lastLocation = null;
         if (lm != null) {
           lm.removeUpdates(this);
           lm = null;
         }
-        txtDistance.setText(txtDistanceDisabledOption);
+        txtDistance.setText(txtGpsDisabledOption);
         txtDistance.setTextColor(color_orange);
+        app.getProviderTask().startSensor(
+            Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, 
+                PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
       }
     } else {
       lastLocation = null;
@@ -269,9 +280,11 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
         lm.removeUpdates(this);
         lm = null;
       }
-      txtDistance.setText(txtDistanceDisabledOption);
+      txtDistance.setText(txtGpsDisabledOption);
       txtDistance.setTextColor(color_orange);
+      app.getProviderTask().stopSensor();
     }
+    accelUpdate(0.0f, 0.0);
   }
   
   @Override
@@ -319,7 +332,7 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
   public void onLocationChanged(final Location location) {
     lastLocation = location;
     if (!app.getProviderCtx().isValid())
-      resetDistance(txtDistanceGPSInvalid);
+      resetDistance(txtGpsInvalid);
     updateLocation();
   }
 
@@ -328,10 +341,10 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
       final Bundle extras) {
     switch (status) {
       case LocationProvider.OUT_OF_SERVICE:
-        resetDistance(txtDistanceOutOfService);
+        resetDistance(txtGpsOutOfService);
         break;
       case LocationProvider.TEMPORARILY_UNAVAILABLE:
-        resetDistance(txtDistanceTemporarilyUnavailable);
+        resetDistance(txtGpsTemporarilyUnavailable);
         break;
     }
   }
@@ -342,7 +355,7 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
 
   @Override
   public void onProviderDisabled(final String provider) {
-    resetDistance(txtDistanceDisabled);
+    resetDistance(txtGpsDisabled);
     lastLocation = null;
   }
 
@@ -350,6 +363,8 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
+      if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED))
+        app.getGlobalTowerInfo().setSpeed(0.0);
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
@@ -361,6 +376,10 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
       final Location loc1 = new Location("");
       app.getGlobalTowerInfo().lock();
       try {
+        if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED)) {
+          app.getGlobalTowerInfo().setSpeed(lastLocation.getSpeed());
+          accelUpdate(.0f, app.getGlobalTowerInfo().getSpeed());
+        }
         if (!Double.isNaN(app.getGlobalTowerInfo().getLatitude())
             && !Double.isNaN(app.getGlobalTowerInfo().getLongitude())) {
           loc1.setLatitude(app.getGlobalTowerInfo().getLatitude());
