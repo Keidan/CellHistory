@@ -59,38 +59,39 @@ import android.widget.AdapterView.OnItemSelectedListener;
  *******************************************************************************
  */
 public class ProviderFragment extends Fragment implements UITaskFragment,
-    OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
+OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
   /* UI */
-  private Spinner           spiGeoProvider              = null;
-  private TextView          txtGeoProvider              = null;
-  private TextView          txtGeolocation              = null;
-  private TextView          txtSpeed                    = null;
-  private TextView          txtDistance                 = null;
-  private TimeChartHelper   chart                       = null;
+  private Spinner           spiGeoProvider                    = null;
+  private TextView          txtGeoProvider                    = null;
+  private TextView          txtGeolocation                    = null;
+  private TextView          txtSpeed                          = null;
+  private TextView          txtDistance                       = null;
+  private TimeChartHelper   chart                             = null;
   /* context */
-  private SharedPreferences prefs                       = null;
-  private CellHistoryApp    app                         = null;
+  private SharedPreferences prefs                             = null;
+  private CellHistoryApp    app                               = null;
   /* colors */
-  private int               color_red                   = Color.BLACK;
-  private int               color_orange                = Color.BLACK;
-  private int               color_blue_dark             = Color.BLACK;
-  private int               color_blue_dark_transparent = Color.BLACK;
-  private LocationManager   lm                          = null;
-  private Location          lastLocation                = null;
-  private String txtDistanceDisabled = "";
-  private String txtDistanceDisabledOption = "";
-  private String txtDistanceOutOfService = "";
-  private String txtDistanceTemporarilyUnavailable = "";
-  private String txtDistanceGPSInvalid = "";
+  private int               color_red                         = Color.BLACK;
+  private int               color_orange                      = Color.BLACK;
+  private int               color_blue_dark                   = Color.BLACK;
+  private int               color_blue_dark_transparent       = Color.BLACK;
+  private LocationManager   lm                                = null;
+  private Location          lastLocation                      = null;
+  private String            txtDistanceDisabled               = "";
+  private String            txtDistanceDisabledOption         = "";
+  private String            txtDistanceOutOfService           = "";
+  private String            txtDistanceTemporarilyUnavailable = "";
+  private String            txtDistanceGPSInvalid             = "";
+  
   @Override
   public View onCreateView(final LayoutInflater inflater,
       final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(
         R.layout.fragment_geolocation, container, false);
-    
+
     return rootView;
   }
-  
+
   @Override
   public void onViewCreated(final View view, final Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
@@ -102,14 +103,18 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
     color_red = resources.getColor(Color.RED);
     color_orange = resources.getColor(Color.ORANGE);
     color_blue_dark = resources.getColor(Color.BLUE_DARK);
-    color_blue_dark_transparent = resources.getColor(Color.BLUE_DARK_TRANSPARENT);
+    color_blue_dark_transparent = resources
+        .getColor(Color.BLUE_DARK_TRANSPARENT);
     /* texts */
     txtDistanceDisabled = resources.getString(R.string.txtDistanceDisabled);
-    txtDistanceDisabledOption = resources.getString(R.string.txtDistanceDisabledOption);
-    txtDistanceOutOfService = resources.getString(R.string.txtDistanceOutOfService);
-    txtDistanceTemporarilyUnavailable = resources.getString(R.string.txtDistanceTemporarilyUnavailable);
+    txtDistanceDisabledOption = resources
+        .getString(R.string.txtDistanceDisabledOption);
+    txtDistanceOutOfService = resources
+        .getString(R.string.txtDistanceOutOfService);
+    txtDistanceTemporarilyUnavailable = resources
+        .getString(R.string.txtDistanceTemporarilyUnavailable);
     txtDistanceGPSInvalid = resources.getString(R.string.txtDistanceGPSInvalid);
-
+    
     /* UI */
     spiGeoProvider = (Spinner) getView().findViewById(R.id.spiGeoProvider);
     txtGeoProvider = (TextView) getView().findViewById(R.id.txtGeoProvider);
@@ -129,7 +134,7 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
     spiGeoProvider.setOnItemSelectedListener(this);
     if (prefs.getString(PreferencesGeolocation.PREFS_KEY_CURRENT_PROVIDER,
         PreferencesGeolocation.PREFS_DEFAULT_CURRENT_PROVIDER).equals(
-        CellIdHelper.GOOGLE_HIDDENT_API))
+            CellIdHelper.GOOGLE_HIDDENT_API))
       spiGeoProvider.setSelection(0);
     else
       spiGeoProvider.setSelection(1);
@@ -139,10 +144,11 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
     chart.install(getActivity(), txtSpeed.getTextColors().getDefaultColor(),
         true);
     chart.setYAxisMax(15);
-    chart.addTimePoint(color_blue_dark, color_blue_dark_transparent, new Date().getTime(), 0);
+    chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
+        new Date().getTime(), 0);
     processUI(app.getGlobalTowerInfo());
   }
-  
+
   @Override
   public void processUI(final TowerInfo ti) {
     if (txtGeoProvider == null)
@@ -155,7 +161,7 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
       txtGeoProvider.setVisibility(View.VISIBLE);
       spiGeoProvider.setVisibility(View.GONE);
     }
-
+    
     final String oldLoc = app.getProviderCtx().getOldLoc();
     if (oldLoc.startsWith(ProviderCtx.LOC_NONE)
         || oldLoc.startsWith(ProviderCtx.LOC_RETRY))
@@ -171,16 +177,17 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
         .format("%.02f", app.getGlobalTowerInfo().getSpeed()) + " m/s");
     updateLocation();
     if (lastLocation != null) {
-      double dist = app.getGlobalTowerInfo().getDistance();
+      final double dist = app.getGlobalTowerInfo().getDistance();
       txtDistance.setTextColor(txtSpeed.getTextColors().getDefaultColor());
-      if(dist > 1000)
+      if (dist > 1000)
         txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
       else
         txtDistance.setText(String.format("%.02f", dist) + " m");
-    } else if(!txtDistance.getText().toString().equals(txtDistanceDisabledOption))
+    } else if (!txtDistance.getText().toString()
+        .equals(txtDistanceDisabledOption))
       txtDistance.setTextColor(color_red);
   }
-
+  
   @Override
   public void onItemSelected(final AdapterView<?> parent, final View view,
       final int pos, final long id) {
@@ -196,11 +203,11 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
       app.getProviderTask().start(CellHistoryPagerActivity.TASK_DELAY);
     }
   }
-  
+
   @Override
   public void onNothingSelected(final AdapterView<?> parent) {
   }
-  
+
   @Override
   public void onDestroy() {
     if (lm != null) {
@@ -209,7 +216,7 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
     }
     super.onDestroy();
   }
-  
+
   @Override
   public void onResume() {
     super.onResume();
@@ -222,14 +229,16 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
       txtGeoProvider.setVisibility(View.VISIBLE);
       spiGeoProvider.setVisibility(View.GONE);
     }
-
+    
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_DISTANCE,
         PreferencesGeolocation.PREFS_DEFAULT_DISTANCE)) {
       txtDistance.setTextColor(color_red);
-      if(lm == null) {
-        lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+      if (lm == null) {
+        lm = (LocationManager) getActivity().getSystemService(
+            Context.LOCATION_SERVICE);
         if (lm != null)
-          lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f, this);
+          lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f,
+              this);
       }
     } else {
       if (lm != null) {
@@ -240,7 +249,7 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
       txtDistance.setTextColor(color_orange);
     }
   }
-
+  
   @Override
   public void onClick(final View v) {
     if (v.equals(txtGeolocation)) {
@@ -266,7 +275,7 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
       }
     }
   }
-
+  
   @Override
   public void accelUpdate(final float timestamp, final double velocity) {
     if (chart != null && getActivity() != null)
@@ -275,20 +284,21 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
         public void run() {
           if (chart.getVisibility() == View.VISIBLE) {
             chart.checkYAxisMax(velocity);
-            chart.addTimePoint(color_blue_dark, color_blue_dark_transparent, new Date().getTime(), velocity);
+            chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
+                new Date().getTime(), velocity);
           }
         }
       });
   }
-  
+
   @Override
   public void onLocationChanged(final Location location) {
     lastLocation = location;
-    if(!app.getProviderCtx().isValid())
+    if (!app.getProviderCtx().isValid())
       resetDistance(txtDistanceGPSInvalid);
     updateLocation();
   }
-  
+
   @Override
   public void onStatusChanged(final String provider, final int status,
       final Bundle extras) {
@@ -301,18 +311,18 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
         break;
     }
   }
-  
+
   @Override
   public void onProviderEnabled(final String provider) {
   }
-  
+
   @Override
   public void onProviderDisabled(final String provider) {
     resetDistance(txtDistanceDisabled);
     lastLocation = null;
   }
-  
-  private void resetDistance(String txt) {
+
+  private void resetDistance(final String txt) {
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
@@ -321,13 +331,14 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
     }
     txtDistance.setText(txt);
   }
-  
+
   private void updateLocation() {
-    if(lastLocation != null) {
-      Location loc1 = new Location("");
+    if (lastLocation != null) {
+      final Location loc1 = new Location("");
       app.getGlobalTowerInfo().lock();
       try {
-        if(!Double.isNaN(app.getGlobalTowerInfo().getLatitude()) && !Double.isNaN(app.getGlobalTowerInfo().getLongitude())) {
+        if (!Double.isNaN(app.getGlobalTowerInfo().getLatitude())
+            && !Double.isNaN(app.getGlobalTowerInfo().getLongitude())) {
           loc1.setLatitude(app.getGlobalTowerInfo().getLatitude());
           loc1.setLongitude(app.getGlobalTowerInfo().getLongitude());
           app.getGlobalTowerInfo().setDistance(loc1.distanceTo(lastLocation));
