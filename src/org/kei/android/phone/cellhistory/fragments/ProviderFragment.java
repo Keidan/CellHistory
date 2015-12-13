@@ -178,8 +178,16 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
       txtGeolocation.setTextColor(color_blue_dark);
     }
     txtGeolocation.setText(oldLoc);
-    txtSpeed.setText(String
-        .format("%.02f", app.getGlobalTowerInfo().getSpeed()) + " m/s");
+    double speed = app.getGlobalTowerInfo().getSpeed();
+    String spd = String
+        .format("%.02f", speed) + " m/s\n";
+    spd += String
+        .format("%.02f", speed * 3.6) + " km/h\n";
+    spd += String
+        .format("%.02f", speed * 2.2369362920544) + " mph";
+    txtSpeed.setText(spd);
+    
+    
     updateLocation();
     if (lastLocation != null) {
       final double dist = app.getGlobalTowerInfo().getDistance();
