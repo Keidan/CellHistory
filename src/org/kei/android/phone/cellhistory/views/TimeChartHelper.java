@@ -14,7 +14,6 @@ import org.kei.android.phone.cellhistory.R;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
