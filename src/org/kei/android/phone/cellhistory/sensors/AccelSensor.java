@@ -40,10 +40,12 @@ public class AccelSensor extends TimerTask implements SensorEventListener {
   private double          velocity  = 0.0;
   private long            timestamp = 0L;
   private Timer           update    = null;
+  private int             delay     = 500;
   
-  public AccelSensor(final Context context, final IAccelSensor li) {
+  public AccelSensor(final Context context, int delay, final IAccelSensor li) {
     this.context = context;
     this.li = li;
+    this.delay = delay;
     manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
   }
 
@@ -52,7 +54,7 @@ public class AccelSensor extends TimerTask implements SensorEventListener {
     final Sensor accel = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     manager.registerListener(this, accel, SensorManager.SENSOR_DELAY_GAME);
     update = new Timer("AccelSensor");
-    update.scheduleAtFixedRate(this, 0, 500);
+    update.scheduleAtFixedRate(this, 0, delay);
   }
 
   public void unregister() {

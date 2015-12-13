@@ -4,6 +4,6 @@ import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 public interface UITaskFragment {
   
-  public void processUI(TowerInfo ti);
+  public void processUI(TowerInfo ti) throws Throwable;
   
 }

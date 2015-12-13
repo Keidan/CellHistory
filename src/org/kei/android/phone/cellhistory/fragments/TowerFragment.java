@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,12 +105,16 @@ public class TowerFragment extends Fragment implements UITaskFragment {
     chart = new TimeChartHelper();
     chart.setChartContainer((LinearLayout)getView().findViewById(R.id.graph));
     chart.install(getActivity(), txtOperator.getTextColors().getDefaultColor(), true);
-    processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
+    try {
+      processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
+    } catch (Throwable e) {
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+    }
   }
   
 
   @Override
-  public void processUI(final TowerInfo ti) {
+  public void processUI(final TowerInfo ti) throws Throwable {
     int percent = ti.getSignalStrengthPercent();
     if(txtOperator == null) return;
     txtOperator.setText(ti.getOperator());

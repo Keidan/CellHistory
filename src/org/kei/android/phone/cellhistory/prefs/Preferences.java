@@ -37,6 +37,7 @@ import android.util.Log;
 public class Preferences extends EffectPreferenceActivity {
   public static final String   PREFS_KEY_CURRENT_TAB      = "prefCurrentTab";
   public static final String   PREFS_KEY_CHART_ENABLE     = "prefChartEnable";
+  public static final String   PREFS_KEY_TIMERS           = "prefTimers";
   public static final String   PREFS_KEY_LOG              = "prefLogs";
   public static final String   PREFS_KEY_UI               = "prefUI";
   public static final String   PREFS_KEY_GEOLOCATION      = "prefGeolocation";
@@ -127,6 +128,14 @@ public class Preferences extends EffectPreferenceActivity {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
             Tools.switchTo(Preferences.this, LogActivity.class);
+            return true;
+          }
+        });
+    prefFrag.findPreference(PREFS_KEY_TIMERS).setOnPreferenceClickListener(
+        new Preference.OnPreferenceClickListener() {
+          @Override
+          public boolean onPreferenceClick(final Preference preference) {
+            Tools.switchTo(Preferences.this, PreferencesTimers.class);
             return true;
           }
         });

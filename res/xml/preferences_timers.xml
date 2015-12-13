@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/pref_title_timers" >
+        <EditTextPreference
+            android:key="timersUI"
+            android:defaultValue="1000"
+            android:summary="@string/pref_timers_ui_summary"
+            android:title="@string/pref_timers_ui_title"   
+    		android:inputType="number" />
+        <EditTextPreference
+            android:key="timersTaskTower"
+            android:defaultValue="1000"
+            android:summary="@string/pref_timers_task_tower_summary"
+            android:title="@string/pref_timers_task_tower_title"   
+    		android:inputType="number" />
+        <EditTextPreference
+            android:key="timersTaskProvider"
+            android:defaultValue="1000"
+            android:summary="@string/pref_timers_task_provider_summary"
+            android:title="@string/pref_timers_task_provider_title"   
+    		android:inputType="number" />
+        <EditTextPreference
+            android:key="timersAccel"
+            android:defaultValue="500"
+            android:summary="@string/pref_timers_accel_summary"
+            android:title="@string/pref_timers_accel_title"   
+    		android:inputType="number" />
+    </PreferenceCategory>
+</PreferenceScreen>

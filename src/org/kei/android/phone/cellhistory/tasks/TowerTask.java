@@ -69,7 +69,7 @@ public class TowerTask extends PhoneStateListener implements Runnable {
     telephonyManager = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
     if(telephonyManager != null) telephonyManager.listen(this, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
     stpe = new ScheduledThreadPoolExecutor(1);
-    stpe.scheduleWithFixedDelay(this, 0L, delay, TimeUnit.SECONDS);
+    stpe.scheduleWithFixedDelay(this, 0L, delay, TimeUnit.MILLISECONDS);
   }
 
   public void stop() {

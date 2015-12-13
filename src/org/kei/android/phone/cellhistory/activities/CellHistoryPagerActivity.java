@@ -17,6 +17,7 @@ import org.kei.android.phone.cellhistory.fragments.RecorderFragment;
 import org.kei.android.phone.cellhistory.fragments.TowerFragment;
 import org.kei.android.phone.cellhistory.fragments.UITaskFragment;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
+import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.prefs.PreferencesUI;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.utils.ZoomOutPageTransformer;
@@ -31,6 +32,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -56,7 +58,6 @@ import android.view.WindowManager;
  */
 public class CellHistoryPagerActivity extends FragmentActivity implements
     IThemeActivity, OnPageChangeListener {
-  public static final int             TASK_DELAY      = 1;
   private static final int            BACK_TIME_DELAY = 2000;
   private static long                 lastBackPressed = -1;
   private ViewPager                   mPager;
@@ -100,9 +101,13 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     mPager.setOnPageChangeListener(this);
     /* task */
     if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
-      app.getProviderTask().start(TASK_DELAY);
+      app.getProviderTask().start(
+          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 
+          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
     }
-    app.getTowerTask().start(TASK_DELAY);
+    app.getTowerTask().start(
+        Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
+            PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
   }
   
   @Override
@@ -126,11 +131,16 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
           WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
 
     if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE))
-      app.getProviderTask().start(TASK_DELAY);
+      app.getProviderTask().start(
+          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)), 
+          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
     else
       app.getProviderTask().stop();
     execUpdateUI = new ScheduledThreadPoolExecutor(1);
-    execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, TASK_DELAY, TimeUnit.SECONDS);
+    execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, 
+        Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)), 
+        TimeUnit.MILLISECONDS);
   }
 
   @Override
@@ -157,6 +167,8 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
               final UITaskFragment tf = (UITaskFragment) f;
               tf.processUI(app
                   .getGlobalTowerInfo());
+            } catch(Throwable e) {
+              Log.e(CellHistoryPagerActivity.class.getSimpleName(), "Exception: " + e.getMessage(), e);
             } finally {
               app.getGlobalTowerInfo().unlock();
             }

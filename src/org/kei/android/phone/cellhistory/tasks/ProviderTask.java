@@ -56,11 +56,11 @@ public class ProviderTask implements Runnable, IAccelSensor {
     this.broadcast = broadcast;
   }
   
-  public void start(final int delay) {
+  public void start(final int delay, int accelDelay) {
     stop();
     stpe = new ScheduledThreadPoolExecutor(1);
-    stpe.scheduleWithFixedDelay(this, 0L, delay, TimeUnit.SECONDS);
-    speedSensor = new AccelSensor(activity, this);
+    stpe.scheduleWithFixedDelay(this, 0L, delay, TimeUnit.MICROSECONDS);
+    speedSensor = new AccelSensor(activity, delay, this);
     speedSensor.register();
   }
   

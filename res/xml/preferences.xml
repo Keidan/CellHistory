@@ -6,6 +6,11 @@
             android:summary="@string/pref_ui_summary"
             android:title="@string/pref_ui_title">
         </Preference>
+        <Preference
+            android:key="prefTimers"
+            android:summary="@string/pref_timers_summary"
+            android:title="@string/pref_timers_title">
+        </Preference>
         <CheckBoxPreference
             android:key="prefChartEnable"
             android:defaultValue="true"

@@ -82,7 +82,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     toggleOnOff.setOnClickListener(this);
     pbBuffer.setMax(Integer.parseInt(prefs.getString(PreferencesRecorder.PREFS_KEY_FLUSH,
         PreferencesRecorder.PREFS_DEFAULT_FLUSH)));
-    processUI(app.getGlobalTowerInfo());
+    try {
+      processUI(app.getGlobalTowerInfo());
+    } catch (Throwable e) {
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+    }
   }
   
   public void onResume() {
@@ -93,7 +97,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   }
   
   @Override
-  public void processUI(final TowerInfo ti) {
+  public void processUI(final TowerInfo ti) throws Throwable {
     if(txtRecords == null) return;
     txtRecords.setText(String.valueOf(ti.getRecords()));
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());

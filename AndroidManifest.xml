@@ -43,6 +43,9 @@
             android:name="org.kei.android.phone.cellhistory.prefs.Preferences">
         </activity>
         <activity
+            android:name="org.kei.android.phone.cellhistory.prefs.PreferencesTimers">
+        </activity>
+        <activity
             android:name="org.kei.android.phone.cellhistory.prefs.PreferencesUI">
         </activity>
         <activity

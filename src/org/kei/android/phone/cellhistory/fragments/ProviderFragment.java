@@ -7,9 +7,9 @@ import java.util.List;
 import org.kei.android.atk.utils.fx.Color;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
-import org.kei.android.phone.cellhistory.activities.CellHistoryPagerActivity;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
+import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.sensors.IAccelSensor;
 import org.kei.android.phone.cellhistory.towers.CellIdHelper;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,11 +147,15 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
     chart.setYAxisMax(15);
     chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
         new Date().getTime(), 0);
-    processUI(app.getGlobalTowerInfo());
+    try {
+      processUI(app.getGlobalTowerInfo());
+    } catch (Throwable e) {
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+    }
   }
 
   @Override
-  public void processUI(final TowerInfo ti) {
+  public void processUI(final TowerInfo ti) throws Throwable {
     if (txtGeoProvider == null)
       return;
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
@@ -200,7 +205,10 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
       editor.putString(PreferencesGeolocation.PREFS_KEY_CURRENT_PROVIDER, newP);
       editor.commit();
       app.getProviderCtx().clear();
-      app.getProviderTask().start(CellHistoryPagerActivity.TASK_DELAY);
+      app.getProviderTask().start(
+          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 
+          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
     }
   }
 

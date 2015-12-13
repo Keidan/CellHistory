@@ -12,6 +12,7 @@ import org.kei.android.phone.cellhistory.towers.TowerInfo;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,11 +59,15 @@ public class NeighboringFragment extends Fragment implements UITaskFragment {
     TextView dummy = new TextView(getActivity());
     lvNeighboring = (ListView)getView().findViewById(R.id.lvNeighboring);
     lvNeighboring.setAdapter(new NeighboringArrayAdapter(dummy.getTextColors().getDefaultColor(), context, R.layout.view_neighboring, new ArrayList<NeighboringInfo>()));
-    processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
+    try {
+      processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
+    } catch (Throwable e) {
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+    }
   }
   
   @Override
-  public void processUI(TowerInfo ti) {
+  public void processUI(TowerInfo ti) throws Throwable {
     if(lvNeighboring == null) return;
     NeighboringArrayAdapter adapter = (NeighboringArrayAdapter)lvNeighboring.getAdapter();
     adapter.clear();
