@@ -77,7 +77,11 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
   private int               color_blue_dark_transparent = Color.BLACK;
   private LocationManager   lm                          = null;
   private Location          lastLocation                = null;
-  
+  private String txtDistanceDisabled = "";
+  private String txtDistanceDisabledOption = "";
+  private String txtDistanceOutOfService = "";
+  private String txtDistanceTemporarilyUnavailable = "";
+  private String txtDistanceGPSInvalid = "";
   @Override
   public View onCreateView(final LayoutInflater inflater,
       final ViewGroup container, final Bundle savedInstanceState) {
@@ -99,6 +103,12 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
     color_orange = resources.getColor(Color.ORANGE);
     color_blue_dark = resources.getColor(Color.BLUE_DARK);
     color_blue_dark_transparent = resources.getColor(Color.BLUE_DARK_TRANSPARENT);
+    /* texts */
+    txtDistanceDisabled = resources.getString(R.string.txtDistanceDisabled);
+    txtDistanceDisabledOption = resources.getString(R.string.txtDistanceDisabledOption);
+    txtDistanceOutOfService = resources.getString(R.string.txtDistanceOutOfService);
+    txtDistanceTemporarilyUnavailable = resources.getString(R.string.txtDistanceTemporarilyUnavailable);
+    txtDistanceGPSInvalid = resources.getString(R.string.txtDistanceGPSInvalid);
 
     /* UI */
     spiGeoProvider = (Spinner) getView().findViewById(R.id.spiGeoProvider);
@@ -167,7 +177,7 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
         txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
       else
         txtDistance.setText(String.format("%.02f", dist) + " m");
-    } else
+    } else if(!txtDistance.getText().toString().equals(txtDistanceDisabledOption))
       txtDistance.setTextColor(color_red);
   }
 
@@ -212,10 +222,22 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
       txtGeoProvider.setVisibility(View.VISIBLE);
       spiGeoProvider.setVisibility(View.GONE);
     }
-    if(lm == null) {
-      lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-      if (lm != null)
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f, this);
+
+    if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_DISTANCE,
+        PreferencesGeolocation.PREFS_DEFAULT_DISTANCE)) {
+      txtDistance.setTextColor(color_red);
+      if(lm == null) {
+        lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (lm != null)
+          lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f, this);
+      }
+    } else {
+      if (lm != null) {
+        lm.removeUpdates(this);
+        lm = null;
+      }
+      txtDistance.setText(txtDistanceDisabledOption);
+      txtDistance.setTextColor(color_orange);
     }
   }
 
@@ -263,7 +285,7 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
   public void onLocationChanged(final Location location) {
     lastLocation = location;
     if(!app.getProviderCtx().isValid())
-      resetDistance(R.string.txtDistanceGPSInvalid);
+      resetDistance(txtDistanceGPSInvalid);
     updateLocation();
   }
   
@@ -272,10 +294,10 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
       final Bundle extras) {
     switch (status) {
       case LocationProvider.OUT_OF_SERVICE:
-        resetDistance(R.string.txtDistanceOutOfService);
+        resetDistance(txtDistanceOutOfService);
         break;
       case LocationProvider.TEMPORARILY_UNAVAILABLE:
-        resetDistance(R.string.txtDistanceTemporarilyUnavailable);
+        resetDistance(txtDistanceTemporarilyUnavailable);
         break;
     }
   }
@@ -286,18 +308,18 @@ public class ProviderFragment extends Fragment implements UITaskFragment,
   
   @Override
   public void onProviderDisabled(final String provider) {
-    resetDistance(R.string.txtDistanceDisabled);
+    resetDistance(txtDistanceDisabled);
     lastLocation = null;
   }
   
-  private void resetDistance(int rId) {
+  private void resetDistance(String txt) {
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
-    txtDistance.setText(getResources().getString(rId));
+    txtDistance.setText(txt);
   }
   
   private void updateLocation() {

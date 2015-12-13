@@ -37,11 +37,13 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesGeolocation extends EffectPreferenceActivity implements OnSharedPreferenceChangeListener {
+  public static final String   PREFS_KEY_DISTANCE               = "geolocationDistance";
   public static final String   PREFS_KEY_LOCATE                 = "geolocationLocate";
   public static final String   PREFS_KEY_OPENCELLID_PROVIDER    = "geolocationOpenCellIdProvider";
   public static final String   PREFS_KEY_LOCATION_TIMEOUT       = "geolocationLocateTimeout";
   public static final String   PREFS_KEY_CURRENT_PROVIDER       = "currentProvider";
   public static final boolean  PREFS_DEFAULT_LOCATE             = true;
+  public static final boolean  PREFS_DEFAULT_DISTANCE           = true;
   public static final int      PREFS_DEFAULT_LOCATION_TIMEOUT   = 30;
   public static final String   PREFS_DEFAULT_CURRENT_PROVIDER   = CellIdHelper.GOOGLE_HIDDENT_API;
   private MyPreferenceFragment prefFrag                         = null;

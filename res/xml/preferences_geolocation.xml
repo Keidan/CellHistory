@@ -6,6 +6,11 @@
             android:key="geolocationLocate"
             android:summary="@string/pref_geolocation_summary"
             android:title="@string/pref_geolocation_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="geolocationDistance"
+            android:summary="@string/pref_geolocation_distance_summary"
+            android:title="@string/pref_geolocation_distance_title" />
         <EditTextPreference
             android:key="geolocationLocateTimeout"
             android:defaultValue="15"
