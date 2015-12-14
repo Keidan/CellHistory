@@ -8,6 +8,7 @@ import org.kei.android.atk.utils.fx.Color;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
+import org.kei.android.phone.cellhistory.prefs.Preferences;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.towers.CellIdHelper;
@@ -67,6 +68,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   private TextView          txtSpeed                     = null;
   private TextView          txtDistance                  = null;
   private TimeChartHelper   chart                        = null;
+  private LinearLayout      chartSeparator               = null;
   /* context */
   private SharedPreferences prefs                        = null;
   private CellHistoryApp    app                          = null;
@@ -116,6 +118,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
         .getString(R.string.txtGpsTemporarilyUnavailable);
     
     /* UI */
+    chartSeparator = (LinearLayout) getView().findViewById(R.id.chartSeparator);
     spiGeoProvider = (Spinner) getView().findViewById(R.id.spiGeoProvider);
     txtGeoProvider = (TextView) getView().findViewById(R.id.txtGeoProvider);
     txtGeolocation = (TextView) getView().findViewById(R.id.txtGeolocation);
@@ -241,9 +244,11 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   public void onResume() {
     super.onResume();
     app.getProviderCtx().clear();
-    chart.clear();
+    
     chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
+    setChartVisible(prefs.getBoolean(Preferences.PREFS_KEY_CHART_ENABLE,
+        Preferences.PREFS_DEFAULT_CHART_ENABLE));
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       txtGeoProvider.setVisibility(View.GONE);
@@ -285,6 +290,20 @@ OnItemSelectedListener, OnClickListener, LocationListener {
       txtSpeed.setTextColor(color_orange);
     }
     speedUpdate(0.0);
+  }
+  
+
+
+  private void setChartVisible(final boolean visible) {
+    final int visibility = visible ? View.VISIBLE : View.GONE;
+    if(chart == null) return;
+    if(visible)chart.clear();
+    if (chartSeparator.getVisibility() != visibility)
+      chartSeparator.setVisibility(visibility);
+    if (visible && chart.getVisibility() == View.GONE)
+      chart.setVisibility(View.VISIBLE);
+    else if (!visible && chart.getVisibility() == View.VISIBLE)
+      chart.setVisibility(View.GONE);
   }
   
   @Override
