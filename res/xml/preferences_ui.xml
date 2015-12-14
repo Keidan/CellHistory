@@ -22,5 +22,13 @@
             android:summary="@string/pref_animations_summary"
             android:entryValues="@array/values_animations"
             android:title="@string/pref_animations_title" />
+        
+        <ListPreference
+            android:key="uiSlideTransition"
+            android:defaultValue="org.kei.android.phone.cellhistory.prefs.TRANSITION_ZOOM"
+            android:entries="@array/entries_transitions"
+            android:summary="@string/pref_transitions_summary"
+            android:entryValues="@array/values_transitions"
+            android:title="@string/pref_transitions_title" />
     </PreferenceCategory>
 </PreferenceScreen>

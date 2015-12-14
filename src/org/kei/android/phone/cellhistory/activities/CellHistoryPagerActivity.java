@@ -20,6 +20,7 @@ import org.kei.android.phone.cellhistory.prefs.Preferences;
 import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.prefs.PreferencesUI;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
+import org.kei.android.phone.cellhistory.utils.DepthPageTransformer;
 import org.kei.android.phone.cellhistory.utils.ZoomOutPageTransformer;
 
 import android.content.Intent;
@@ -93,7 +94,9 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     fragments.add(new RecorderFragment());
 
     mPager = (ViewPager) findViewById(R.id.pager);
-    mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+    
+    
+    setTransformer();
     mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(),
         fragments);
     mPager.setAdapter(mPagerAdapter);
@@ -121,6 +124,14 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
             PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
   }
   
+  private void setTransformer() {
+    String transition = prefs.getString(PreferencesUI.PREFS_KEY_SLIDE_TRANSITION, PreferencesUI.PREFS_DEFAULT_SLIDE_TRANSITION);
+    if(transition.equals(PreferencesUI.TRANSITION_DEPTH))
+      mPager.setPageTransformer(true, new DepthPageTransformer());
+    else
+      mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+  }
+  
   @Override
   protected void onPause() {
     if (execUpdateUI != null) {
@@ -134,6 +145,7 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
   @Override
   protected void onResume() {
     super.onResume();
+    setTransformer();
     if (prefs.getBoolean(PreferencesUI.PREFS_KEY_KEEP_SCREEN,
         PreferencesUI.PREFS_DEFAULT_KEEP_SCREEN))
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

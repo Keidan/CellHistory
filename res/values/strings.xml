@@ -83,6 +83,8 @@
     <string name="pref_themes_summary">Change the application theme.</string>
     <string name="pref_animations_title">Animations</string>
     <string name="pref_animations_summary">Change the application animation.</string>
+    <string name="pref_transitions_title">Transitions</string>
+    <string name="pref_transitions_summary">Change the transitions of the sliding tabs.</string>
     
     <string name="pref_delete_file_title">Previous file</string>
     <string name="pref_delete_file_summary">Removes the previous session file before starting.</string>

@@ -6,7 +6,7 @@ import android.view.View;
 /**
  *******************************************************************************
  * @file ZoomOutPageTransformer.java
- * @author Keidan
+ * @author http://developer.android.com/training/animation/screen-slide.html
  * @date 11/12/2015
  * @par Project CellHistory
  *
