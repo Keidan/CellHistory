@@ -30,7 +30,6 @@
 	<string name="txtGpsDisabledOption">GPS option disabled.</string>
 	<string name="txtGpsOutOfService">GPS out of service.</string>
 	<string name="txtGpsTemporarilyUnavailable">GPS temporarily unavailable.</string>
-	<string name="txtGpsInvalid">GPS input.</string>
 	
 	<string name="lblRecords">Record: </string>
 	<string name="lblBuffer">Buffer: </string>
@@ -68,8 +67,6 @@
     <string name="pref_timers_task_provider_summary">Used to retrieve the cell tower location.</string>
     <string name="pref_timers_task_tower_title">Tower</string>
     <string name="pref_timers_task_tower_summary">Used to retrieve the cell tower informations.</string>
-    <string name="pref_timers_accel_title">Accelerometer</string>
-    <string name="pref_timers_accel_summary">Used to evaluate the acceleration speed.</string>
     
 	<string name="pref_title_geolocation_opencellid">Geolocation OpenCellID</string>
 	<string name="pref_title_geolocation_google">Geolocation Google</string>
@@ -103,9 +100,7 @@
     <string name="pref_geolocation_summary">Locates the current telephony cell using the network requests.</string>
     
     <string name="pref_geolocation_gps_title">GPS Service</string>
-    <string name="pref_geolocation_gps_summary">Use the GPS service to determine the distance between the phone and the cell.</string>
-    <string name="pref_geolocation_speed_gps_title">Speed by GPS</string>
-    <string name="pref_geolocation_speed_gps_summary">Evaluate the speed through the GPS datas or the accelerometer.</string>
+    <string name="pref_geolocation_gps_summary">Use the GPS service to determine the speed and the distance between the phone and the cell.</string>
     <string name="pref_geolocation_timeout_title">Request timeout</string>
     <string name="pref_geolocation_timeout_summary">Avoids that some requests take too much time when the target is unavailable(in second).</string>
     <string name="pref_geolocation_opencellid_summary">Configure the OpenCellID provider.</string>

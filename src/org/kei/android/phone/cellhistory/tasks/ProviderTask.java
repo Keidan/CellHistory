@@ -7,8 +7,6 @@ import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocationOpenCellID;
-import org.kei.android.phone.cellhistory.sensors.IAccelSensor;
-import org.kei.android.phone.cellhistory.sensors.AccelSensor;
 import org.kei.android.phone.cellhistory.towers.CellIdHelper;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 import org.kei.android.phone.cellhistory.towers.request.CellIdRequestEntity;
@@ -35,13 +33,11 @@ import android.content.SharedPreferences;
  *
  *******************************************************************************
  */
-public class ProviderTask implements Runnable, IAccelSensor {
+public class ProviderTask implements Runnable {
   private ScheduledThreadPoolExecutor stpe         = null;
   private CellHistoryApp              app          = null;
   private Activity                    activity;
   private SharedPreferences           prefs;
-  private AccelSensor                 speedSensor = null;
-  private IAccelSensor                broadcast   = null;
   
   public ProviderTask(final CellHistoryApp app) {
     this.app = app;
@@ -52,27 +48,10 @@ public class ProviderTask implements Runnable, IAccelSensor {
     this.prefs = prefs;
   }
   
-  public void setBroadcastListener(final IAccelSensor broadcast) {
-    this.broadcast = broadcast;
-  }
-  
-  public void startSensor(int accelDelay) {
-    stopSensor();
-    speedSensor = new AccelSensor(activity, accelDelay, this);
-    speedSensor.register();
-  }
-  
   public void start(final int delay) {
     stop();
     stpe = new ScheduledThreadPoolExecutor(1);
     stpe.scheduleWithFixedDelay(this, 0L, delay, TimeUnit.MICROSECONDS);
-  }
-  
-  public void stopSensor() {
-    if(speedSensor != null) {
-      speedSensor.unregister();
-      speedSensor = null;
-    }
   }
   
   public void stop() {
@@ -142,8 +121,6 @@ public class ProviderTask implements Runnable, IAccelSensor {
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
-    if(broadcast != null)
-      broadcast.accelUpdate(timestamp, velocity);
   }
   
 }

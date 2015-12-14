@@ -32,14 +32,12 @@ import android.preference.PreferenceManager;
 public class PreferencesTimers extends EffectPreferenceActivity implements
 OnSharedPreferenceChangeListener {
   public static final String   PREFS_KEY_TIMERS_UI                = "timersUI";
-  public static final String   PREFS_KEY_TIMERS_ACCEL             = "timersAccel";
   public static final String   PREFS_KEY_TIMERS_TASK_TOWER        = "timersTaskTower";
   public static final String   PREFS_KEY_TIMERS_TASK_PROVIDER     = "timersTaskProvider";
 
   public static final String   PREFS_DEFAULT_TIMERS_UI            = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_TOWER    = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_PROVIDER = "1000";
-  public static final String   PREFS_DEFAULT_TIMERS_ACCEL         = "1000";
   private MyPreferenceFragment prefFrag                           = null;
   private SharedPreferences    prefs                              = null;
 
@@ -72,12 +70,6 @@ OnSharedPreferenceChangeListener {
         + prefs.getString(PREFS_KEY_TIMERS_UI, PREFS_DEFAULT_TIMERS_UI)
         + " ms.";
     ep.setSummary(summary);
-    ep = (EditTextPreference) prefFrag.findPreference(PREFS_KEY_TIMERS_ACCEL);
-    summary = getResources().getString(R.string.pref_timers_accel_summary);
-    summary += "\nTimer: "
-        + prefs.getString(PREFS_KEY_TIMERS_ACCEL, PREFS_DEFAULT_TIMERS_ACCEL)
-        + " ms.";
-    ep.setSummary(summary);
     ep = (EditTextPreference) prefFrag
         .findPreference(PREFS_KEY_TIMERS_TASK_TOWER);
     summary = getResources().getString(R.string.pref_timers_task_tower_summary);
@@ -104,7 +96,7 @@ OnSharedPreferenceChangeListener {
   @Override
   public void onSharedPreferenceChanged(
       final SharedPreferences sharedPreferences, final String key) {
-    if (key.equals(PREFS_KEY_TIMERS_UI) || key.equals(PREFS_KEY_TIMERS_ACCEL)
+    if (key.equals(PREFS_KEY_TIMERS_UI)
         || key.equals(PREFS_KEY_TIMERS_TASK_TOWER)
         || key.equals(PREFS_KEY_TIMERS_TASK_PROVIDER)) {
       updateSummaries();

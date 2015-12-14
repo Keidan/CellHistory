@@ -126,7 +126,6 @@ public class TowerTask extends PhoneStateListener implements Runnable {
             editor.putBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, false);
             editor.commit();
             app.getProviderTask().stop();
-            app.getProviderTask().stopSensor();
           }
         } else {
           CellHistoryApp.addLog(activity, "GsmCellLocation: " + clocation);

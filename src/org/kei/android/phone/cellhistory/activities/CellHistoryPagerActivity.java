@@ -107,16 +107,9 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
       app.getProviderTask().start(
           Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
-      if(!prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED)) {
-        app.getProviderTask().startSensor(
-            Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, 
-                PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
-      } else
-        app.getProviderTask().stopSensor();
     }
     else {
       app.getProviderTask().stop();
-      app.getProviderTask().stopSensor();
     }
     
     app.getTowerTask().start(
@@ -157,16 +150,9 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
       app.getProviderTask().start(
           Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
-      if(!prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED)) {
-        app.getProviderTask().startSensor(
-            Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_ACCEL, 
-                PreferencesTimers.PREFS_DEFAULT_TIMERS_ACCEL)));
-      } else
-        app.getProviderTask().stopSensor();
     }
     else {
       app.getProviderTask().stop();
-      app.getProviderTask().stopSensor();
     }
     execUpdateUI = new ScheduledThreadPoolExecutor(1);
     execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, 
@@ -182,7 +168,6 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
       execUpdateUI = null;
     }
     app.getProviderTask().stop();
-    app.getProviderTask().stopSensor();
     app.getTowerTask().stop();
     app.getRecorderCtx().flushAndClose();
   }
