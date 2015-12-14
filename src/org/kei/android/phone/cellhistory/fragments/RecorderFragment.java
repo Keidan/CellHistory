@@ -10,7 +10,6 @@ import org.kei.android.phone.cellhistory.prefs.PreferencesRecorder;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -19,6 +18,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,17 +49,22 @@ import android.widget.ToggleButton;
  */
 public class RecorderFragment extends Fragment implements UITaskFragment,
     OnClickListener {
-  private static final int SIZE_1KB = 0x400;
-  private static final int SIZE_1MB = 0x100000;
-  private static final int SIZE_1GB = 0x40000000;
+  private static final int           SIZE_1KB      = 0x400;
+  private static final int           SIZE_1MB      = 0x100000;
+  private static final int           SIZE_1GB      = 0x40000000;
   /* UI */
-  private TextView          txtRecords  = null;
-  private ProgressBar       pbBuffer    = null;
-  private TextView          txtSize     = null;
-  private ToggleButton      toggleOnOff = null;
+  private TextView                   txtRecords    = null;
+  private ProgressBar                pbBuffer      = null;
+  private TextView                   txtSize       = null;
+  private ToggleButton               toggleOnOff   = null;
   /* context */
-  private SharedPreferences prefs       = null;
-  private CellHistoryApp    app         = null;
+  private SharedPreferences          prefs         = null;
+  private CellHistoryApp             app           = null;
+  private NotificationCompat.Builder notifyBuilder = null;
+  private NotificationManager notificationManager = null;
+  private int notifyID = 1;
+  //private int notificationNum = 0;
+
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -116,6 +121,15 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     else
       ss = String.format("%.02f", (s/SIZE_1GB)) + " Go";
     txtSize.setText(ss);
+    
+    /*notificationUpdate("Records: " + txtRecords.getText().toString(),
+        "Buffer: " + app.getRecorderCtx().getFrames().size() + "/"  + pbBuffer.getMax(),
+        "Size: " + ss);*/
+
+    /*String message = "Records: " + txtRecords.getText().toString() + "\n";
+    message += "Buffer: " + app.getRecorderCtx().getFrames().size() + "/"  + pbBuffer.getMax() + "\n";
+    message += "Size: " + ss + "\n";
+    notificationUpdate(message);*/
   }
 
   @Override
@@ -133,7 +147,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
                   PreferencesRecorder.PREFS_DEFAULT_NEIGHBORING_SEP),
               prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DEL_PREV_FILE,
                   PreferencesRecorder.PREFS_DEFAULT_DEL_PREV_FILE));
-          notification(true);
+          notificationShow();
         } catch (final Exception e) {
           Tools.toast(getActivity(), R.drawable.ic_launcher,
               "Unable to start the capture: " + e.getMessage());
@@ -151,26 +165,40 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       public void run() {
         toggleOnOff.setChecked(false);
         app.getRecorderCtx().flushAndClose();
-        notification(false);
+        notificationRemove();
+        notifyBuilder = null;
+        notificationManager = null;
       }
     });
   }
 
-  @SuppressWarnings("deprecation")
-  public void notification(boolean add) {
+  public void notificationShow() {
     final Activity a = getActivity();
-    long when = System.currentTimeMillis(); //now
-    NotificationManager notificationManager = (NotificationManager)a.getSystemService(Context.NOTIFICATION_SERVICE);
-    if(!add) {
-      notificationManager.cancel(0);
-    } else {
-      Intent toLaunch = new Intent(a.getApplicationContext(), CellHistoryPagerActivity.class);
-      toLaunch.setAction("android.intent.action.MAIN");
-      toLaunch.addCategory("android.intent.category.LAUNCHER");
-      PendingIntent intentBack = PendingIntent.getActivity(a.getApplicationContext(), 0, toLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
-      Notification notification = new Notification(R.drawable.ic_launcher, getString(R.string.app_name), when);
-      notification.setLatestEventInfo(a, getString(R.string.app_name), getString(R.string.notificationtext), intentBack);
-      notificationManager.notify(0, notification);
-    }
+    notificationManager = (NotificationManager)a.getSystemService(Context.NOTIFICATION_SERVICE);
+    Intent toLaunch = new Intent(a.getApplicationContext(), CellHistoryPagerActivity.class);
+    toLaunch.setAction("android.intent.action.MAIN");
+    toLaunch.addCategory("android.intent.category.LAUNCHER");
+    //notificationNum = 0;
+    PendingIntent intentBack = PendingIntent.getActivity(a.getApplicationContext(), 0, toLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
+    notifyBuilder = new NotificationCompat.Builder(a)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.notificationtext))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(""))
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentIntent(intentBack);
+
+    notificationManager.notify(notifyID, notifyBuilder.build());
   }
+  
+  private void notificationRemove() {
+    if(notificationManager == null) return;
+    notificationManager.cancel(notifyID);
+  }
+  
+  /*private void notificationUpdate(String message) {
+    if(notificationManager == null || notifyBuilder == null) return;
+    notifyBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+    //notifyBuilder.setNumber(++notificationNum);
+    notificationManager.notify(notifyID, notifyBuilder.build());
+  }*/
 }
