@@ -62,29 +62,29 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class ProviderFragment extends Fragment implements UITaskFragment,
 OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
   /* UI */
-  private Spinner           spiGeoProvider                    = null;
-  private TextView          txtGeoProvider                    = null;
-  private TextView          txtGeolocation                    = null;
-  private TextView          txtSpeed                          = null;
-  private TextView          txtDistance                       = null;
-  private TimeChartHelper   chart                             = null;
+  private Spinner           spiGeoProvider               = null;
+  private TextView          txtGeoProvider               = null;
+  private TextView          txtGeolocation               = null;
+  private TextView          txtSpeed                     = null;
+  private TextView          txtDistance                  = null;
+  private TimeChartHelper   chart                        = null;
   /* context */
-  private SharedPreferences prefs                             = null;
-  private CellHistoryApp    app                               = null;
+  private SharedPreferences prefs                        = null;
+  private CellHistoryApp    app                          = null;
   /* colors */
-  private int               color_red                         = Color.BLACK;
-  private int               color_orange                      = Color.BLACK;
-  private int               color_blue_dark                   = Color.BLACK;
-  private int               color_blue_dark_transparent       = Color.BLACK;
-  private LocationManager   lm                                = null;
-  private Location          lastLocation                      = null;
+  private int               color_red                    = Color.BLACK;
+  private int               color_orange                 = Color.BLACK;
+  private int               color_blue_dark              = Color.BLACK;
+  private int               color_blue_dark_transparent  = Color.BLACK;
+  private LocationManager   lm                           = null;
+  private Location          lastLocation                 = null;
   private String            txtGpsDisabled               = "";
   private String            txtGpsDisabledOption         = "";
   private String            txtGpsOutOfService           = "";
   private String            txtGpsTemporarilyUnavailable = "";
   private String            txtGpsInvalid                = "";
   private int               default_color                = android.graphics.Color.TRANSPARENT;
-  
+
   @Override
   public View onCreateView(final LayoutInflater inflater,
       final ViewGroup container, final Bundle savedInstanceState) {
@@ -144,6 +144,8 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
     app.getProviderTask().setBroadcastListener(this);
     chart = new TimeChartHelper();
     chart.setChartContainer((LinearLayout) getView().findViewById(R.id.graph));
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
     chart.install(getActivity(), txtSpeed.getTextColors().getDefaultColor(),
         true);
     chart.setYAxisMax(15);
@@ -239,6 +241,8 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
     super.onResume();
     app.getProviderCtx().clear();
     chart.clear();
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       txtGeoProvider.setVisibility(View.GONE);
@@ -250,7 +254,8 @@ OnItemSelectedListener, OnClickListener, IAccelSensor, LocationListener {
           lm = (LocationManager) getActivity().getSystemService(
               Context.LOCATION_SERVICE);
           if (lm != null)
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f,
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
+                PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 10f,
                 this);
         }
         if(!prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS_SPEED, PreferencesGeolocation.PREFS_DEFAULT_GPS_SPEED)) {

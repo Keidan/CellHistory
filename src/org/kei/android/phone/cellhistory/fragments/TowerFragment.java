@@ -4,6 +4,7 @@ import org.kei.android.atk.utils.fx.Color;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
+import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 import org.kei.android.phone.cellhistory.views.TimeChartHelper;
 
@@ -40,30 +41,30 @@ import android.widget.TextView;
  */
 public class TowerFragment extends Fragment implements UITaskFragment {
   /* UI */
-  private LinearLayout    chartSeparator       = null;
-  private TextView        txtOperator          = null;
-  private TextView        txtMCC               = null;
-  private TextView        txtMNC               = null;
-  private TextView        txtCellId            = null;
-  private TextView        txtLAC               = null;
-  private TextView        txtPSC               = null;
-  private TextView        txtASU               = null;
-  private TextView        txtLVL               = null;
-  private TextView        txtSS                = null;
-  private TextView        txtType              = null;
-  private TextView        txtNetwork           = null;
-  private TimeChartHelper chart                = null;
+  private LinearLayout      chartSeparator       = null;
+  private TextView          txtOperator          = null;
+  private TextView          txtMCC               = null;
+  private TextView          txtMNC               = null;
+  private TextView          txtCellId            = null;
+  private TextView          txtLAC               = null;
+  private TextView          txtPSC               = null;
+  private TextView          txtASU               = null;
+  private TextView          txtLVL               = null;
+  private TextView          txtSS                = null;
+  private TextView          txtType              = null;
+  private TextView          txtNetwork           = null;
+  private TimeChartHelper   chart                = null;
   /* colors */
-  private int             color_poor           = Color.BLACK;
-  private int             color_moderate       = Color.BLACK;
-  private int             color_good           = Color.BLACK;
-  private int             color_great          = Color.BLACK;
-  private int             color_poor_alpha     = Color.BLACK;
-  private int             color_moderate_alpha = Color.BLACK;
-  private int             color_good_alpha     = Color.BLACK;
-  private int             color_great_alpha    = Color.BLACK;
-  private int             color_red            = Color.BLACK;
-
+  private int               color_poor           = Color.BLACK;
+  private int               color_moderate       = Color.BLACK;
+  private int               color_good           = Color.BLACK;
+  private int               color_great          = Color.BLACK;
+  private int               color_poor_alpha     = Color.BLACK;
+  private int               color_moderate_alpha = Color.BLACK;
+  private int               color_good_alpha     = Color.BLACK;
+  private int               color_great_alpha    = Color.BLACK;
+  private int               color_red            = Color.BLACK;
+  private SharedPreferences prefs                = null;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -76,6 +77,7 @@ public class TowerFragment extends Fragment implements UITaskFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
     /* color */
     Resources resources = getResources();
     color_red = resources.getColor(Color.RED);
@@ -104,6 +106,8 @@ public class TowerFragment extends Fragment implements UITaskFragment {
     
     chart = new TimeChartHelper();
     chart.setChartContainer((LinearLayout)getView().findViewById(R.id.graph));
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
     chart.install(getActivity(), txtOperator.getTextColors().getDefaultColor(), true);
     try {
       processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
@@ -154,7 +158,8 @@ public class TowerFragment extends Fragment implements UITaskFragment {
   @Override
   public void onResume() {
     super.onResume();
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
     setChartVisible(prefs.getBoolean(Preferences.PREFS_KEY_CHART_ENABLE,
         Preferences.PREFS_DEFAULT_CHART_ENABLE));
   }

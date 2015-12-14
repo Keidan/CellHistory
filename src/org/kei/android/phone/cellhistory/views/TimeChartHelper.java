@@ -38,15 +38,16 @@ import android.widget.LinearLayout;
  *******************************************************************************
  */
 public class TimeChartHelper {
-  private static final int         MAX     = 30;
-  private static final int         ONE_SEC = 1000;
+  private static final int         MAX       = 60;
   private GraphicalView            chart;
   private XYMultipleSeriesDataset  dataset;
   private XYMultipleSeriesRenderer renderer;
   private TimeSeries               timeSeries;
   private LinearLayout             chartContainer;
-  
-  public void install(final Activity a, final int lblColors, boolean fillLine) {
+  private long                     frequency = 1000;
+
+  public void install(final Activity a, final int lblColors,
+      final boolean fillLine) {
     dataset = new XYMultipleSeriesDataset();
     renderer = new XYMultipleSeriesRenderer();
     final XYSeriesRenderer r = new XYSeriesRenderer();
@@ -54,7 +55,7 @@ public class TimeChartHelper {
     r.setPointStyle(PointStyle.CIRCLE);
     r.setFillPoints(true);
     r.setShowLegendItem(false);
-    if(fillLine) {
+    if (fillLine) {
       final FillOutsideLine fill = new FillOutsideLine(
           FillOutsideLine.Type.BOUNDS_ALL);
       fill.setColor(Color.GREEN);
@@ -65,10 +66,10 @@ public class TimeChartHelper {
     renderer.setClickEnabled(true);
     renderer.setSelectableBuffer(20);
     renderer.setPanEnabled(false, false);
-    
+
     timeSeries = new TimeSeries("test");
     dataset.addSeries(timeSeries);
-    
+
     renderer.setShowLegend(false);
     renderer.setShowTickMarks(true);
     renderer.setShowCustomTextGrid(false);
@@ -83,44 +84,44 @@ public class TimeChartHelper {
     renderer.setXLabelsColor(lblColors);
     renderer.setYAxisColor(lblColors);
     renderer.setXAxisColor(lblColors);
-    if(chartContainer == null)
+    if (chartContainer == null)
       chartContainer = (LinearLayout) a.findViewById(R.id.graph);
-    
+
     chart = ChartFactory.getTimeChartView(a, dataset, renderer, "H:mm:ss");
-    
+
     // Adding the Line Chart to the LinearLayout
     chartContainer.addView(chart);
   }
-  
-  public void setChartContainer(LinearLayout chartContainer) {
+
+  public void setChartContainer(final LinearLayout chartContainer) {
     this.chartContainer = chartContainer;
   }
-  
-  public void addTimePoint(final int color,
-      final long timestamp, final double percent) {
+
+  public void addTimePoint(final int color, final long timestamp,
+      final double percent) {
     addTimePoint(color, 0, timestamp, percent);
   }
-  
+
   public void addTimePoint(final int color1, final int color2,
       final long timestamp, final double percent) {
     renderer.getSeriesRendererAt(0).setColor(color1);
-    if(((XYSeriesRenderer) renderer.getSeriesRendererAt(0)).getFillOutsideLine() != null 
-        && ((XYSeriesRenderer) renderer.getSeriesRendererAt(0)).getFillOutsideLine().length != 0)
-    ((XYSeriesRenderer) renderer.getSeriesRendererAt(0)).getFillOutsideLine()[0]
-        .setColor(color2);
+    if (((XYSeriesRenderer) renderer.getSeriesRendererAt(0))
+        .getFillOutsideLine() != null
+        && ((XYSeriesRenderer) renderer.getSeriesRendererAt(0))
+            .getFillOutsideLine().length != 0)
+      ((XYSeriesRenderer) renderer.getSeriesRendererAt(0)).getFillOutsideLine()[0]
+          .setColor(color2);
     if (timeSeries.getItemCount() == 0) {
       long time = new Date().getTime();
       if (timestamp < time)
         time = timestamp;
       updateXAxis(time);
-    } else if (timeSeries.getItemCount() == MAX) {
-      timeSeries.remove(0);
-      updateXAxis((long) timeSeries.getX(0));
     }
     /* sanity check */
     if (timestamp > ((long) renderer.getXAxisMax())) {
-      timeSeries.clear();
-      updateXAxis(timestamp);
+      timeSeries.remove(0);
+      renderer.setXAxisMin(timeSeries.getX(0));
+      renderer.setXAxisMax(timestamp);
     }
     if (timestamp < ((long) renderer.getXAxisMin())) {
       timeSeries.clear();
@@ -131,21 +132,22 @@ public class TimeChartHelper {
   }
 
   public void checkYAxisMax(final double value) {
-    if(value > renderer.getYAxisMax())
-      renderer.setYAxisMax(value+2);
+    if (value > renderer.getYAxisMax())
+      renderer.setYAxisMax(value + 2);
     else {
       double max = 0.0;
-      for(int i = 0; i < timeSeries.getItemCount(); ++i)
-        if(timeSeries.getY(i) > max) max = timeSeries.getY(i);
-      if(max != 0 && renderer.getYAxisMax() > max)
-        renderer.setYAxisMax(max+2);
-        
+      for (int i = 0; i < timeSeries.getItemCount(); ++i)
+        if (timeSeries.getY(i) > max)
+          max = timeSeries.getY(i);
+      if (max != 0 && renderer.getYAxisMax() > max)
+        renderer.setYAxisMax(max + 2);
+
     }
   }
 
   private void updateXAxis(final long timestamp) {
     renderer.setXAxisMin(timestamp);
-    renderer.setXAxisMax(timestamp + (MAX * ONE_SEC));
+    renderer.setXAxisMax(timestamp + (MAX * frequency));
   }
 
   public void clear() {
@@ -169,19 +171,30 @@ public class TimeChartHelper {
   public View getView() {
     return chartContainer;
   }
-  
 
-  public void setXAxisMin(double d) {
+  public long getFrequency() {
+    return frequency;
+  }
+
+  public void setFrequency(final long frequency) {
+    this.frequency = frequency;
+    if (this.frequency < 1)
+      this.frequency = 1;
+  }
+
+  public void setXAxisMin(final double d) {
     renderer.setXAxisMin(d);
   }
-  public void setXAxisMax(double d) {
+
+  public void setXAxisMax(final double d) {
     renderer.setXAxisMax(d);
   }
 
-  public void setYAxisMin(double d) {
+  public void setYAxisMin(final double d) {
     renderer.setYAxisMin(d);
   }
-  public void setYAxisMax(double d) {
+
+  public void setYAxisMax(final double d) {
     renderer.setYAxisMax(d);
   }
 }
