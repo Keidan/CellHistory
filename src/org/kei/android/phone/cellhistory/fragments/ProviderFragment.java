@@ -78,12 +78,12 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   private int               color_blue_dark              = Color.BLACK;
   private int               color_blue_dark_transparent  = Color.BLACK;
   private LocationManager   lm                           = null;
-  private Location          lastLocation                 = null;
   private String            txtGpsDisabled               = "";
   private String            txtGpsDisabledOption         = "";
   private String            txtGpsOutOfService           = "";
   private String            txtGpsTemporarilyUnavailable = "";
   private int               default_color                = android.graphics.Color.TRANSPARENT;
+  private boolean           connected                    = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -183,29 +183,20 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     }
     txtGeolocation.setText(oldLoc);
    
-    updateLocation();
-    if (lastLocation != null) {
-      double speed = app.getGlobalTowerInfo().getSpeed();
-      String spd = String
-          .format("%.02f", speed) + " m/s\n";
-      spd += String
-          .format("%.02f", speed * 3.6) + " km/h\n";
-      spd += String
-          .format("%.02f", speed * 2.2369362920544) + " mph";
-      txtSpeed.setText(spd);
-      
-      final double dist = app.getGlobalTowerInfo().getDistance();
+    if(connected) {
       txtDistance.setTextColor(default_color);
       txtSpeed.setTextColor(default_color);
+      double speed = app.getGlobalTowerInfo().getSpeed();
+      String spd = String.format("%.02f", speed) + " m/s\n";
+        spd += String.format("%.02f", speed * 3.6) + " km/h\n";
+        spd += String.format("%.02f", speed * 2.2369362920544) + " mph";
+        txtSpeed.setText(spd);
+        
+      final double dist = app.getGlobalTowerInfo().getDistance();
       if (dist > 1000)
         txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
       else
         txtDistance.setText(String.format("%.02f", dist) + " m");
-    } else {
-      if (!txtDistance.getText().toString().equals(txtGpsDisabledOption))
-        txtDistance.setTextColor(color_red);
-      if (!txtSpeed.getText().toString().equals(txtGpsDisabledOption))
-        txtSpeed.setTextColor(color_red);
     }
   }
   
@@ -249,6 +240,9 @@ OnItemSelectedListener, OnClickListener, LocationListener {
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
     setChartVisible(prefs.getBoolean(Preferences.PREFS_KEY_CHART_ENABLE,
         Preferences.PREFS_DEFAULT_CHART_ENABLE));
+
+    restoreText();
+    txtSpeed.setTextColor(color_orange);
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       txtGeoProvider.setVisibility(View.GONE);
@@ -266,7 +260,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
                 this);
         }
       } else {
-        lastLocation = null;
+        connected = false;
         if (lm != null) {
           lm.removeUpdates(this);
           lm = null;
@@ -277,7 +271,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
         txtSpeed.setTextColor(color_orange);
       }
     } else {
-      lastLocation = null;
+      connected = false;
       txtGeoProvider.setVisibility(View.VISIBLE);
       spiGeoProvider.setVisibility(View.GONE);
       if (lm != null) {
@@ -289,10 +283,22 @@ OnItemSelectedListener, OnClickListener, LocationListener {
       txtSpeed.setText(txtGpsDisabledOption);
       txtSpeed.setTextColor(color_orange);
     }
-    speedUpdate(0.0);
   }
   
-
+  private void restoreText() {
+    getActivity().runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        txtDistance.setText("0.00 m");
+        txtSpeed.setText("0.00 m/s\n0.00 km/h\n0.00 mph");
+        if (chart.getVisibility() == View.VISIBLE) {
+          chart.checkYAxisMax(0.0);
+          chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
+              new Date().getTime(), 0.0);
+        }
+      }
+    });
+  }
 
   private void setChartVisible(final boolean visible) {
     final int visibility = visible ? View.VISIBLE : View.GONE;
@@ -332,7 +338,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     }
   }
   
-  public void speedUpdate(final double velocity) {
+  private void speedUpdate(final double velocity) {
     if (chart != null && getActivity() != null)
       getActivity().runOnUiThread(new Runnable() {
         @Override
@@ -348,10 +354,23 @@ OnItemSelectedListener, OnClickListener, LocationListener {
 
   @Override
   public void onLocationChanged(final Location location) {
-    lastLocation = location;
-    if (!app.getProviderCtx().isValid())
-      resetGpsInfo("0.0");
-    updateLocation();
+    connected = true;
+    double speed = 0.0;
+    final Location loc1 = new Location("");
+    app.getGlobalTowerInfo().lock();
+    try {
+      speed = location.getSpeed();
+      app.getGlobalTowerInfo().setSpeed(speed);
+      if (!Double.isNaN(app.getGlobalTowerInfo().getLatitude())
+          && !Double.isNaN(app.getGlobalTowerInfo().getLongitude())) {
+        loc1.setLatitude(app.getGlobalTowerInfo().getLatitude());
+        loc1.setLongitude(app.getGlobalTowerInfo().getLongitude());
+        app.getGlobalTowerInfo().setDistance(loc1.distanceTo(location));
+      }
+    } finally {
+      app.getGlobalTowerInfo().unlock();
+    }
+    speedUpdate(speed);
   }
 
   @Override
@@ -374,8 +393,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
       txtDistance.setTextColor(default_color);
       txtSpeed.setTextColor(default_color);
-      txtDistance.setText("0.0");
-      txtSpeed.setText("0.0");
+      restoreText();
     }
   }
 
@@ -383,11 +401,11 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   public void onProviderDisabled(final String provider) {
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
       resetGpsInfo(txtGpsDisabled);
-      lastLocation = null;
     }
   }
 
   private void resetGpsInfo(final String txt) {
+    connected = false;
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
@@ -397,26 +415,5 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     }
     txtDistance.setText(txt);
     txtSpeed.setText(txt);
-  }
-
-  private void updateLocation() {
-    double speed = 0.0;
-    if (lastLocation != null) {
-      final Location loc1 = new Location("");
-      app.getGlobalTowerInfo().lock();
-      try {
-        speed = lastLocation.getSpeed();
-        app.getGlobalTowerInfo().setSpeed(speed);
-        if (!Double.isNaN(app.getGlobalTowerInfo().getLatitude())
-            && !Double.isNaN(app.getGlobalTowerInfo().getLongitude())) {
-          loc1.setLatitude(app.getGlobalTowerInfo().getLatitude());
-          loc1.setLongitude(app.getGlobalTowerInfo().getLongitude());
-          app.getGlobalTowerInfo().setDistance(loc1.distanceTo(lastLocation));
-        }
-      } finally {
-        app.getGlobalTowerInfo().unlock();
-      }
-    }
-    speedUpdate(speed);
   }
 }
