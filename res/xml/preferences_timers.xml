@@ -21,7 +21,7 @@
     		android:inputType="number" />
         <EditTextPreference
             android:key="timersAccel"
-            android:defaultValue="500"
+            android:defaultValue="1000"
             android:summary="@string/pref_timers_accel_summary"
             android:title="@string/pref_timers_accel_title"   
     		android:inputType="number" />

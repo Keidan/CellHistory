@@ -2,6 +2,7 @@ package org.kei.android.phone.cellhistory.prefs;
 
 import org.kei.android.atk.view.EffectPreferenceActivity;
 import org.kei.android.phone.cellhistory.R;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -29,26 +30,26 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesTimers extends EffectPreferenceActivity implements
-    OnSharedPreferenceChangeListener {
-  public static final String   PREFS_KEY_TIMERS_UI        = "timersUI";
-  public static final String   PREFS_KEY_TIMERS_ACCEL     = "timersAccel";
-  public static final String   PREFS_KEY_TIMERS_TASK_TOWER     = "timersTaskTower";
+OnSharedPreferenceChangeListener {
+  public static final String   PREFS_KEY_TIMERS_UI                = "timersUI";
+  public static final String   PREFS_KEY_TIMERS_ACCEL             = "timersAccel";
+  public static final String   PREFS_KEY_TIMERS_TASK_TOWER        = "timersTaskTower";
   public static final String   PREFS_KEY_TIMERS_TASK_PROVIDER     = "timersTaskProvider";
-  
-  public static final String   PREFS_DEFAULT_TIMERS_UI    = "1000";
+
+  public static final String   PREFS_DEFAULT_TIMERS_UI            = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_TOWER    = "1000";
-  public static final String   PREFS_DEFAULT_TIMERS_TASK_PROVIDER    = "1000";
-  public static final String   PREFS_DEFAULT_TIMERS_ACCEL = "500";
-  private MyPreferenceFragment prefFrag                   = null;
-  private SharedPreferences    prefs                      = null;
-  
+  public static final String   PREFS_DEFAULT_TIMERS_TASK_PROVIDER = "1000";
+  public static final String   PREFS_DEFAULT_TIMERS_ACCEL         = "1000";
+  private MyPreferenceFragment prefFrag                           = null;
+  private SharedPreferences    prefs                              = null;
+
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
-        .replace(android.R.id.content, prefFrag).commit();
+    .replace(android.R.id.content, prefFrag).commit();
     checkValues();
   }
 
@@ -77,17 +78,20 @@ public class PreferencesTimers extends EffectPreferenceActivity implements
         + prefs.getString(PREFS_KEY_TIMERS_ACCEL, PREFS_DEFAULT_TIMERS_ACCEL)
         + " ms.";
     ep.setSummary(summary);
-    ep = (EditTextPreference) prefFrag.findPreference(PREFS_KEY_TIMERS_TASK_TOWER);
+    ep = (EditTextPreference) prefFrag
+        .findPreference(PREFS_KEY_TIMERS_TASK_TOWER);
     summary = getResources().getString(R.string.pref_timers_task_tower_summary);
     summary += "\nTimer: "
-        + prefs.getString(PREFS_KEY_TIMERS_TASK_TOWER, PREFS_DEFAULT_TIMERS_TASK_TOWER)
-        + " ms.";
+        + prefs.getString(PREFS_KEY_TIMERS_TASK_TOWER,
+            PREFS_DEFAULT_TIMERS_TASK_TOWER) + " ms.";
     ep.setSummary(summary);
-    ep = (EditTextPreference) prefFrag.findPreference(PREFS_KEY_TIMERS_TASK_PROVIDER);
-    summary = getResources().getString(R.string.pref_timers_task_provider_summary);
+    ep = (EditTextPreference) prefFrag
+        .findPreference(PREFS_KEY_TIMERS_TASK_PROVIDER);
+    summary = getResources().getString(
+        R.string.pref_timers_task_provider_summary);
     summary += "\nTimer: "
-        + prefs.getString(PREFS_KEY_TIMERS_TASK_PROVIDER, PREFS_DEFAULT_TIMERS_TASK_PROVIDER)
-        + " ms.";
+        + prefs.getString(PREFS_KEY_TIMERS_TASK_PROVIDER,
+            PREFS_DEFAULT_TIMERS_TASK_PROVIDER) + " ms.";
     ep.setSummary(summary);
   }
 
@@ -96,11 +100,13 @@ public class PreferencesTimers extends EffectPreferenceActivity implements
     getFragmentManager().executePendingTransactions();
     updateSummaries();
   }
-  
+
   @Override
   public void onSharedPreferenceChanged(
       final SharedPreferences sharedPreferences, final String key) {
-    if (key.equals(PREFS_KEY_TIMERS_UI) || key.equals(PREFS_KEY_TIMERS_ACCEL) || key.equals(PREFS_KEY_TIMERS_TASK_TOWER) || key.equals(PREFS_KEY_TIMERS_TASK_PROVIDER)) {
+    if (key.equals(PREFS_KEY_TIMERS_UI) || key.equals(PREFS_KEY_TIMERS_ACCEL)
+        || key.equals(PREFS_KEY_TIMERS_TASK_TOWER)
+        || key.equals(PREFS_KEY_TIMERS_TASK_PROVIDER)) {
       updateSummaries();
     }
   }
@@ -119,7 +125,7 @@ public class PreferencesTimers extends EffectPreferenceActivity implements
     super.onResume();
     prefs.registerOnSharedPreferenceChangeListener(this);
   }
-  
+
   @Override
   public void onPause() {
     super.onPause();
