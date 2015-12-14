@@ -106,12 +106,14 @@ public class TowerTask extends PhoneStateListener implements Runnable {
       }
       TelephonyManager tm = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
       if(tm != null) {
-        String op = tm.getNetworkOperator();
-        String mcc = op.substring(0, 3);
-        String mnc = op.substring(3);
         app.getGlobalTowerInfo().setOperator(tm.getNetworkOperatorName());
-        app.getGlobalTowerInfo().setMNC(Integer.parseInt(mnc));
-        app.getGlobalTowerInfo().setMCC(Integer.parseInt(mcc));
+        String op = tm.getNetworkOperator();
+        if(op != null && op.length() > 3) {
+          String mcc = op.substring(0, 3);
+          String mnc = op.substring(3);
+          app.getGlobalTowerInfo().setMNC(Integer.parseInt(mnc));
+          app.getGlobalTowerInfo().setMCC(Integer.parseInt(mcc));
+        }
         app.getGlobalTowerInfo().setNetwork(tm.getNetworkType());
         app.getGlobalTowerInfo().setNetworkName(TowerInfo.getNetworkType(app.getGlobalTowerInfo().getNetwork(), true));
         

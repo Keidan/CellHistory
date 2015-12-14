@@ -67,6 +67,8 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   private TextView          txtGeolocation               = null;
   private TextView          txtSpeed                     = null;
   private TextView          txtDistance                  = null;
+  private TextView          txtSpeedError                = null;
+  private TextView          txtDistanceError             = null;
   private TimeChartHelper   chart                        = null;
   private LinearLayout      chartSeparator               = null;
   /* context */
@@ -83,7 +85,6 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   private String            txtGpsOutOfService           = "";
   private String            txtGpsTemporarilyUnavailable = "";
   private int               default_color                = android.graphics.Color.TRANSPARENT;
-  private boolean           connected                    = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -124,10 +125,12 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     txtGeolocation = (TextView) getView().findViewById(R.id.txtGeolocation);
     txtSpeed = (TextView) getView().findViewById(R.id.txtSpeed);
     txtDistance = (TextView) getView().findViewById(R.id.txtDistance);
-    txtDistance.setText(getResources().getString(R.string.txtGpsDisabled));
-    txtDistance.setTextColor(color_red);
-    txtSpeed.setText(getResources().getString(R.string.txtGpsDisabled));
-    txtSpeed.setTextColor(color_red);
+    txtSpeedError = (TextView) getView().findViewById(R.id.txtSpeedError);
+    txtDistanceError = (TextView) getView().findViewById(R.id.txtDistanceError);
+    txtSpeedError.setText(getResources().getString(R.string.txtGpsDisabled));
+    txtSpeedError.setTextColor(color_red);
+    txtDistanceError.setText(getResources().getString(R.string.txtGpsDisabled));
+    txtDistanceError.setTextColor(color_red);
     txtGeolocation.setOnClickListener(this);
     final List<String> list = new ArrayList<String>();
     list.add(CellIdHelper.GOOGLE_HIDDENT_API);
@@ -182,20 +185,21 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     }
     txtGeolocation.setText(oldLoc);
    
-    if(connected) {
-      txtDistance.setTextColor(default_color);
-      txtSpeed.setTextColor(default_color);
-      double speed = app.getGlobalTowerInfo().getSpeed();
-      String spd = String.format("%.02f", speed) + " m/s\n";
-        spd += String.format("%.02f", speed * 3.6) + " km/h\n";
-        spd += String.format("%.02f", speed * 2.2369362920544) + " mph";
-        txtSpeed.setText(spd);
-        
-      final double dist = app.getGlobalTowerInfo().getDistance();
-      if (dist > 1000)
-        txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
-      else
-        txtDistance.setText(String.format("%.02f", dist) + " m");
+    double speed = app.getGlobalTowerInfo().getSpeed();
+    String spd = String.format("%.02f", speed) + " m/s\n";
+      spd += String.format("%.02f", speed * 3.6) + " km/h\n";
+      spd += String.format("%.02f", speed * 2.2369362920544) + " mph";
+    txtSpeed.setText(spd);
+      
+    final double dist = app.getGlobalTowerInfo().getDistance();
+    if (dist > 1000)
+      txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
+    else
+      txtDistance.setText(String.format("%.02f", dist) + " m");
+    if (chart.getVisibility() == View.VISIBLE) {
+      chart.checkYAxisMax(speed);
+      chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
+          new Date().getTime(), speed);
     }
   }
   
@@ -240,65 +244,43 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     setChartVisible(prefs.getBoolean(Preferences.PREFS_KEY_CHART_ENABLE,
         Preferences.PREFS_DEFAULT_CHART_ENABLE));
 
-    restoreText();
-    txtSpeed.setTextColor(color_orange);
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       txtGeoProvider.setVisibility(View.GONE);
       spiGeoProvider.setVisibility(View.VISIBLE);
       if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
           PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
-        txtDistance.setTextColor(color_red);
-        txtSpeed.setTextColor(color_red);
         if (lm == null) {
           lm = (LocationManager) getActivity().getSystemService(
               Context.LOCATION_SERVICE);
-          if (lm != null)
+          if (lm != null) {
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
                 PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 10f,
                 this);
+          }
+          txtDistanceError.setVisibility(View.GONE);
+          txtSpeedError.setVisibility(View.GONE);
+          txtDistance.setVisibility(View.VISIBLE);
+          txtSpeed.setVisibility(View.VISIBLE);
         }
       } else {
-        connected = false;
         if (lm != null) {
           lm.removeUpdates(this);
           lm = null;
         }
-        txtDistance.setText(txtGpsDisabledOption);
-        txtDistance.setTextColor(color_orange);
-        txtSpeed.setText(txtGpsDisabledOption);
-        txtSpeed.setTextColor(color_orange);
+        resetGpsInfo(txtGpsDisabledOption, color_orange);
       }
     } else {
-      connected = false;
       txtGeoProvider.setVisibility(View.VISIBLE);
       spiGeoProvider.setVisibility(View.GONE);
       if (lm != null) {
         lm.removeUpdates(this);
         lm = null;
       }
-      txtDistance.setText(txtGpsDisabledOption);
-      txtDistance.setTextColor(color_orange);
-      txtSpeed.setText(txtGpsDisabledOption);
-      txtSpeed.setTextColor(color_orange);
+      resetGpsInfo(txtGpsDisabledOption, color_orange);
     }
   }
   
-  private void restoreText() {
-    getActivity().runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        txtDistance.setText("0.00 m");
-        txtSpeed.setText("0.00 m/s\n0.00 km/h\n0.00 mph");
-        if (chart.getVisibility() == View.VISIBLE) {
-          chart.checkYAxisMax(0.0);
-          chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
-              new Date().getTime(), 0.0);
-        }
-      }
-    });
-  }
-
   private void setChartVisible(final boolean visible) {
     final int visibility = visible ? View.VISIBLE : View.GONE;
     if(chart == null) return;
@@ -337,23 +319,9 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     }
   }
   
-  private void speedUpdate(final double velocity) {
-    if (chart != null && getActivity() != null)
-      getActivity().runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          if (chart.getVisibility() == View.VISIBLE) {
-            chart.checkYAxisMax(velocity);
-            chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
-                new Date().getTime(), velocity);
-          }
-        }
-      });
-  }
-
   @Override
   public void onLocationChanged(final Location location) {
-    connected = true;
+    Log.e("TAG", "onLocationChanged");
     double speed = 0.0;
     final Location loc1 = new Location("");
     app.getGlobalTowerInfo().lock();
@@ -369,19 +337,19 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
-    speedUpdate(speed);
   }
 
   @Override
   public void onStatusChanged(final String provider, final int status,
       final Bundle extras) {
+    Log.e("TAG", "onStatusChanged:"+provider);
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
       switch (status) {
         case LocationProvider.OUT_OF_SERVICE:
-          resetGpsInfo(txtGpsOutOfService);
+          resetGpsInfo(txtGpsOutOfService, color_red);
           break;
         case LocationProvider.TEMPORARILY_UNAVAILABLE:
-          resetGpsInfo(txtGpsTemporarilyUnavailable);
+          resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
           break;
       }
     }
@@ -389,22 +357,25 @@ OnItemSelectedListener, OnClickListener, LocationListener {
 
   @Override
   public void onProviderEnabled(final String provider) {
+    Log.e("TAG", "onProviderEnabled:"+provider);
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
-      txtDistance.setTextColor(default_color);
-      txtSpeed.setTextColor(default_color);
-      restoreText();
+      txtDistance.setVisibility(View.VISIBLE);
+      txtSpeed.setVisibility(View.VISIBLE);
+      txtDistanceError.setVisibility(View.GONE);
+      txtSpeedError.setVisibility(View.GONE);
     }
   }
 
   @Override
   public void onProviderDisabled(final String provider) {
+    Log.e("TAG", "onProviderDisabled:"+provider);
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
-      resetGpsInfo(txtGpsDisabled);
+      resetGpsInfo(txtGpsDisabled, color_red);
     }
   }
 
-  private void resetGpsInfo(final String txt) {
-    connected = false;
+  private void resetGpsInfo(final String txt, int color) {
+    Log.e("TAG", "resetGpsInfom:"+txt);
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
@@ -412,7 +383,13 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
-    txtDistance.setText(txt);
-    txtSpeed.setText(txt);
+    txtDistanceError.setText(txt);
+    txtDistanceError.setTextColor(color);
+    txtSpeedError.setText(txt);
+    txtSpeedError.setTextColor(color);
+    txtDistanceError.setVisibility(View.VISIBLE);
+    txtSpeedError.setVisibility(View.VISIBLE);
+    txtDistance.setVisibility(View.GONE);
+    txtSpeed.setVisibility(View.GONE);
   }
 }
