@@ -104,7 +104,8 @@ public class TowerInfo {
         && mcc == ti.mcc && mnc == ti.mnc && cellId == ti.cellId 
         && lac == ti.lac && psc == ti.psc && signalStrength == ti.signalStrength 
         && signalStrengthPercent == ti.signalStrengthPercent && type == ti.type 
-        && asu == ti.asu && lvl == ti.lvl && network == ti.network && networkName.equals(ti.networkName);
+        && asu == ti.asu && lvl == ti.lvl && network == ti.network && networkName.equals(ti.networkName)
+        && speed == ti.speed && distance == ti.distance;
     if(b) {
       int size1 = neighboring.size();
       int size2 = ti.neighboring.size();
