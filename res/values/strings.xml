@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">CellHistory</string>
-    <string name="file_name">cell_history</string>
+    <string name="file_name">cellhistory</string>
 	<string name="empty"></string>
 	
 	<string name="toggleOn">Record ON</string>
