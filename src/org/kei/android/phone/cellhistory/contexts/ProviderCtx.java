@@ -22,7 +22,6 @@ package org.kei.android.phone.cellhistory.contexts;
 public class ProviderCtx {
   public static final String LOC_NONE        = "None";
   public static final String LOC_BAD_REQUEST = "Bad request";
-  public static final String LOC_RETRY       = "Retry in";
   public static final String LOC_NOT_FOUND   = "Not found";
   private int                oldCellId       = -1;
   private String             oldLoc          = LOC_NONE;
@@ -45,8 +44,7 @@ public class ProviderCtx {
   }
   
   public boolean isValid() {
-    return (!oldLoc.startsWith(ProviderCtx.LOC_RETRY)
-        && !oldLoc.startsWith(ProviderCtx.LOC_NONE)
+    return (!oldLoc.startsWith(ProviderCtx.LOC_NONE)
         && !oldLoc.equals(ProviderCtx.LOC_NOT_FOUND) && !oldLoc
           .equals(ProviderCtx.LOC_BAD_REQUEST));
   }

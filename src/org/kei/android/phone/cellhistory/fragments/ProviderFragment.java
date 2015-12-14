@@ -172,8 +172,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     }
     
     final String oldLoc = app.getProviderCtx().getOldLoc();
-    if (oldLoc.startsWith(ProviderCtx.LOC_NONE)
-        || oldLoc.startsWith(ProviderCtx.LOC_RETRY))
+    if (oldLoc.startsWith(ProviderCtx.LOC_NONE))
       txtGeolocation.setTextColor(color_red);
     else if (oldLoc.startsWith(ProviderCtx.LOC_NOT_FOUND)
         || oldLoc.startsWith(ProviderCtx.LOC_BAD_REQUEST))

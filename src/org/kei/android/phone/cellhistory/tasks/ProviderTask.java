@@ -108,9 +108,6 @@ public class ProviderTask implements Runnable {
       }
     }
     retryLoc++;
-    if (oldLoc.startsWith(ProviderCtx.LOC_NONE)
-        || oldLoc.startsWith(ProviderCtx.LOC_RETRY))
-      oldLoc = ProviderCtx.LOC_RETRY + " " + (30 - (retryLoc % 30)) + "s.";
     app.getProviderCtx().updateAll(oldCellId, oldLoc, retryLoc);
   }
 
