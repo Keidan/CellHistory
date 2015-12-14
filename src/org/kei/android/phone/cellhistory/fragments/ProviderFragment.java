@@ -321,7 +321,6 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   
   @Override
   public void onLocationChanged(final Location location) {
-    Log.e("TAG", "onLocationChanged");
     double speed = 0.0;
     final Location loc1 = new Location("");
     app.getGlobalTowerInfo().lock();
@@ -342,7 +341,6 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   @Override
   public void onStatusChanged(final String provider, final int status,
       final Bundle extras) {
-    Log.e("TAG", "onStatusChanged:"+provider);
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
       switch (status) {
         case LocationProvider.OUT_OF_SERVICE:
@@ -357,7 +355,6 @@ OnItemSelectedListener, OnClickListener, LocationListener {
 
   @Override
   public void onProviderEnabled(final String provider) {
-    Log.e("TAG", "onProviderEnabled:"+provider);
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
       txtDistance.setVisibility(View.VISIBLE);
       txtSpeed.setVisibility(View.VISIBLE);
@@ -368,14 +365,12 @@ OnItemSelectedListener, OnClickListener, LocationListener {
 
   @Override
   public void onProviderDisabled(final String provider) {
-    Log.e("TAG", "onProviderDisabled:"+provider);
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
       resetGpsInfo(txtGpsDisabled, color_red);
     }
   }
 
   private void resetGpsInfo(final String txt, int color) {
-    Log.e("TAG", "resetGpsInfom:"+txt);
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
