@@ -18,7 +18,7 @@
             android:title="@string/pref_geolocation_speed_gps_title" />
         <EditTextPreference
             android:key="geolocationLocateTimeout"
-            android:defaultValue="15"
+            android:defaultValue="30"
             android:summary="@string/pref_geolocation_timeout_summary"
             android:title="@string/pref_geolocation_timeout_title"   
     		android:inputType="number" />
