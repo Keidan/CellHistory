@@ -36,6 +36,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -65,7 +66,12 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   private Spinner           spiGeoProvider               = null;
   private TextView          txtGeoProvider               = null;
   private TextView          txtGeolocation               = null;
-  private TextView          txtSpeed                     = null;
+  private TextView          txtSpeedMS                   = null;
+  private TextView          txtSpeedKMH                  = null;
+  private TextView          txtSpeedMPH                  = null;
+  private RadioButton       rbSpeedMS                    = null;
+  private RadioButton       rbSpeedKMH                   = null;
+  private RadioButton       rbSpeedMPH                   = null;
   private TextView          txtDistance                  = null;
   private TextView          txtSpeedError                = null;
   private TextView          txtDistanceError             = null;
@@ -123,7 +129,14 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     spiGeoProvider = (Spinner) getView().findViewById(R.id.spiGeoProvider);
     txtGeoProvider = (TextView) getView().findViewById(R.id.txtGeoProvider);
     txtGeolocation = (TextView) getView().findViewById(R.id.txtGeolocation);
-    txtSpeed = (TextView) getView().findViewById(R.id.txtSpeed);
+
+    txtSpeedMS = (TextView) getView().findViewById(R.id.txtSpeedMS);
+    txtSpeedKMH = (TextView) getView().findViewById(R.id.txtSpeedKMH);
+    txtSpeedMPH = (TextView) getView().findViewById(R.id.txtSpeedMPH);
+    rbSpeedMS = (RadioButton) getView().findViewById(R.id.rbSpeedMS);
+    rbSpeedKMH = (RadioButton) getView().findViewById(R.id.rbSpeedKMH);
+    rbSpeedMPH = (RadioButton) getView().findViewById(R.id.rbSpeedMPH);
+    
     txtDistance = (TextView) getView().findViewById(R.id.txtDistance);
     txtSpeedError = (TextView) getView().findViewById(R.id.txtSpeedError);
     txtDistanceError = (TextView) getView().findViewById(R.id.txtDistanceError);
@@ -131,7 +144,16 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     txtSpeedError.setTextColor(color_red);
     txtDistanceError.setText(getResources().getString(R.string.txtGpsDisabled));
     txtDistanceError.setTextColor(color_red);
+    
     txtGeolocation.setOnClickListener(this);
+    rbSpeedMS.setOnClickListener(this);
+    rbSpeedKMH.setOnClickListener(this);
+    rbSpeedMPH.setOnClickListener(this);
+    int i = prefs.getInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_DEFAULT_CURRENT_SPEED);
+    if(i == PreferencesGeolocation.PREFS_SPEED_KMH) rbSpeedKMH.setChecked(true);
+    else if(i == PreferencesGeolocation.PREFS_SPEED_MPH) rbSpeedMPH.setChecked(true);
+    else rbSpeedMS.setChecked(true);
+    
     final List<String> list = new ArrayList<String>();
     list.add(CellIdHelper.GOOGLE_HIDDENT_API);
     list.add(CellIdHelper.OPEN_CELL_ID_API);
@@ -186,10 +208,12 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     txtGeolocation.setText(oldLoc);
    
     double speed = app.getGlobalTowerInfo().getSpeed();
-    String spd = String.format("%.02f", speed) + " m/s\n";
-      spd += String.format("%.02f", speed * 3.6) + " km/h\n";
-      spd += String.format("%.02f", speed * 2.2369362920544) + " mph";
-    txtSpeed.setText(spd);
+    double s_ms = speed;
+    double s_kmh = speed * 3.6;
+    double s_mph = speed * 2.2369362920544;
+    txtSpeedMS.setText(String.format("%.02f", s_ms) + " m/s");
+    txtSpeedKMH.setText(String.format("%.02f", s_kmh) + " km/h");
+    txtSpeedMPH.setText(String.format("%.02f", speed * 2.2369362920544) + " mph");
       
     final double dist = app.getGlobalTowerInfo().getDistance();
     if (dist > 1000)
@@ -197,9 +221,13 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     else
       txtDistance.setText(String.format("%.02f", dist) + " m");
     if (chart.getVisibility() == View.VISIBLE) {
-      chart.checkYAxisMax(speed);
+      double s = s_ms;
+      int i = prefs.getInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_DEFAULT_CURRENT_SPEED);
+      if(i == PreferencesGeolocation.PREFS_SPEED_KMH) s = s_kmh;
+      else if(i == PreferencesGeolocation.PREFS_SPEED_MPH) s = s_mph;
+      chart.checkYAxisMax(s);
       chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
-          new Date().getTime(), speed);
+          new Date().getTime(), s);
     }
   }
   
@@ -258,10 +286,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
                 PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 10f,
                 this);
           }
-          txtDistanceError.setVisibility(View.GONE);
-          txtSpeedError.setVisibility(View.GONE);
-          txtDistance.setVisibility(View.VISIBLE);
-          txtSpeed.setVisibility(View.VISIBLE);
+          setGpsVisibility(true);
         }
       } else {
         if (lm != null) {
@@ -287,15 +312,42 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     if(visible)chart.clear();
     if (chartSeparator.getVisibility() != visibility)
       chartSeparator.setVisibility(visibility);
-    if (visible && chart.getVisibility() == View.GONE)
+    if (visible && chart.getVisibility() == View.GONE) {
       chart.setVisibility(View.VISIBLE);
-    else if (!visible && chart.getVisibility() == View.VISIBLE)
+      rbSpeedMS.setVisibility(View.VISIBLE);
+      rbSpeedKMH.setVisibility(View.VISIBLE);
+      rbSpeedMPH.setVisibility(View.VISIBLE);
+    }
+    else if (!visible && chart.getVisibility() == View.VISIBLE) {
       chart.setVisibility(View.GONE);
+      rbSpeedMS.setVisibility(View.GONE);
+      rbSpeedKMH.setVisibility(View.GONE);
+      rbSpeedMPH.setVisibility(View.GONE);
+    }
   }
   
   @Override
   public void onClick(final View v) {
-    if (v.equals(txtGeolocation)) {
+    
+    if(v.equals(rbSpeedMS)) {
+      Editor e = prefs.edit();
+      e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_MS);
+      e.commit();
+      rbSpeedKMH.setChecked(false);
+      rbSpeedMPH.setChecked(false);
+    } else if(v.equals(rbSpeedKMH)) {
+      Editor e = prefs.edit();
+      e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_KMH);
+      e.commit();
+      rbSpeedMS.setChecked(false);
+      rbSpeedMPH.setChecked(false);
+    } else if(v.equals(rbSpeedMPH)) {
+      Editor e = prefs.edit();
+      e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_MPH);
+      e.commit();
+      rbSpeedKMH.setChecked(false);
+      rbSpeedMS.setChecked(false);
+    } else if (v.equals(txtGeolocation)) {
       final String geo = txtGeolocation.getText().toString();
       if (!geo.isEmpty() && app.getProviderCtx().isValid()) {
         String cid = "-1";
@@ -350,10 +402,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
           resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
           break;
         case LocationProvider.AVAILABLE:
-          txtDistance.setVisibility(View.VISIBLE);
-          txtSpeed.setVisibility(View.VISIBLE);
-          txtDistanceError.setVisibility(View.GONE);
-          txtSpeedError.setVisibility(View.GONE);
+          setGpsVisibility(true);
           break;
       }
     }
@@ -362,10 +411,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   @Override
   public void onProviderEnabled(final String provider) {
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
-      txtDistance.setVisibility(View.VISIBLE);
-      txtSpeed.setVisibility(View.VISIBLE);
-      txtDistanceError.setVisibility(View.GONE);
-      txtSpeedError.setVisibility(View.GONE);
+      setGpsVisibility(true);
     }
   }
 
@@ -388,9 +434,23 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     txtDistanceError.setTextColor(color);
     txtSpeedError.setText(txt);
     txtSpeedError.setTextColor(color);
-    txtDistanceError.setVisibility(View.VISIBLE);
-    txtSpeedError.setVisibility(View.VISIBLE);
-    txtDistance.setVisibility(View.GONE);
-    txtSpeed.setVisibility(View.GONE);
+    setGpsVisibility(false);
+  }
+  
+  private void setGpsVisibility(boolean visible) {
+    int v = visible ? View.VISIBLE : View.GONE;
+    int v2 = visible ? View.GONE : View.VISIBLE;
+    if (txtDistance.getVisibility() != v) txtDistance.setVisibility(v);
+    if (txtSpeedMS.getVisibility() != v) txtSpeedMS.setVisibility(v);
+    if (txtSpeedKMH.getVisibility() != v) txtSpeedKMH.setVisibility(v);
+    if (txtSpeedMPH.getVisibility() != v) txtSpeedMPH.setVisibility(v);
+    if (chart.getVisibility() == View.VISIBLE) {
+      if (rbSpeedMS.getVisibility() != v) rbSpeedMS.setVisibility(v);
+      if (rbSpeedKMH.getVisibility() != v) rbSpeedKMH.setVisibility(v);
+      if (rbSpeedMPH.getVisibility() != v) rbSpeedMPH.setVisibility(v);
+    }
+    if (txtDistanceError.getVisibility() != v2) txtDistanceError.setVisibility(v2);
+    if (txtSpeedError.getVisibility() != v2) txtSpeedError.setVisibility(v2);
+    
   }
 }
