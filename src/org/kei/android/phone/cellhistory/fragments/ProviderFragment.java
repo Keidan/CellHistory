@@ -349,6 +349,12 @@ OnItemSelectedListener, OnClickListener, LocationListener {
         case LocationProvider.TEMPORARILY_UNAVAILABLE:
           resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
           break;
+        case LocationProvider.AVAILABLE:
+          txtDistance.setVisibility(View.VISIBLE);
+          txtSpeed.setVisibility(View.VISIBLE);
+          txtDistanceError.setVisibility(View.GONE);
+          txtSpeedError.setVisibility(View.GONE);
+          break;
       }
     }
   }
