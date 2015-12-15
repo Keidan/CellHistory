@@ -60,7 +60,7 @@ import android.view.WindowManager;
  *******************************************************************************
  */
 public class CellHistoryPagerActivity extends FragmentActivity implements
-    IThemeActivity, OnPageChangeListener {
+IThemeActivity, OnPageChangeListener {
   private static final int            BACK_TIME_DELAY = 2000;
   private static long                 lastBackPressed = -1;
   private ViewPager                   mPager;
@@ -71,15 +71,16 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
   /* tasks */
   private ScheduledThreadPoolExecutor execUpdateUI    = null;
   private List<Fragment>              fragments       = null;
-  private NotificationHelper         nfyHelper     = null;
-  private int notifyID = 2;
-  private boolean exit = false;
-  
+  private NotificationHelper          nfyHelper       = null;
+  private final int                   notifyID        = 2;
+  private boolean                     exit            = false;
+  private boolean                     preferences     = false;
+
   static {
     Fx.default_animation = Fx.ANIMATION_FADE;
     Fx.default_theme = PreferencesUI.THEME_DARK;
   }
-  
+
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     themeUpdate();
@@ -92,45 +93,49 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
     app.getProviderTask().initialize(this, prefs);
     app.getTowerTask().initialize(this, prefs);
-    
+
     fragments = new Vector<Fragment>();
     fragments.add(new TowerFragment());
     fragments.add(new ProviderFragment());
     fragments.add(new NeighboringFragment());
     fragments.add(new RecorderFragment());
-
-    mPager = (ViewPager) findViewById(R.id.pager);
     
+    mPager = (ViewPager) findViewById(R.id.pager);
     
     setTransformer();
     mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(),
         fragments);
     mPager.setAdapter(mPagerAdapter);
-    mPager.setCurrentItem(prefs.getInt(Preferences.PREFS_KEY_CURRENT_TAB, Preferences.PREFS_DEFAULT_CURRENT_TAB));
+    mPager.setCurrentItem(prefs.getInt(Preferences.PREFS_KEY_CURRENT_TAB,
+        Preferences.PREFS_DEFAULT_CURRENT_TAB));
     mPager.setOnPageChangeListener(this);
     /* task */
-    if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
+    if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
+        PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       app.getProviderTask().start(
-          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
+          Integer.parseInt(prefs.getString(
+              PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
-    }
-    else {
+    } else {
       app.getProviderTask().stop();
     }
-    
+
     app.getTowerTask().start(
-        Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
+        Integer.parseInt(prefs.getString(
+            PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
             PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
   }
-  
+
   private void setTransformer() {
-    String transition = prefs.getString(PreferencesUI.PREFS_KEY_SLIDE_TRANSITION, PreferencesUI.PREFS_DEFAULT_SLIDE_TRANSITION);
-    if(transition.equals(PreferencesUI.TRANSITION_DEPTH))
+    final String transition = prefs.getString(
+        PreferencesUI.PREFS_KEY_SLIDE_TRANSITION,
+        PreferencesUI.PREFS_DEFAULT_SLIDE_TRANSITION);
+    if (transition.equals(PreferencesUI.TRANSITION_DEPTH))
       mPager.setPageTransformer(true, new DepthPageTransformer());
     else
       mPager.setPageTransformer(true, new ZoomOutPageTransformer());
   }
-  
+
   @Override
   protected void onPause() {
     if (execUpdateUI != null) {
@@ -139,13 +144,14 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     }
     super.onPause();
     Fx.updateTransition(this, false);
-    if(!app.getRecorderCtx().isRunning() && !exit)
+    if (!app.getRecorderCtx().isRunning() && !exit && !preferences)
       notificationShow();
   }
-  
+
   @Override
   protected void onResume() {
     super.onResume();
+    preferences = false;
     nfyHelper.hide();
     setTransformer();
     if (prefs.getBoolean(PreferencesUI.PREFS_KEY_KEEP_SCREEN,
@@ -154,21 +160,22 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     else
       getWindow().clearFlags(
           WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-
-    if(prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE, PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
+    
+    if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
+        PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       app.getProviderTask().start(
-          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER, 
+          Integer.parseInt(prefs.getString(
+              PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
-    }
-    else {
+    } else {
       app.getProviderTask().stop();
     }
     execUpdateUI = new ScheduledThreadPoolExecutor(1);
-    execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, 
-        Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)), 
-        TimeUnit.MILLISECONDS);
+    execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, Integer.parseInt(prefs
+        .getString(PreferencesTimers.PREFS_KEY_TIMERS_UI,
+            PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)), TimeUnit.MILLISECONDS);
   }
-
+  
   @Override
   public void onDestroy() {
     super.onDestroy();
@@ -182,39 +189,46 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     app.getRecorderCtx().flushAndClose();
   }
   
-
   public void notificationShow() {
-    Intent toLaunch = new Intent(getApplicationContext(), CellHistoryPagerActivity.class);
+    final Intent toLaunch = new Intent(getApplicationContext(),
+        CellHistoryPagerActivity.class);
     toLaunch.setAction("android.intent.action.MAIN");
     toLaunch.addCategory("android.intent.category.LAUNCHER");
-    PendingIntent intentBack = PendingIntent.getActivity(getApplicationContext(), 0, toLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
+    final PendingIntent intentBack = PendingIntent
+        .getActivity(getApplicationContext(), 0, toLaunch,
+            PendingIntent.FLAG_UPDATE_CURRENT);
     nfyHelper.setExtra(false, false);
-    nfyHelper.show(R.drawable.ic_launcher, null,  getString(R.string.app_name), getString(R.string.notification), intentBack);
+    nfyHelper.show(R.drawable.ic_launcher, null, getString(R.string.app_name),
+        getString(R.string.notification), intentBack);
   }
-  
+
   private final Runnable uiTask = new Runnable() {
-    @Override
-    public void run() {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          for (final Fragment f : fragments) {
-            app.getGlobalTowerInfo().lock();
-            try {
-              final UITaskFragment tf = (UITaskFragment) f;
-              tf.processUI(app
-                  .getGlobalTowerInfo());
-            } catch(Throwable e) {
-              Log.e(CellHistoryPagerActivity.class.getSimpleName(), "Exception: " + e.getMessage(), e);
-            } finally {
-              app.getGlobalTowerInfo().unlock();
-            }
-          }
-        }
-      });
-    }
-  };
-  
+                                  @Override
+                                  public void run() {
+                                    runOnUiThread(new Runnable() {
+                                      @Override
+                                      public void run() {
+                                        for (final Fragment f : fragments) {
+                                          app.getGlobalTowerInfo().lock();
+                                          try {
+                                            final UITaskFragment tf = (UITaskFragment) f;
+                                            tf.processUI(app
+                                                .getGlobalTowerInfo());
+                                          } catch (final Throwable e) {
+                                            Log.e(
+                                                CellHistoryPagerActivity.class
+                                                    .getSimpleName(),
+                                                "Exception: " + e.getMessage(),
+                                                e);
+                                          } finally {
+                                            app.getGlobalTowerInfo().unlock();
+                                          }
+                                        }
+                                      }
+                                    });
+                                  }
+                                };
+
   @Override
   public void onBackPressed() {
     if (!exitOnDoubleBack()) {
@@ -230,57 +244,61 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
       lastBackPressed = System.currentTimeMillis();
     }
   }
-
+  
   protected boolean exitOnDoubleBack() {
     return true;
   }
-
+  
   protected int getToastIconId() {
     return R.drawable.ic_launcher;
   }
-
+  
   protected int getOnDoubleBackExitTextId() {
     return org.kei.android.atk.R.string.onDoubleBackExitText;
   }
-  
+
   @Override
   public void themeUpdate() {
     Preferences.performTheme(this);
   }
-
+  
   @Override
   public int getAnime(final AnimationType at) {
     return Fx.getAnimationFromPref(this, at);
   }
-
+  
   @Override
   public boolean onCreateOptionsMenu(final Menu menu) {
     getMenuInflater().inflate(R.menu.activity_cellhistorypager, menu);
     return true;
   }
-
+  
   @Override
   public boolean onOptionsItemSelected(final MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_settings:
+        preferences = true;
         final Intent intent = new Intent(this, Preferences.class);
         startActivity(intent);
         return true;
     }
     return false;
   }
-
+  
   @Override
-  public void onPageScrollStateChanged(int state) { }
-
+  public void onPageScrollStateChanged(final int state) {
+  }
+  
   @Override
-  public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
-
+  public void onPageScrolled(final int position, final float positionOffset,
+      final int positionOffsetPixels) {
+  }
+  
   @Override
-  public void onPageSelected(int position) {
-    Editor e = prefs.edit();
+  public void onPageSelected(final int position) {
+    final Editor e = prefs.edit();
     e.putInt(Preferences.PREFS_KEY_CURRENT_TAB, position);
     e.commit();
   }
-  
+
 }
