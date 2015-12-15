@@ -61,6 +61,10 @@ public class RecorderCtx {
       }
     }
   }
+  
+  public boolean isRunning() {
+    return pw != null;
+  }
 
   public void flushAndClose() {
     if (pw != null) {
@@ -127,13 +131,6 @@ public class RecorderCtx {
    */
   public List<String> getFrames() {
     return frames;
-  }
-
-  /**
-   * @return the pw
-   */
-  public PrintWriter getPw() {
-    return pw;
   }
 
   /**

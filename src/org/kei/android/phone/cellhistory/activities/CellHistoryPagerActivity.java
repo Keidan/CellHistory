@@ -5,6 +5,7 @@ import java.util.Vector;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.kei.android.atk.utils.NotificationHelper;
 import org.kei.android.atk.utils.Tools;
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.IThemeActivity;
@@ -23,6 +24,7 @@ import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.utils.DepthPageTransformer;
 import org.kei.android.phone.cellhistory.utils.ZoomOutPageTransformer;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -69,6 +71,9 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
   /* tasks */
   private ScheduledThreadPoolExecutor execUpdateUI    = null;
   private List<Fragment>              fragments       = null;
+  private NotificationHelper         nfyHelper     = null;
+  private int notifyID = 2;
+  private boolean exit = false;
   
   static {
     Fx.default_animation = Fx.ANIMATION_FADE;
@@ -81,6 +86,7 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     super.onCreate(savedInstanceState);
     Fx.updateTransition(this, true);
     setContentView(R.layout.activity_cellhistorypager);
+    nfyHelper = new NotificationHelper(this, notifyID);
     /* context */
     app = CellHistoryApp.getApp(this);
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -133,11 +139,14 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     }
     super.onPause();
     Fx.updateTransition(this, false);
+    if(!app.getRecorderCtx().isRunning() && !exit)
+      notificationShow();
   }
   
   @Override
   protected void onResume() {
     super.onResume();
+    nfyHelper.hide();
     setTransformer();
     if (prefs.getBoolean(PreferencesUI.PREFS_KEY_KEEP_SCREEN,
         PreferencesUI.PREFS_DEFAULT_KEEP_SCREEN))
@@ -163,6 +172,7 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
   @Override
   public void onDestroy() {
     super.onDestroy();
+    nfyHelper.hide();
     if (execUpdateUI != null) {
       execUpdateUI.shutdownNow();
       execUpdateUI = null;
@@ -170,6 +180,16 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
     app.getProviderTask().stop();
     app.getTowerTask().stop();
     app.getRecorderCtx().flushAndClose();
+  }
+  
+
+  public void notificationShow() {
+    Intent toLaunch = new Intent(getApplicationContext(), CellHistoryPagerActivity.class);
+    toLaunch.setAction("android.intent.action.MAIN");
+    toLaunch.addCategory("android.intent.category.LAUNCHER");
+    PendingIntent intentBack = PendingIntent.getActivity(getApplicationContext(), 0, toLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
+    nfyHelper.setExtra(false, false);
+    nfyHelper.show(R.drawable.ic_launcher, null,  getString(R.string.app_name), getString(R.string.notification), intentBack);
   }
   
   private final Runnable uiTask = new Runnable() {
@@ -201,6 +221,7 @@ public class CellHistoryPagerActivity extends FragmentActivity implements
       super.onBackPressed();
     } else {
       if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+        exit = true;
         super.onBackPressed();
       } else {
         Tools.toast(getBaseContext(), getToastIconId(),
