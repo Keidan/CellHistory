@@ -19,10 +19,9 @@
     </style>
   </head>
   <body>
-    $ 2.6
-      % Version 2.6
+    $ 2.7
+      % Version 2.7
       _ 2015-12-15
-      * The Speed chart is always shown.
       * Improve the UI management of the speed field and the distance field.
       * Remove the retry text with the geolocation.
       * Add an option to select how the user want to display the speed value.
@@ -35,8 +34,14 @@
       * Add an option to disable the logs processing.
       * Add an option to display the changelog informations.
       * Remove the technician menu.
+      * Fix warning with file strings.xml.
       * Android Change Log: http://petoria.de/android-change-log
-
+      
+    $ 2.6
+      % Version 2.6
+      _ 2015-12-14
+      * Hide the speed char if the option is not checked.
+      
     $ 2.5
       % Version 2.5
       _ 2015-12-14
