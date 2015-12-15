@@ -174,6 +174,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     aVeryLongString += "Buffer: 0/"  + pbBuffer.getMax() + "\n";
     aVeryLongString += "Size: 0octet\n";
     nfyHelper.setExtra(false, false);
-    nfyHelper.show(R.drawable.ic_launcher, "ticker",  getString(R.string.app_name), aVeryLongString, intentBack);
+    nfyHelper.show(R.drawable.ic_launcher_green, "ticker",  getString(R.string.app_name), aVeryLongString, intentBack);
   }
 }
