@@ -9,8 +9,6 @@ import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.activities.LogActivity;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -43,7 +41,6 @@ public class Preferences extends EffectPreferenceActivity {
   public static final String   PREFS_KEY_UI               = "prefUI";
   public static final String   PREFS_KEY_GEOLOCATION      = "prefGeolocation";
   public static final String   PREFS_KEY_RECORDER         = "prefRecorder";
-  public static final String   PREFS_KEY_TECHNICIAN       = "prefTechnician";
   public static final String   PREFS_KEY_VERSION          = "prefVersion";
   public static final String   PREFS_KEY_CHANGELOG        = "prefChangelog";
   public static final boolean  PREFS_DEFAULT_CHART_ENABLE = true;
@@ -121,17 +118,6 @@ public class Preferences extends EffectPreferenceActivity {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
             Tools.switchTo(Preferences.this, PreferencesRecorder.class);
-            return true;
-          }
-        });
-    prefFrag.findPreference(PREFS_KEY_TECHNICIAN).setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            final Intent intent = new Intent(
-                "android.provider.Telephony.SECRET_CODE", Uri
-                .parse("android_secret_code://4636"));
-            sendBroadcast(intent);
             return true;
           }
         });
