@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 
 /**
  *******************************************************************************
@@ -142,7 +143,12 @@ public class Preferences extends EffectPreferenceActivity {
 
     prefFrag.findPreference(PREFS_KEY_VERSION).setTitle(
         getResources().getString(R.string.app_name));
-      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(changeLog.getLastVersion());
+    try {
+      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+    } catch (final Exception e) {
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(e.getMessage());
+    }
     prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(
         new Preference.OnPreferenceClickListener() {
           @Override
