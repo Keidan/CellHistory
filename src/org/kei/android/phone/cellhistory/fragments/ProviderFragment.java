@@ -339,18 +339,21 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   public void onClick(final View v) {
     
     if(v.equals(rbSpeedMS)) {
+      CellHistoryApp.addLog(getActivity(), "Select MS display");
       Editor e = prefs.edit();
       e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_MS);
       e.commit();
       rbSpeedKMH.setChecked(false);
       rbSpeedMPH.setChecked(false);
     } else if(v.equals(rbSpeedKMH)) {
+      CellHistoryApp.addLog(getActivity(), "Select KMH display");
       Editor e = prefs.edit();
       e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_KMH);
       e.commit();
       rbSpeedMS.setChecked(false);
       rbSpeedMPH.setChecked(false);
     } else if(v.equals(rbSpeedMPH)) {
+      CellHistoryApp.addLog(getActivity(), "Select MPH display");
       Editor e = prefs.edit();
       e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_MPH);
       e.commit();
@@ -382,6 +385,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   
   @Override
   public void onLocationChanged(final Location location) {
+    CellHistoryApp.addLog(getActivity(), location);
     double speed = 0.0;
     final Location loc1 = new Location("");
     app.getGlobalTowerInfo().lock();
@@ -393,6 +397,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
         loc1.setLatitude(app.getGlobalTowerInfo().getLatitude());
         loc1.setLongitude(app.getGlobalTowerInfo().getLongitude());
         app.getGlobalTowerInfo().setDistance(loc1.distanceTo(location));
+        CellHistoryApp.addLog(getActivity(), "New distance: " + app.getGlobalTowerInfo().getDistance() + " m.");
       }
     } finally {
       app.getGlobalTowerInfo().unlock();
@@ -405,9 +410,11 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
       switch (status) {
         case LocationProvider.OUT_OF_SERVICE:
+          CellHistoryApp.addLog(getActivity(), "onStatusChanged("+provider+", OUT_OF_SERVICE)");
           resetGpsInfo(txtGpsOutOfService, color_red);
           break;
         case LocationProvider.TEMPORARILY_UNAVAILABLE:
+          CellHistoryApp.addLog(getActivity(), "onStatusChanged("+provider+", TEMPORARILY_UNAVAILABLE)");
           resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
           break;
         case LocationProvider.AVAILABLE:
@@ -420,6 +427,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   @Override
   public void onProviderEnabled(final String provider) {
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
+      CellHistoryApp.addLog(getActivity(), "onProviderEnabled("+provider+")");
       setGpsVisibility(true);
     }
   }
@@ -427,6 +435,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   @Override
   public void onProviderDisabled(final String provider) {
     if(provider.equals(LocationManager.GPS_PROVIDER)) {
+      CellHistoryApp.addLog(getActivity(), "onProviderDisabled("+provider+")");
       resetGpsInfo(txtGpsDisabled, color_red);
     }
   }
