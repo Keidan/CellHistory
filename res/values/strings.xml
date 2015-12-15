@@ -40,8 +40,6 @@
 	<string name="action_clear">Clear</string>
     <string name="action_sharing">Share</string>
     
-	<string name="notificationtext">Record in progress</string>
-	
     <string name="pref_ui_title">User Interface</string>
     <string name="pref_geolocation_management_title">Geolocation</string>
     <string name="pref_recorder_title">Recorder</string>

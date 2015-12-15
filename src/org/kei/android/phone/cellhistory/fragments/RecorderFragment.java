@@ -2,6 +2,7 @@ package org.kei.android.phone.cellhistory.fragments;
 
 import java.util.Locale;
 
+import org.kei.android.atk.utils.NotificationHelper;
 import org.kei.android.atk.utils.Tools;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
@@ -10,15 +11,12 @@ import org.kei.android.phone.cellhistory.prefs.PreferencesRecorder;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,8 +58,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   /* context */
   private SharedPreferences          prefs         = null;
   private CellHistoryApp             app           = null;
-  private NotificationCompat.Builder notifyBuilder = null;
-  private NotificationManager notificationManager = null;
+  private NotificationHelper         nfyHelper     = null;
   private int notifyID = 1;
   //private int notificationNum = 0;
 
@@ -81,6 +78,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     /* context */
     app = CellHistoryApp.getApp(getActivity());
     prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    nfyHelper = new NotificationHelper(getActivity(), notifyID);
 
     /* UI */
     txtSize = (TextView) getView().findViewById(R.id.txtSize);
@@ -122,14 +120,10 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       ss = String.format("%.02f", (s/SIZE_1GB)) + " Go";
     txtSize.setText(ss);
     
-    /*notificationUpdate("Records: " + txtRecords.getText().toString(),
-        "Buffer: " + app.getRecorderCtx().getFrames().size() + "/"  + pbBuffer.getMax(),
-        "Size: " + ss);*/
-
-    /*String message = "Records: " + txtRecords.getText().toString() + "\n";
+    String message = "Records: " + txtRecords.getText().toString() + "\n";
     message += "Buffer: " + app.getRecorderCtx().getFrames().size() + "/"  + pbBuffer.getMax() + "\n";
     message += "Size: " + ss + "\n";
-    notificationUpdate(message);*/
+    nfyHelper.update(message);
   }
 
   @Override
@@ -165,40 +159,21 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       public void run() {
         toggleOnOff.setChecked(false);
         app.getRecorderCtx().flushAndClose();
-        notificationRemove();
-        notifyBuilder = null;
-        notificationManager = null;
+        nfyHelper.hide();
       }
     });
   }
 
   public void notificationShow() {
     final Activity a = getActivity();
-    notificationManager = (NotificationManager)a.getSystemService(Context.NOTIFICATION_SERVICE);
     Intent toLaunch = new Intent(a.getApplicationContext(), CellHistoryPagerActivity.class);
     toLaunch.setAction("android.intent.action.MAIN");
     toLaunch.addCategory("android.intent.category.LAUNCHER");
-    //notificationNum = 0;
     PendingIntent intentBack = PendingIntent.getActivity(a.getApplicationContext(), 0, toLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
-    notifyBuilder = new NotificationCompat.Builder(a)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.notificationtext))
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(""))
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentIntent(intentBack);
-
-    notificationManager.notify(notifyID, notifyBuilder.build());
+    String aVeryLongString = "Records: 0\n";
+    aVeryLongString += "Buffer: 0/"  + pbBuffer.getMax() + "\n";
+    aVeryLongString += "Size: 0octet\n";
+    nfyHelper.setExtra(false, false);
+    nfyHelper.show(R.drawable.ic_launcher, "ticker",  getString(R.string.app_name), aVeryLongString, intentBack);
   }
-  
-  private void notificationRemove() {
-    if(notificationManager == null) return;
-    notificationManager.cancel(notifyID);
-  }
-  
-  /*private void notificationUpdate(String message) {
-    if(notificationManager == null || notifyBuilder == null) return;
-    notifyBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
-    //notifyBuilder.setNumber(++notificationNum);
-    notificationManager.notify(notifyID, notifyBuilder.build());
-  }*/
 }
