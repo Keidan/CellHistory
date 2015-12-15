@@ -5,6 +5,13 @@
     <string name="file_name">cellhistory</string>
 	<string name="empty"></string>
 	
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more...</string>
+    <string name="background_color">black</string>
+ 
+	
 	<string name="toggleOn">Record ON</string>
 	<string name="toggleOff">Record OFF</string>
 	
@@ -112,5 +119,8 @@
 	<string name="pref_log_enable_summary">Enable the logs processing.</string>
 	<string name="pref_log_title">Display</string>
 	<string name="pref_log_summary">Display the last application logs.</string>
+	
+    <string name="pref_changelog_title">Changelog</string>
+	<string name="pref_changelog_summary">Click to display the application changelog.</string>
 	
 </resources>

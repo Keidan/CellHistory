@@ -46,6 +46,11 @@
             android:summary="@string/pref_technician_code_summary">
         </Preference>
         <Preference
+            android:key="prefChangelog"
+            android:title="@string/pref_changelog_title"
+		    android:summary="@string/pref_changelog_summary">
+        </Preference>
+        <Preference
             android:key="prefVersion"
 		    android:enabled="false" 
 		    android:selectable="false"

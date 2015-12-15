@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <style type='text/css'>
+      a            { color:#a0a0e0 }
+      div.title    {
+        color:#C0F0C0;
+        font-size:1.2em;
+        font-weight:bold;
+        margin-top:1em;
+        margin-bottom:0.5em;
+        text-align:center }
+      div.subtitle {
+        color:#C0F0C0;
+        font-size:0.8em;
+        margin-bottom:1em;
+        text-align:center }
+      div.freetext { color:#F0F0F0 }
+      div.list     { color:#C0C0F0 }
+    </style>
+  </head>
+  <body>
+    $ 2.6
+      % Version 2.6
+      _ 2015-12-15
+      * The Speed chart is always shown.
+      * Improve the UI management of the speed field and the distance field.
+      * Remove the retry text with the geolocation.
+      * Add an option to select how the user want to display the speed value.
+      * Rename the recorded file to 'cellhistory'.
+      * Add speed and distance to the equals function of the TowerInfo object.
+      * Increase the limits of the Y axis.
+      * Add informations to the notification text.
+      * Do not insert the speed points if the option is not enabled.
+      * Add more logs (GPS).
+      * Add an option to disable the logs processing.
+      * Add an option to display the changelog informations.
+      * Remove the technician menu.
+      * Android Change Log: http://petoria.de/android-change-log
+
+    $ 2.5
+      % Version 2.5
+      _ 2015-12-14
+      * Remove the accelerometer and use only the GPS speed.
+
+    $ 2.4
+      % Version 2.4
+      _ 2015-12-14
+      * Add an other tab slide transition
+      * #4 Bad timers management.
+
+    $ 2.3
+      % Version 2.3
+      _ 2015-12-13
+      * Add an option to switch between speed from accelerometer and from GPS.
+
+    $ 2.2
+      % Version 2.2
+      _ 2015-12-13
+      * Add an adaptive filter to remove the wrong measures.
+
+    $ 2.1
+      % Version 2.1
+      _ 2015-12-13
+      * Add an option to disable the GPS service usage.
+      * Exports the frequency of all the timers.
+      * Disable GPS option if the geolocation is not allowed.
+      * Do not use the GPS if the location option is disabled.
+      * Display the UI if the user click on the notification area during the recording.
+      * Switch between the speed components and the distance components.
+      * Convert the speed in mph and in km/h.
+    $ END_OF_CHANGE_LOG
+  </body>
+</html>

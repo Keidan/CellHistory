@@ -1,6 +1,8 @@
 package org.kei.android.phone.cellhistory.prefs;
 
 import org.kei.android.atk.utils.Tools;
+import org.kei.android.atk.utils.changelog.ChangeLog;
+import org.kei.android.atk.utils.changelog.ChangeLogIds;
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.EffectPreferenceActivity;
 import org.kei.android.phone.cellhistory.R;
@@ -8,12 +10,10 @@ import org.kei.android.phone.cellhistory.activities.LogActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 /**
  *******************************************************************************
@@ -45,10 +45,12 @@ public class Preferences extends EffectPreferenceActivity {
   public static final String   PREFS_KEY_RECORDER         = "prefRecorder";
   public static final String   PREFS_KEY_TECHNICIAN       = "prefTechnician";
   public static final String   PREFS_KEY_VERSION          = "prefVersion";
+  public static final String   PREFS_KEY_CHANGELOG        = "prefChangelog";
   public static final boolean  PREFS_DEFAULT_CHART_ENABLE = true;
   public static final boolean  PREFS_DEFAULT_LOG_ENABLE   = false;
   public static final int      PREFS_DEFAULT_CURRENT_TAB  = 0;
   private MyPreferenceFragment prefFrag                   = null;
+  private ChangeLog            changeLog                  = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -56,6 +58,14 @@ public class Preferences extends EffectPreferenceActivity {
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
     .replace(android.R.id.content, prefFrag).commit();
+    changeLog = new ChangeLog(
+        new ChangeLogIds(
+            R.raw.changelog, 
+            R.string.changelog_ok_button, 
+            R.string.background_color, 
+            R.string.changelog_title, 
+            R.string.changelog_full_title, 
+            R.string.changelog_show_full), this);
     checkValues();
   }
   
@@ -146,14 +156,15 @@ public class Preferences extends EffectPreferenceActivity {
 
     prefFrag.findPreference(PREFS_KEY_VERSION).setTitle(
         getResources().getString(R.string.app_name));
-    try {
-      final PackageInfo pInfo = getPackageManager().getPackageInfo(
-          getPackageName(), 0);
-      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(pInfo.versionName);
-    } catch (final Exception e) {
-      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
-      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(e.getMessage());
-    }
+      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(changeLog.getLastVersion());
+    prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(
+        new Preference.OnPreferenceClickListener() {
+          @Override
+          public boolean onPreferenceClick(final Preference preference) {
+            changeLog.getFullLogDialog().show();
+            return true;
+          }
+        });
   }
   
   private static class MyPreferenceFragment extends PreferenceFragment {
