@@ -149,7 +149,11 @@ public class TowerTask extends PhoneStateListener implements Runnable {
           else {
             app.getGlobalTowerInfo().setNeighboringNb(nci.size());
             for(NeighboringCellInfo ci : nci) {
-              CellHistoryApp.addLog(activity, ci);
+              if(ci.toString().equals("[]"))
+                CellHistoryApp.addLog(activity, "NeighboringCellInfo[-1, -1, -1, -1, -1]");
+              else
+                CellHistoryApp.addLog(activity, ci);
+                
               int rssi = ci.getRssi();
               if(rssi != NeighboringCellInfo.UNKNOWN_RSSI)
                 rssi = -113 + 2 * rssi;

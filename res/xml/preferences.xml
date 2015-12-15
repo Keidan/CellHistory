@@ -27,12 +27,19 @@
             android:summary="@string/pref_recorder_summary">
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_title_infos" >
+    <PreferenceCategory android:title="@string/pref_title_logs" >
+        <CheckBoxPreference
+            android:key="prefLogsEnable"
+            android:defaultValue="false"
+            android:summary="@string/pref_log_enable_summary"
+            android:title="@string/pref_log_enable_title" />
         <Preference
             android:key="prefLogs"
             android:title="@string/pref_log_title"
             android:summary="@string/pref_log_summary">
         </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_infos" >
         <Preference
             android:key="prefTechnician"
             android:title="@string/pref_technician_code_title"

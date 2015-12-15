@@ -10,12 +10,15 @@ import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
+import org.kei.android.phone.cellhistory.prefs.Preferences;
 import org.kei.android.phone.cellhistory.tasks.ProviderTask;
 import org.kei.android.phone.cellhistory.tasks.TowerTask;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 /**
  *******************************************************************************
@@ -78,9 +81,22 @@ public class CellHistoryApp extends Application {
   public static void addLog(final Context c, final Object msg) {
     final CellHistoryApp ctx = CellHistoryApp.getApp(c);
     ctx.lock();
-    final String head = new SimpleDateFormat("yyyyMMdd [hhmmssa]: \n",
-        Locale.US).format(new Date());
-    ctx.getLogBuffer().add(head + msg);
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+    if(prefs.getBoolean(Preferences.PREFS_KEY_LOG_ENABLE, Preferences.PREFS_DEFAULT_LOG_ENABLE)) {
+      String head = new SimpleDateFormat("yyyyMMdd [hhmmssa]: \n",
+          Locale.US).format(new Date());
+      try {
+        throw new Exception();
+      } catch(Exception e) {
+        StackTraceElement ste = e.getStackTrace()[1];
+        String name = ste.getClassName();
+        int n = -1;
+        if((n = name.lastIndexOf('.')) != -1)
+          name = name.substring(n+1);
+        head += name + "->" + ste.getMethodName() + "(" + ste.getLineNumber() + ")\n";
+      }
+      ctx.getLogBuffer().add(head + msg);
+    }
     ctx.unlock();
   }
   

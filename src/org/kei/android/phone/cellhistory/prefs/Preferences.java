@@ -39,12 +39,14 @@ public class Preferences extends EffectPreferenceActivity {
   public static final String   PREFS_KEY_CHART_ENABLE     = "prefChartEnable";
   public static final String   PREFS_KEY_TIMERS           = "prefTimers";
   public static final String   PREFS_KEY_LOG              = "prefLogs";
+  public static final String   PREFS_KEY_LOG_ENABLE       = "prefLogsEnable";
   public static final String   PREFS_KEY_UI               = "prefUI";
   public static final String   PREFS_KEY_GEOLOCATION      = "prefGeolocation";
   public static final String   PREFS_KEY_RECORDER         = "prefRecorder";
   public static final String   PREFS_KEY_TECHNICIAN       = "prefTechnician";
   public static final String   PREFS_KEY_VERSION          = "prefVersion";
   public static final boolean  PREFS_DEFAULT_CHART_ENABLE = true;
+  public static final boolean  PREFS_DEFAULT_LOG_ENABLE   = false;
   public static final int      PREFS_DEFAULT_CURRENT_TAB  = 0;
   private MyPreferenceFragment prefFrag                   = null;
 

@@ -57,6 +57,7 @@
     <string name="pref_title_settings">Settings</string>
     <string name="pref_title_infos">Informations</string>
     <string name="pref_title_timers">Timers</string>
+    <string name="pref_title_logs">Logs</string>
     
     
     <string name="pref_timers_ui_title">User interface</string>
@@ -107,8 +108,9 @@
     <string name="pref_geolocation_key_opencellid_title">OpenCellID API Key</string>
     <string name="pref_geolocation_get_key_opencellid_title">Click to obtain the OpenCellID API Key</string>
     
-    
-	<string name="pref_log_title">Logs</string>
-	<string name="pref_log_summary">Last application logs.</string>
-
+	<string name="pref_log_enable_title">Enable</string>
+	<string name="pref_log_enable_summary">Enable the logs processing.</string>
+	<string name="pref_log_title">Display</string>
+	<string name="pref_log_summary">Display the last application logs.</string>
+	
 </resources>
