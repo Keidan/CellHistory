@@ -71,6 +71,8 @@
     <string name="pref_timers_ui_summary">Used to refresh the UI.</string>
     <string name="pref_timers_task_provider_title">Provider</string>
     <string name="pref_timers_task_provider_summary">Used to retrieve the cell tower location.</string>
+    <string name="pref_timers_task_gps_title">GPS</string>
+    <string name="pref_timers_task_gps_summary">Used to retrieve the speed and the distance.</string>
     <string name="pref_timers_task_tower_title">Tower</string>
     <string name="pref_timers_task_tower_summary">Used to retrieve the cell tower informations.</string>
     

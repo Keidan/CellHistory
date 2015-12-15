@@ -11,19 +11,16 @@ import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
+import org.kei.android.phone.cellhistory.tasks.GpsTask.GpsListener;
+import org.kei.android.phone.cellhistory.tasks.GpsTask.GpsTaskEvent;
 import org.kei.android.phone.cellhistory.towers.CellIdHelper;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 import org.kei.android.phone.cellhistory.views.TimeChartHelper;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -61,7 +58,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
  *******************************************************************************
  */
 public class ProviderFragment extends Fragment implements UITaskFragment,
-OnItemSelectedListener, OnClickListener, LocationListener {
+OnItemSelectedListener, OnClickListener, GpsListener {
   /* UI */
   private Spinner           spiGeoProvider               = null;
   private TextView          txtGeoProvider               = null;
@@ -85,7 +82,6 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   private int               color_orange                 = Color.BLACK;
   private int               color_blue_dark              = Color.BLACK;
   private int               color_blue_dark_transparent  = Color.BLACK;
-  private LocationManager   lm                           = null;
   private String            txtGpsDisabled               = "";
   private String            txtGpsDisabledOption         = "";
   private String            txtGpsOutOfService           = "";
@@ -258,17 +254,9 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   }
 
   @Override
-  public void onDestroy() {
-    if (lm != null) {
-      lm.removeUpdates(this);
-      lm = null;
-    }
-    super.onDestroy();
-  }
-
-  @Override
   public void onResume() {
     super.onResume();
+    Log.e("TAG", "MESSAGE onResume");
     app.getProviderCtx().clear();
     
     chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
@@ -282,30 +270,16 @@ OnItemSelectedListener, OnClickListener, LocationListener {
       spiGeoProvider.setVisibility(View.VISIBLE);
       if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
           PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
-        if (lm == null) {
-          lm = (LocationManager) getActivity().getSystemService(
-              Context.LOCATION_SERVICE);
-          if (lm != null) {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
-                PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)), 10f,
-                this);
-          }
-          setGpsVisibility(true);
-        }
+        setGpsVisibility(true);
+        app.getGpsTask().setGpsListener(this);
       } else {
-        if (lm != null) {
-          lm.removeUpdates(this);
-          lm = null;
-        }
+        app.getGpsTask().setGpsListener(null);
         resetGpsInfo(txtGpsDisabledOption, color_orange);
       }
     } else {
+      app.getGpsTask().setGpsListener(null);
       txtGeoProvider.setVisibility(View.VISIBLE);
       spiGeoProvider.setVisibility(View.GONE);
-      if (lm != null) {
-        lm.removeUpdates(this);
-        lm = null;
-      }
       resetGpsInfo(txtGpsDisabledOption, color_orange);
     }
   }
@@ -337,8 +311,8 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   
   @Override
   public void onClick(final View v) {
-    
     if(v.equals(rbSpeedMS)) {
+      if(chart.getVisibility() == View.VISIBLE) chart.clear();
       CellHistoryApp.addLog(getActivity(), "Select MS display");
       Editor e = prefs.edit();
       e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_MS);
@@ -346,6 +320,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
       rbSpeedKMH.setChecked(false);
       rbSpeedMPH.setChecked(false);
     } else if(v.equals(rbSpeedKMH)) {
+      if(chart.getVisibility() == View.VISIBLE) chart.clear();
       CellHistoryApp.addLog(getActivity(), "Select KMH display");
       Editor e = prefs.edit();
       e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_KMH);
@@ -353,6 +328,7 @@ OnItemSelectedListener, OnClickListener, LocationListener {
       rbSpeedMS.setChecked(false);
       rbSpeedMPH.setChecked(false);
     } else if(v.equals(rbSpeedMPH)) {
+      if(chart.getVisibility() == View.VISIBLE) chart.clear();
       CellHistoryApp.addLog(getActivity(), "Select MPH display");
       Editor e = prefs.edit();
       e.putInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_SPEED_MPH);
@@ -384,59 +360,17 @@ OnItemSelectedListener, OnClickListener, LocationListener {
   }
   
   @Override
-  public void onLocationChanged(final Location location) {
-    CellHistoryApp.addLog(getActivity(), location);
-    double speed = 0.0;
-    final Location loc1 = new Location("");
-    app.getGlobalTowerInfo().lock();
-    try {
-      speed = location.getSpeed();
-      app.getGlobalTowerInfo().setSpeed(speed);
-      if (!Double.isNaN(app.getGlobalTowerInfo().getLatitude())
-          && !Double.isNaN(app.getGlobalTowerInfo().getLongitude())) {
-        loc1.setLatitude(app.getGlobalTowerInfo().getLatitude());
-        loc1.setLongitude(app.getGlobalTowerInfo().getLongitude());
-        app.getGlobalTowerInfo().setDistance(loc1.distanceTo(location));
-        CellHistoryApp.addLog(getActivity(), "New distance: " + app.getGlobalTowerInfo().getDistance() + " m.");
-      }
-    } finally {
-      app.getGlobalTowerInfo().unlock();
-    }
-  }
-
-  @Override
-  public void onStatusChanged(final String provider, final int status,
-      final Bundle extras) {
-    if(provider.equals(LocationManager.GPS_PROVIDER)) {
-      switch (status) {
-        case LocationProvider.OUT_OF_SERVICE:
-          CellHistoryApp.addLog(getActivity(), "onStatusChanged("+provider+", OUT_OF_SERVICE)");
-          resetGpsInfo(txtGpsOutOfService, color_red);
-          break;
-        case LocationProvider.TEMPORARILY_UNAVAILABLE:
-          CellHistoryApp.addLog(getActivity(), "onStatusChanged("+provider+", TEMPORARILY_UNAVAILABLE)");
-          resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
-          break;
-        case LocationProvider.AVAILABLE:
-          setGpsVisibility(true);
-          break;
-      }
-    }
-  }
-
-  @Override
-  public void onProviderEnabled(final String provider) {
-    if(provider.equals(LocationManager.GPS_PROVIDER)) {
-      CellHistoryApp.addLog(getActivity(), "onProviderEnabled("+provider+")");
+  public void gpsUpdate(GpsTaskEvent event) {
+    if(event == GpsTaskEvent.AVAILABLE) {
       setGpsVisibility(true);
-    }
-  }
-
-  @Override
-  public void onProviderDisabled(final String provider) {
-    if(provider.equals(LocationManager.GPS_PROVIDER)) {
-      CellHistoryApp.addLog(getActivity(), "onProviderDisabled("+provider+")");
+    } else if(event == GpsTaskEvent.DISABLED) {
       resetGpsInfo(txtGpsDisabled, color_red);
+    } else if(event == GpsTaskEvent.ENABLED) {
+      setGpsVisibility(true);
+    } else if(event == GpsTaskEvent.OUT_OF_SERVICE) {
+      resetGpsInfo(txtGpsOutOfService, color_red);
+    } else if(event == GpsTaskEvent.TEMPORARILY_UNAVAILABLE) {
+      resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
     }
   }
 
@@ -471,4 +405,5 @@ OnItemSelectedListener, OnClickListener, LocationListener {
     if (txtSpeedError.getVisibility() != v2) txtSpeedError.setVisibility(v2);
     
   }
+
 }

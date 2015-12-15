@@ -11,6 +11,7 @@ import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
+import org.kei.android.phone.cellhistory.tasks.GpsTask;
 import org.kei.android.phone.cellhistory.tasks.ProviderTask;
 import org.kei.android.phone.cellhistory.tasks.TowerTask;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
@@ -48,6 +49,7 @@ public class CellHistoryApp extends Application {
   private ProviderCtx      providerCtx           = null;
   private RecorderCtx      recorderCtx           = null;
   private ProviderTask     providerTask          = null;
+  private GpsTask          gpsTask               = null;
   private TowerTask        towerTask             = null;
   private int              currentSlideIndex     = 0;
 
@@ -57,6 +59,7 @@ public class CellHistoryApp extends Application {
     recorderCtx = new RecorderCtx();
     providerTask = new ProviderTask(this);
     towerTask = new TowerTask(this);
+    gpsTask = new GpsTask(this);
   }
 
   public Buffer getLogBuffer() {
@@ -126,6 +129,10 @@ public class CellHistoryApp extends Application {
   
   public TowerTask getTowerTask() {
     return towerTask;
+  }
+  
+  public GpsTask getGpsTask() {
+    return gpsTask;
   }
 
   public int getCurrentSlideIndex() {

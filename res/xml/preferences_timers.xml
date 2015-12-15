@@ -19,5 +19,11 @@
             android:summary="@string/pref_timers_task_provider_summary"
             android:title="@string/pref_timers_task_provider_title"   
     		android:inputType="number" />
+        <EditTextPreference
+            android:key="timersTaskGps"
+            android:defaultValue="1000"
+            android:summary="@string/pref_timers_task_gps_summary"
+            android:title="@string/pref_timers_task_gps_title"   
+    		android:inputType="number" />
     </PreferenceCategory>
 </PreferenceScreen>

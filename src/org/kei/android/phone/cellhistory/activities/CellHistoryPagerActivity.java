@@ -93,6 +93,7 @@ IThemeActivity, OnPageChangeListener {
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
     app.getProviderTask().initialize(this, prefs);
     app.getTowerTask().initialize(this, prefs);
+    app.getGpsTask().initialize(this);
 
     fragments = new Vector<Fragment>();
     fragments.add(new TowerFragment());
@@ -116,6 +117,11 @@ IThemeActivity, OnPageChangeListener {
           Integer.parseInt(prefs.getString(
               PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
+
+      app.getGpsTask().start(
+          Integer.parseInt(prefs.getString(
+              PreferencesTimers.PREFS_KEY_TIMERS_TASK_GPS,
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_GPS)));
     } else {
       app.getProviderTask().stop();
     }
@@ -167,8 +173,13 @@ IThemeActivity, OnPageChangeListener {
           Integer.parseInt(prefs.getString(
               PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
+      app.getGpsTask().start(
+          Integer.parseInt(prefs.getString(
+              PreferencesTimers.PREFS_KEY_TIMERS_TASK_GPS,
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_GPS)));
     } else {
       app.getProviderTask().stop();
+      app.getGpsTask().stop();
     }
     execUpdateUI = new ScheduledThreadPoolExecutor(1);
     execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, Integer.parseInt(prefs
@@ -185,6 +196,7 @@ IThemeActivity, OnPageChangeListener {
       execUpdateUI = null;
     }
     app.getProviderTask().stop();
+    app.getGpsTask().stop();
     app.getTowerTask().stop();
     app.getRecorderCtx().flushAndClose();
   }
@@ -203,31 +215,26 @@ IThemeActivity, OnPageChangeListener {
   }
 
   private final Runnable uiTask = new Runnable() {
-                                  @Override
-                                  public void run() {
-                                    runOnUiThread(new Runnable() {
-                                      @Override
-                                      public void run() {
-                                        for (final Fragment f : fragments) {
-                                          app.getGlobalTowerInfo().lock();
-                                          try {
-                                            final UITaskFragment tf = (UITaskFragment) f;
-                                            tf.processUI(app
-                                                .getGlobalTowerInfo());
-                                          } catch (final Throwable e) {
-                                            Log.e(
-                                                CellHistoryPagerActivity.class
-                                                    .getSimpleName(),
-                                                "Exception: " + e.getMessage(),
-                                                e);
-                                          } finally {
-                                            app.getGlobalTowerInfo().unlock();
-                                          }
-                                        }
-                                      }
-                                    });
-                                  }
-                                };
+    @Override
+    public void run() {
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          for (final Fragment f : fragments) {
+            app.getGlobalTowerInfo().lock();
+            try {
+              final UITaskFragment tf = (UITaskFragment) f;
+              tf.processUI(app.getGlobalTowerInfo());
+            } catch (final Throwable e) {
+              Log.e(CellHistoryPagerActivity.class.getSimpleName(), "Exception: " + e.getMessage(), e);
+            } finally {
+              app.getGlobalTowerInfo().unlock();
+            }
+          }
+        }
+      });
+    }
+  };
 
   @Override
   public void onBackPressed() {

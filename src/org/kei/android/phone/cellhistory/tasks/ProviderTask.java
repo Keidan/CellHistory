@@ -110,14 +110,5 @@ public class ProviderTask implements Runnable {
     retryLoc++;
     app.getProviderCtx().updateAll(oldCellId, oldLoc, retryLoc);
   }
-
-  public void accelUpdate(float timestamp, double velocity) {
-    app.getGlobalTowerInfo().lock();
-    try {
-      app.getGlobalTowerInfo().setSpeed(velocity);
-    } finally {
-      app.getGlobalTowerInfo().unlock();
-    }
-  }
   
 }
