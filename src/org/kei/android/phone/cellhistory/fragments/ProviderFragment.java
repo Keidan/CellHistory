@@ -220,14 +220,18 @@ OnItemSelectedListener, OnClickListener, LocationListener {
       txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
     else
       txtDistance.setText(String.format("%.02f", dist) + " m");
-    if (chart.getVisibility() == View.VISIBLE) {
-      double s = s_ms;
-      int i = prefs.getInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_DEFAULT_CURRENT_SPEED);
-      if(i == PreferencesGeolocation.PREFS_SPEED_KMH) s = s_kmh;
-      else if(i == PreferencesGeolocation.PREFS_SPEED_MPH) s = s_mph;
-      chart.checkYAxisMax(s);
-      chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
-          new Date().getTime(), s);
+    if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
+        PreferencesGeolocation.PREFS_DEFAULT_LOCATE) && prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
+            PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
+      if (chart.getVisibility() == View.VISIBLE) {
+        double s = s_ms;
+        int i = prefs.getInt(PreferencesGeolocation.PREFS_KEY_CURRENT_SPEED, PreferencesGeolocation.PREFS_DEFAULT_CURRENT_SPEED);
+        if(i == PreferencesGeolocation.PREFS_SPEED_KMH) s = s_kmh;
+        else if(i == PreferencesGeolocation.PREFS_SPEED_MPH) s = s_mph;
+        chart.checkYAxisMax(s);
+        chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
+            new Date().getTime(), s);
+      }
     }
   }
   
@@ -323,6 +327,11 @@ OnItemSelectedListener, OnClickListener, LocationListener {
       rbSpeedMS.setVisibility(View.GONE);
       rbSpeedKMH.setVisibility(View.GONE);
       rbSpeedMPH.setVisibility(View.GONE);
+    }
+    if(chart.getVisibility() == View.VISIBLE) {
+      chart.checkYAxisMax(0.0);
+      chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
+          new Date().getTime(), 0.0);
     }
   }
   
