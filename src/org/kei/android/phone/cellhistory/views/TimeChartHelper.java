@@ -132,15 +132,17 @@ public class TimeChartHelper {
   }
 
   public void checkYAxisMax(final double value) {
-    if (value > renderer.getYAxisMax())
-      renderer.setYAxisMax(value + 2);
+    double v = value;
+    if(v < 0) v = 1;
+    if (v > renderer.getYAxisMax())
+      renderer.setYAxisMax(v + (v/2));
     else {
       double max = 0.0;
       for (int i = 0; i < timeSeries.getItemCount(); ++i)
         if (timeSeries.getY(i) > max)
           max = timeSeries.getY(i);
       if (max != 0 && renderer.getYAxisMax() > max)
-        renderer.setYAxisMax(max + 2);
+        renderer.setYAxisMax(max + (max / 2));
 
     }
   }
