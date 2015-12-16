@@ -256,7 +256,6 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   @Override
   public void onResume() {
     super.onResume();
-    Log.e("TAG", "MESSAGE onResume");
     app.getProviderCtx().clear();
     
     chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
