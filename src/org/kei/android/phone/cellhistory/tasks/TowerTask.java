@@ -49,11 +49,11 @@ import android.util.Log;
  *******************************************************************************
  */
 public class TowerTask extends PhoneStateListener implements Runnable {
-  private ScheduledThreadPoolExecutor stpe = null;
-  private CellHistoryApp              app  = null;
+  private ScheduledThreadPoolExecutor stpe             = null;
+  private CellHistoryApp              app              = null;
   private Activity                    activity;
   private SharedPreferences           prefs;
-  private TelephonyManager            telephonyManager     = null;
+  private TelephonyManager            telephonyManager = null;
   
   public TowerTask(final CellHistoryApp app) {
     this.app = app;
@@ -98,6 +98,7 @@ public class TowerTask extends PhoneStateListener implements Runnable {
     }
   
   public void run() {
+    long records = 0;
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setTimestamp(new Date().getTime());
@@ -189,6 +190,7 @@ public class TowerTask extends PhoneStateListener implements Runnable {
       } else
         CellHistoryApp.addLog(activity, "Invalid TelephonyManager");
       app.getGlobalTowerInfo().setRecords(app.getRecorderCtx().getCounter());
+      records = app.getGlobalTowerInfo().getRecords();
       if(app.getProviderCtx().isValid()) {
         String [] split = app.getProviderCtx().getOldLoc().split(",");
         app.getGlobalTowerInfo().setLatitude(Double.parseDouble(split[0]));
@@ -218,7 +220,9 @@ public class TowerTask extends PhoneStateListener implements Runnable {
         prefs.getString(PreferencesRecorder.PREFS_KEY_NEIGHBORING_SEP, PreferencesRecorder.PREFS_DEFAULT_NEIGHBORING_SEP), 
         Integer.parseInt(prefs.getString(PreferencesRecorder.PREFS_KEY_FLUSH, PreferencesRecorder.PREFS_DEFAULT_FLUSH)), 
         app, 
-        prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DETECT_CHANGE, PreferencesRecorder.PREFS_DEFAULT_DETECT_CHANGE));
+        prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DETECT_CHANGE, PreferencesRecorder.PREFS_DEFAULT_DETECT_CHANGE),
+        records
+        );
   }
   
 }

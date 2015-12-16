@@ -1,18 +1,12 @@
 package org.kei.android.phone.cellhistory.fragments;
 
-import java.util.Locale;
-
-import org.kei.android.atk.utils.NotificationHelper;
 import org.kei.android.atk.utils.Tools;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
-import org.kei.android.phone.cellhistory.activities.CellHistoryPagerActivity;
+import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.PreferencesRecorder;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -47,9 +41,6 @@ import android.widget.ToggleButton;
  */
 public class RecorderFragment extends Fragment implements UITaskFragment,
     OnClickListener {
-  private static final int           SIZE_1KB      = 0x400;
-  private static final int           SIZE_1MB      = 0x100000;
-  private static final int           SIZE_1GB      = 0x40000000;
   /* UI */
   private TextView                   txtRecords    = null;
   private ProgressBar                pbBuffer      = null;
@@ -58,9 +49,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   /* context */
   private SharedPreferences          prefs         = null;
   private CellHistoryApp             app           = null;
-  private NotificationHelper         nfyHelper     = null;
-  private int notifyID = 1;
-  //private int notificationNum = 0;
 
 
   @Override
@@ -78,7 +66,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     /* context */
     app = CellHistoryApp.getApp(getActivity());
     prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    nfyHelper = new NotificationHelper(getActivity(), notifyID);
 
     /* UI */
     txtSize = (TextView) getView().findViewById(R.id.txtSize);
@@ -107,23 +94,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     if(txtRecords == null) return;
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());
     txtRecords.setText(String.valueOf(ti.getRecords()));
-    
-    float s = app.getRecorderCtx().getSize();
-    String ss;
-    if(s < SIZE_1KB)
-      ss = String.format(Locale.US, "%d octet%s", (int)s, s > 1 ? "s" : "");
-    else if(s < SIZE_1MB)
-      ss = String.format("%.02f", (s/SIZE_1KB)) + " Ko";
-    else if(s < SIZE_1GB)
-      ss = String.format("%.02f", (s/SIZE_1MB)) + " Mo";
-    else
-      ss = String.format("%.02f", (s/SIZE_1GB)) + " Go";
-    txtSize.setText(ss);
-    
-    String message = "Records: " + txtRecords.getText().toString() + "\n";
-    message += "Buffer: " + app.getRecorderCtx().getFrames().size() + "/"  + pbBuffer.getMax() + "\n";
-    message += "Size: " + ss + "\n";
-    nfyHelper.update(message);
+    txtSize.setText(RecorderCtx.convertToHuman(app.getRecorderCtx().getSize()));
   }
 
   @Override
@@ -145,7 +116,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
                   PreferencesRecorder.PREFS_DEFAULT_FORMATS),
               prefs.getBoolean(PreferencesRecorder.PREFS_KEY_INDENTATION,
                   PreferencesRecorder.PREFS_DEFAULT_INDENTATION));
-          notificationShow();
+          app.notificationRecorderShow(pbBuffer.getMax());
         } catch (final Exception e) {
           Tools.toast(getActivity(), R.drawable.ic_launcher,
               "Unable to start the capture: " + e.getMessage());
@@ -163,21 +134,9 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       public void run() {
         toggleOnOff.setChecked(false);
         app.getRecorderCtx().flushAndClose();
-        nfyHelper.hide();
+        app.getNfyRecorderHelper().hide();
       }
     });
   }
 
-  public void notificationShow() {
-    final Activity a = getActivity();
-    Intent toLaunch = new Intent(a.getApplicationContext(), CellHistoryPagerActivity.class);
-    toLaunch.setAction("android.intent.action.MAIN");
-    toLaunch.addCategory("android.intent.category.LAUNCHER");
-    PendingIntent intentBack = PendingIntent.getActivity(a.getApplicationContext(), 0, toLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
-    String aVeryLongString = "Records: 0\n";
-    aVeryLongString += "Buffer: 0/"  + pbBuffer.getMax() + "\n";
-    aVeryLongString += "Size: 0octet\n";
-    nfyHelper.setExtra(false, false);
-    nfyHelper.show(R.drawable.ic_launcher_green, "ticker",  getString(R.string.app_name), aVeryLongString, intentBack);
-  }
 }

@@ -31,20 +31,23 @@ import org.kei.android.phone.cellhistory.towers.TowerInfo;
  *******************************************************************************
  */
 public class RecorderCtx {
-  public static final String FORMAT_CSV = "CSV";
+  private static final int   SIZE_1KB    = 0x400;
+  private static final int   SIZE_1MB    = 0x100000;
+  private static final int   SIZE_1GB    = 0x40000000;
+  public static final String FORMAT_CSV  = "CSV";
   public static final String FORMAT_JSON = "JSON";
-  public static final String FORMAT_XML = "XML";
+  public static final String FORMAT_XML  = "XML";
   private long               counter     = 0L;
   private long               size        = 0L;
   private File               currentFile = null;
   private final List<String> frames      = new ArrayList<String>();
   private PrintWriter        pw          = null;
   private String             format      = FORMAT_JSON;
-  private boolean indentation = true;
+  private boolean            indentation = true;
   
 
   public void writeData(final String sep, final String sepNb, final int limit,
-      final CellHistoryApp ctx, final boolean detectChange) {
+      final CellHistoryApp ctx, final boolean detectChange, long records) {
     if (pw != null) {
       if (detectChange) {
         if (ctx.getBackupTowerInfo() == null
@@ -64,6 +67,10 @@ public class RecorderCtx {
       }
       if (frames.size() >= limit)
         write();
+      String message = "Records: " + records + "\n";
+      message += "Buffer: " + frames.size() + "/"  + limit + "\n";
+      message += "Size: " + convertToHuman(size) + "\n";
+      ctx.getNfyRecorderHelper().update(message);
     }
   }
   
@@ -111,6 +118,19 @@ public class RecorderCtx {
     }
     frames.clear();
     pw.flush();
+  }
+  
+  public static String convertToHuman(float f) {
+    String sf = "";
+    if(f < SIZE_1KB)
+      sf = String.format(Locale.US, "%d octet%s", (int)f, f > 1 ? "s" : "");
+    else if(f < SIZE_1MB)
+      sf = String.format("%.02f", (f/SIZE_1KB)) + " Ko";
+    else if(f < SIZE_1GB)
+      sf = String.format("%.02f", (f/SIZE_1MB)) + " Mo";
+    else
+      sf = String.format("%.02f", (f/SIZE_1GB)) + " Go";
+    return sf;
   }
   
   public boolean isRunning() {

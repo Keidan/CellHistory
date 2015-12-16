@@ -57,7 +57,10 @@ public class CellHistoryApp extends Application {
   private TowerTask          towerTask             = null;
   private int                currentSlideIndex     = 0;
   private NotificationHelper nfyHelper             = null;
+  private NotificationHelper nfyRecorderHelper     = null;
   private final int          notifyID              = 2;
+  private final int          notifyRecorderID      = 1;
+  private PendingIntent      pendingIntent         = null;
 
   public CellHistoryApp() {
     lock = new ReentrantLock();
@@ -109,21 +112,41 @@ public class CellHistoryApp extends Application {
     ctx.unlock();
   }
   
-
+  private PendingIntent getPendingIntent() {
+    if(pendingIntent == null) {
+      final Intent toLaunch = new Intent(getApplicationContext(),
+          CellHistoryPagerActivity.class);
+      toLaunch.setAction("android.intent.action.MAIN");
+      toLaunch.addCategory("android.intent.category.LAUNCHER");
+      pendingIntent = PendingIntent
+          .getActivity(getApplicationContext(), 0, toLaunch,
+              PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+    return pendingIntent;
+  }
+  
+  public void notificationRecorderShow(int max) {
+    if(nfyRecorderHelper == null)
+      nfyRecorderHelper = new NotificationHelper(getApplicationContext(), notifyRecorderID);
+    String aVeryLongString = "Records: 0\n";
+    aVeryLongString += "Buffer: 0/"  + max + "\n";
+    aVeryLongString += "Size: 0octet\n";
+    nfyRecorderHelper.setExtra(false, false);
+    nfyRecorderHelper.show(R.drawable.ic_launcher_green, "ticker",  getString(R.string.app_name), aVeryLongString, getPendingIntent());
+  }
   
   public void notificationShow() {
-    final Intent toLaunch = new Intent(getApplicationContext(),
-        CellHistoryPagerActivity.class);
-    toLaunch.setAction("android.intent.action.MAIN");
-    toLaunch.addCategory("android.intent.category.LAUNCHER");
-    final PendingIntent intentBack = PendingIntent
-        .getActivity(getApplicationContext(), 0, toLaunch,
-            PendingIntent.FLAG_UPDATE_CURRENT);
     if(nfyHelper == null)
       nfyHelper = new NotificationHelper(getApplicationContext(), notifyID);
     nfyHelper.setExtra(false, false);
     nfyHelper.show(R.drawable.ic_launcher, null, getString(R.string.app_name),
-        getString(R.string.notification), intentBack);
+        getString(R.string.notification), getPendingIntent());
+  }
+  
+  public NotificationHelper getNfyRecorderHelper() {
+    if(nfyRecorderHelper == null)
+      nfyRecorderHelper = new NotificationHelper(getApplicationContext(), notifyRecorderID);
+    return nfyRecorderHelper;
   }
   
   public NotificationHelper getNfyHelper() {
