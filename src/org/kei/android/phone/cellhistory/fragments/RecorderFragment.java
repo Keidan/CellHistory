@@ -105,8 +105,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   @Override
   public void processUI(final TowerInfo ti) throws Throwable {
     if(txtRecords == null) return;
-    txtRecords.setText(String.valueOf(ti.getRecords()));
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());
+    txtRecords.setText(String.valueOf(ti.getRecords()));
     
     float s = app.getRecorderCtx().getSize();
     String ss;
@@ -142,7 +142,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
               prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DEL_PREV_FILE,
                   PreferencesRecorder.PREFS_DEFAULT_DEL_PREV_FILE),
               prefs.getBoolean(PreferencesRecorder.PREFS_KEY_SUPPORT_JSON,
-                      PreferencesRecorder.PREFS_DEFAULT_SUPPORT_JSON));
+                  PreferencesRecorder.PREFS_DEFAULT_SUPPORT_JSON));
           notificationShow();
         } catch (final Exception e) {
           Tools.toast(getActivity(), R.drawable.ic_launcher,
