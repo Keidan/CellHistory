@@ -8,6 +8,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import org.kei.android.atk.utils.NotificationHelper;
+import org.kei.android.phone.cellhistory.activities.CellHistoryPagerActivity;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
@@ -17,7 +19,9 @@ import org.kei.android.phone.cellhistory.tasks.TowerTask;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -41,17 +45,19 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class CellHistoryApp extends Application {
-  private static final int CIRCULAR_BUFFER_DEPTH = 1500;
-  private Buffer           logs                  = null;
-  private Lock             lock                  = null;
-  private final TowerInfo  globalTi              = new TowerInfo();
-  private TowerInfo        backupTi              = null;
-  private ProviderCtx      providerCtx           = null;
-  private RecorderCtx      recorderCtx           = null;
-  private ProviderTask     providerTask          = null;
-  private GpsTask          gpsTask               = null;
-  private TowerTask        towerTask             = null;
-  private int              currentSlideIndex     = 0;
+  private static final int   CIRCULAR_BUFFER_DEPTH = 1500;
+  private Buffer             logs                  = null;
+  private Lock               lock                  = null;
+  private final TowerInfo    globalTi              = new TowerInfo();
+  private TowerInfo          backupTi              = null;
+  private ProviderCtx        providerCtx           = null;
+  private RecorderCtx        recorderCtx           = null;
+  private ProviderTask       providerTask          = null;
+  private GpsTask            gpsTask               = null;
+  private TowerTask          towerTask             = null;
+  private int                currentSlideIndex     = 0;
+  private NotificationHelper nfyHelper             = null;
+  private final int          notifyID              = 2;
 
   public CellHistoryApp() {
     lock = new ReentrantLock();
@@ -101,6 +107,29 @@ public class CellHistoryApp extends Application {
       ctx.getLogBuffer().add(head + msg);
     }
     ctx.unlock();
+  }
+  
+
+  
+  public void notificationShow() {
+    final Intent toLaunch = new Intent(getApplicationContext(),
+        CellHistoryPagerActivity.class);
+    toLaunch.setAction("android.intent.action.MAIN");
+    toLaunch.addCategory("android.intent.category.LAUNCHER");
+    final PendingIntent intentBack = PendingIntent
+        .getActivity(getApplicationContext(), 0, toLaunch,
+            PendingIntent.FLAG_UPDATE_CURRENT);
+    if(nfyHelper == null)
+      nfyHelper = new NotificationHelper(getApplicationContext(), notifyID);
+    nfyHelper.setExtra(false, false);
+    nfyHelper.show(R.drawable.ic_launcher, null, getString(R.string.app_name),
+        getString(R.string.notification), intentBack);
+  }
+  
+  public NotificationHelper getNfyHelper() {
+    if(nfyHelper == null)
+      nfyHelper = new NotificationHelper(getApplicationContext(), notifyID);
+    return nfyHelper;
   }
   
   public TowerInfo getGlobalTowerInfo() {

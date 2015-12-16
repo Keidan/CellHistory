@@ -7,6 +7,7 @@ import org.kei.android.atk.utils.Tools;
 import org.kei.android.atk.view.EffectPreferenceActivity;
 import org.kei.android.atk.view.chooser.FileChooser;
 import org.kei.android.atk.view.chooser.FileChooserActivity;
+import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
@@ -45,31 +46,57 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesRecorder extends EffectPreferenceActivity implements OnSharedPreferenceChangeListener {
-  public static final String   PREFS_KEY_FORMATS           = "recorderFormats";
-  public static final String   PREFS_KEY_SAVE_PATH              = "recorderSavePath";
-  public static final String   PREFS_KEY_FLUSH                  = "recorderFlush";
-  public static final String   PREFS_KEY_SEP                    = "recorderSep";
-  public static final String   PREFS_KEY_NEIGHBORING_SEP        = "recorderNeighboringSep";
-  public static final String   PREFS_KEY_DEL_PREV_FILE          = "recorderDeletePrevFile";
-  public static final String   PREFS_KEY_DETECT_CHANGE          = "recorderDetectChange";
-  public static final String   PREFS_DEFAULT_FLUSH              = "25";
-  public static final String   PREFS_DEFAULT_SEP                = TowerInfo.DEFAULT_TOSTRING_SEP;
-  public static final String   PREFS_DEFAULT_NEIGHBORING_SEP    = NeighboringInfo.DEFAULT_TOSTRING_SEP;
-  public static final String   PREFS_DEFAULT_SAVE_PATH          = Environment.getExternalStorageDirectory().getAbsolutePath();
-  public static final boolean  PREFS_DEFAULT_SAVE               = true;
-  public static final boolean  PREFS_DEFAULT_DEL_PREV_FILE      = true;
-  public static final boolean  PREFS_DEFAULT_DETECT_CHANGE      = true;
-  public static final String   PREFS_DEFAULT_FORMATS             = RecorderCtx.FORMAT_JSON;
-  private MyPreferenceFragment prefFrag                         = null;
-  private SharedPreferences    prefs                            = null;
+  public static final String   PREFS_KEY_FORMATS             = "recorderFormats";
+  public static final String   PREFS_KEY_SAVE_PATH           = "recorderSavePath";
+  public static final String   PREFS_KEY_FLUSH               = "recorderFlush";
+  public static final String   PREFS_KEY_SEP                 = "recorderSep";
+  public static final String   PREFS_KEY_NEIGHBORING_SEP     = "recorderNeighboringSep";
+  public static final String   PREFS_KEY_DEL_PREV_FILE       = "recorderDeletePrevFile";
+  public static final String   PREFS_KEY_DETECT_CHANGE       = "recorderDetectChange";
+  public static final String   PREFS_DEFAULT_FLUSH           = "25";
+  public static final String   PREFS_DEFAULT_SEP             = TowerInfo.DEFAULT_TOSTRING_SEP;
+  public static final String   PREFS_DEFAULT_NEIGHBORING_SEP = NeighboringInfo.DEFAULT_TOSTRING_SEP;
+  public static final String   PREFS_DEFAULT_SAVE_PATH       = Environment
+                                                                 .getExternalStorageDirectory()
+                                                                 .getAbsolutePath();
+  public static final boolean  PREFS_DEFAULT_SAVE            = true;
+  public static final boolean  PREFS_DEFAULT_DEL_PREV_FILE   = true;
+  public static final boolean  PREFS_DEFAULT_DETECT_CHANGE   = true;
+  public static final String   PREFS_DEFAULT_FORMATS         = RecorderCtx.FORMAT_JSON;
+  private MyPreferenceFragment prefFrag                      = null;
+  private SharedPreferences    prefs                         = null;
+  private boolean              exit                          = false;
+  private boolean              preferences                   = false;
+  private CellHistoryApp       app                           = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    app = CellHistoryApp.getApp(this);
     prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction().replace(android.R.id.content, prefFrag).commit();
     checkValues();
+  }
+
+  public void onResume() {
+    prefs.registerOnSharedPreferenceChangeListener(this);
+    super.onResume();
+    if (!app.getRecorderCtx().isRunning())
+      app.getNfyHelper().hide();
+  }
+  
+  public void onBackPressed() {
+    exit = true;
+    super.onBackPressed();
+  }
+  
+  public void onPause() {
+    prefs.unregisterOnSharedPreferenceChangeListener(this);
+    super.onPause();
+    if (!app.getRecorderCtx().isRunning() && !exit && !preferences)
+      app.notificationShow();
+    preferences = false;
   }
   
   @Override
@@ -116,6 +143,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
     pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
       @Override
       public boolean onPreferenceClick(Preference preference) {
+        preferences = true;
         Map<String, String> extra = new HashMap<String, String>();
         extra.put(FileChooser.FILECHOOSER_TYPE_KEY, "" + FileChooser.FILECHOOSER_TYPE_DIRECTORY_ONLY);
         extra.put(FileChooser.FILECHOOSER_TITLE_KEY, "Save");    
@@ -139,6 +167,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     // Check which request we're responding to
     if (requestCode == FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY) {
+      preferences = false;
       if (resultCode == RESULT_OK) {
         final String dir = data.getStringExtra(FileChooserActivity.FILECHOOSER_SELECTION_KEY);
         final SharedPreferences.Editor edit = prefs.edit();
@@ -156,17 +185,5 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
       setRetainInstance(true);
       addPreferencesFromResource(R.xml.preferences_recorder);
     }
-  }
-  
-  @Override
-  protected void onResume() {
-    super.onResume();
-    prefs.registerOnSharedPreferenceChangeListener(this);
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-    prefs.unregisterOnSharedPreferenceChangeListener(this);
   }
 }

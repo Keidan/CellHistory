@@ -4,6 +4,7 @@ package org.kei.android.phone.cellhistory.prefs;
 import org.kei.android.atk.utils.Tools;
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.EffectPreferenceActivity;
+import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 
 import android.content.SharedPreferences;
@@ -37,24 +38,46 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesUI extends EffectPreferenceActivity {
-  public static final String   TRANSITION_ZOOM                  = "org.kei.android.phone.cellhistory.prefs.TRANSITION_ZOOM";
-  public static final String   TRANSITION_DEPTH                 = "org.kei.android.phone.cellhistory.prefs.TRANSITION_DEPTH";
-  public static final String   THEME_LIGHT                      = "org.kei.android.phone.cellhistory.prefs.THEME_LIGHT";
-  public static final String   THEME_DARK                       = "org.kei.android.phone.cellhistory.prefs.THEME_DARK";
-  public static final String   PREFS_KEY_KEEP_SCREEN            = "uiKeepScreenOn";
-  public static final String   PREFS_KEY_SLIDE_TRANSITION       = "uiSlideTransition";
-  public static final boolean  PREFS_DEFAULT_KEEP_SCREEN        = true;
-  public static final String   PREFS_DEFAULT_SLIDE_TRANSITION   = TRANSITION_ZOOM;
-  private MyPreferenceFragment prefFrag                         = null;
-  private SharedPreferences    prefs                            = null;
+  public static final String   TRANSITION_ZOOM                = "org.kei.android.phone.cellhistory.prefs.TRANSITION_ZOOM";
+  public static final String   TRANSITION_DEPTH               = "org.kei.android.phone.cellhistory.prefs.TRANSITION_DEPTH";
+  public static final String   THEME_LIGHT                    = "org.kei.android.phone.cellhistory.prefs.THEME_LIGHT";
+  public static final String   THEME_DARK                     = "org.kei.android.phone.cellhistory.prefs.THEME_DARK";
+  public static final String   PREFS_KEY_KEEP_SCREEN          = "uiKeepScreenOn";
+  public static final String   PREFS_KEY_SLIDE_TRANSITION     = "uiSlideTransition";
+  public static final boolean  PREFS_DEFAULT_KEEP_SCREEN      = true;
+  public static final String   PREFS_DEFAULT_SLIDE_TRANSITION = TRANSITION_ZOOM;
+  private MyPreferenceFragment prefFrag                       = null;
+  private SharedPreferences    prefs                          = null;
+  private boolean              exit                           = false;
+  private boolean              preferences                    = false;
+  private CellHistoryApp       app                            = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    app = CellHistoryApp.getApp(this);
     prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction().replace(android.R.id.content, prefFrag).commit();
     checkValues();
+  }
+
+  public void onResume() {
+    super.onResume();
+    if (!app.getRecorderCtx().isRunning())
+      app.getNfyHelper().hide();
+  }
+  
+  public void onBackPressed() {
+    exit = true;
+    super.onBackPressed();
+  }
+  
+  public void onPause() {
+    super.onPause();
+    if (!app.getRecorderCtx().isRunning() && !exit && !preferences)
+      app.notificationShow();
+    preferences = false;
   }
   
   @Override
@@ -74,6 +97,7 @@ public class PreferencesUI extends EffectPreferenceActivity {
     themes.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
       public boolean onPreferenceChange(Preference preference, Object newValue) {
         if(prefs.getString(Fx.KEY_THEMES, Fx.default_theme).compareTo(""+newValue) != 0) {
+          preferences = true;
           Tools.restartApplication(PreferencesUI.this);
         }
         return true;

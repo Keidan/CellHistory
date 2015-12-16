@@ -1,6 +1,7 @@
 package org.kei.android.phone.cellhistory.prefs;
 
 import org.kei.android.atk.view.EffectPreferenceActivity;
+import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 
 import android.content.SharedPreferences;
@@ -42,15 +43,39 @@ OnSharedPreferenceChangeListener {
   public static final String   PREFS_DEFAULT_TIMERS_TASK_GPS      = "1000";
   private MyPreferenceFragment prefFrag                           = null;
   private SharedPreferences    prefs                              = null;
+  private boolean              exit                               = false;
+  private boolean              preferences                        = false;
+  private CellHistoryApp       app                                = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    app = CellHistoryApp.getApp(this);
     prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
     .replace(android.R.id.content, prefFrag).commit();
     checkValues();
+  }
+
+  public void onResume() {
+    super.onResume();
+    prefs.registerOnSharedPreferenceChangeListener(this);
+    if (!app.getRecorderCtx().isRunning())
+      app.getNfyHelper().hide();
+  }
+  
+  public void onBackPressed() {
+    exit = true;
+    super.onBackPressed();
+  }
+  
+  public void onPause() {
+    prefs.unregisterOnSharedPreferenceChangeListener(this);
+    super.onPause();
+    if (!app.getRecorderCtx().isRunning() && !exit && !preferences)
+      app.notificationShow();
+    preferences = false;
   }
 
   @Override
@@ -123,15 +148,4 @@ OnSharedPreferenceChangeListener {
     }
   }
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    prefs.registerOnSharedPreferenceChangeListener(this);
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-    prefs.unregisterOnSharedPreferenceChangeListener(this);
-  }
 }

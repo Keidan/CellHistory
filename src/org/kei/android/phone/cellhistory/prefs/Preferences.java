@@ -5,6 +5,7 @@ import org.kei.android.atk.utils.changelog.ChangeLog;
 import org.kei.android.atk.utils.changelog.ChangeLogIds;
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.EffectPreferenceActivity;
+import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.activities.LogActivity;
 
@@ -49,10 +50,14 @@ public class Preferences extends EffectPreferenceActivity {
   public static final int      PREFS_DEFAULT_CURRENT_TAB  = 0;
   private MyPreferenceFragment prefFrag                   = null;
   private ChangeLog            changeLog                  = null;
+  private boolean              exit                       = false;
+  private boolean              preferences                = false;
+  private CellHistoryApp       app                        = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    app = CellHistoryApp.getApp(this);
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
     .replace(android.R.id.content, prefFrag).commit();
@@ -65,6 +70,24 @@ public class Preferences extends EffectPreferenceActivity {
             R.string.changelog_full_title, 
             R.string.changelog_show_full), this);
     checkValues();
+  }
+
+  public void onResume() {
+    super.onResume();
+    if (!app.getRecorderCtx().isRunning())
+      app.getNfyHelper().hide();
+  }
+  
+  public void onBackPressed() {
+    exit = true;
+    super.onBackPressed();
+  }
+  
+  public void onPause() {
+    super.onPause();
+    if (!app.getRecorderCtx().isRunning() && !exit && !preferences)
+      app.notificationShow();
+    preferences = false;
   }
   
   @Override
@@ -101,6 +124,7 @@ public class Preferences extends EffectPreferenceActivity {
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
+            preferences = true;
             Tools.switchTo(Preferences.this, PreferencesUI.class);
             return true;
           }
@@ -110,6 +134,7 @@ public class Preferences extends EffectPreferenceActivity {
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
+            preferences = true;
             Tools.switchTo(Preferences.this, PreferencesGeolocation.class);
             return true;
           }
@@ -118,6 +143,7 @@ public class Preferences extends EffectPreferenceActivity {
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
+            preferences = true;
             Tools.switchTo(Preferences.this, PreferencesRecorder.class);
             return true;
           }
@@ -126,6 +152,7 @@ public class Preferences extends EffectPreferenceActivity {
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
+            preferences = true;
             Tools.switchTo(Preferences.this, LogActivity.class);
             return true;
           }
@@ -134,6 +161,7 @@ public class Preferences extends EffectPreferenceActivity {
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
+            preferences = true;
             Tools.switchTo(Preferences.this, PreferencesTimers.class);
             return true;
           }
@@ -153,6 +181,7 @@ public class Preferences extends EffectPreferenceActivity {
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
+            preferences = true;
             changeLog.getFullLogDialog().show();
             return true;
           }

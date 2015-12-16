@@ -2,6 +2,7 @@ package org.kei.android.phone.cellhistory.prefs;
 
 import org.kei.android.atk.utils.Tools;
 import org.kei.android.atk.view.EffectPreferenceActivity;
+import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.towers.CellIdHelper;
 
@@ -50,15 +51,39 @@ OnSharedPreferenceChangeListener {
   public static final int      PREFS_DEFAULT_CURRENT_SPEED    = PREFS_SPEED_MS;
   private MyPreferenceFragment prefFrag                       = null;
   private SharedPreferences    prefs                          = null;
+  private boolean              exit                           = false;
+  private boolean              preferences                    = false;
+  private CellHistoryApp       app                            = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    app = CellHistoryApp.getApp(this);
     prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
     .replace(android.R.id.content, prefFrag).commit();
     checkValues();
+  }
+
+  public void onResume() {
+    prefs.registerOnSharedPreferenceChangeListener(this);
+    super.onResume();
+    if (!app.getRecorderCtx().isRunning())
+      app.getNfyHelper().hide();
+  }
+  
+  public void onBackPressed() {
+    exit = true;
+    super.onBackPressed();
+  }
+  
+  public void onPause() {
+    prefs.unregisterOnSharedPreferenceChangeListener(this);
+    super.onPause();
+    if (!app.getRecorderCtx().isRunning() && !exit && !preferences)
+      app.notificationShow();
+    preferences = false;
   }
   
   @Override
@@ -114,6 +139,7 @@ OnSharedPreferenceChangeListener {
     .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
       @Override
       public boolean onPreferenceClick(final Preference preference) {
+        preferences = true;
         Tools.switchTo(PreferencesGeolocation.this,
             PreferencesGeolocationOpenCellID.class);
         return true;
@@ -137,17 +163,5 @@ OnSharedPreferenceChangeListener {
       setRetainInstance(true);
       addPreferencesFromResource(R.xml.preferences_geolocation);
     }
-  }
-  
-  @Override
-  protected void onResume() {
-    super.onResume();
-    prefs.registerOnSharedPreferenceChangeListener(this);
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-    prefs.unregisterOnSharedPreferenceChangeListener(this);
   }
 }

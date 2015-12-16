@@ -44,11 +44,14 @@ public class LogActivity extends EffectActivity {
   private CircularFifoBuffer  cfb                 = null;
   private String              content             = null;
   private ListView            logs                = null;
-  
+  private boolean             exit                = false;
+  private CellHistoryApp      app                 = null;
+
   @SuppressWarnings("unchecked")
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    app = CellHistoryApp.getApp(this);
     setContentView(R.layout.activity_logs);
     logs = (ListView) findViewById(R.id.logs);
     
@@ -61,6 +64,23 @@ public class LogActivity extends EffectActivity {
     logs.setAdapter(null);
     logs.setAdapter(new ArrayAdapter<String>(this,
         R.layout.listview_simple_row, R.id.label1, lines));
+  }
+  
+  public void onResume() {
+    super.onResume();
+    if (!app.getRecorderCtx().isRunning())
+      app.getNfyHelper().hide();
+  }
+  
+  public void onBackPressed() {
+    exit = true;
+    super.onBackPressed();
+  }
+  
+  public void onPause() {
+    super.onPause();
+    if (!app.getRecorderCtx().isRunning() && !exit)
+      app.notificationShow();
   }
   
   @Override
