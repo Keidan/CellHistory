@@ -40,6 +40,7 @@ public class RecorderCtx {
   private final List<String> frames      = new ArrayList<String>();
   private PrintWriter        pw          = null;
   private String             format      = FORMAT_JSON;
+  private boolean indentation = true;
   
 
   public void writeData(final String sep, final String sepNb, final int limit,
@@ -51,14 +52,14 @@ public class RecorderCtx {
           ctx.setBackupTowerInfo(new TowerInfo(ctx.getGlobalTowerInfo()));
 
           if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
-          else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON());
-          else frames.add(ctx.getGlobalTowerInfo().toXML());
+          else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON(indentation));
+          else frames.add(ctx.getGlobalTowerInfo().toXML(indentation));
           counter++;
         }
       } else {
         if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
-        else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON());
-        else frames.add(ctx.getGlobalTowerInfo().toXML());
+        else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON(indentation));
+        else frames.add(ctx.getGlobalTowerInfo().toXML(indentation));
         counter++;
       }
       if (frames.size() >= limit)
@@ -68,7 +69,9 @@ public class RecorderCtx {
   
   private void write() {
     if(format.equals(FORMAT_JSON)) {
-      String ss = "{\"towers\": [";
+      String ss = "";
+      ss += "{" + ((indentation) ? "\n" : "");
+      ss += (indentation ? "  " : "") + "\"towers\": [" + ((indentation) ? "\n" : "");
       pw.print(ss);
       size += ss.length();
       int len = frames.size();
@@ -79,9 +82,14 @@ public class RecorderCtx {
         if(i < len - 1) {
           pw.print(",");
           size++;
+          if(indentation) {
+            pw.print("\n");
+            size++;
+          }
         }
       }
-      ss = "]}";
+      ss = (indentation ? "  " : "") + "]" + ((indentation) ? "\n" : "");
+      ss += "}";
       pw.print(ss);
       size += ss.length();
     } else if(format.equals(FORMAT_CSV)) {
@@ -90,14 +98,18 @@ public class RecorderCtx {
         size += s.length() + 1;
       }
     } else if(format.equals(FORMAT_XML)) {
-      String ss = "<towers>\n";
+      String ss = "<towers>";
+      if(indentation) ss += "\n";
       pw.print(ss);
       size += ss.length();
       for (final String s : frames) {
-        pw.println(s);
-        size += s.length() + 1;
+        String str = s;
+        if(indentation) str += "\n";
+        pw.println(str);
+        size += str.length();
       }
-      ss = "</towers>\n";
+      ss = "</towers>";
+      if(indentation) ss += "\n";
       pw.print(ss);
       size += ss.length();
     }
@@ -120,8 +132,9 @@ public class RecorderCtx {
   }
 
   public void writeHeader(final String root, final String name, final String sep,
-      final String sepNb, final boolean deletePrev, final String format) throws Exception {
+      final String sepNb, final boolean deletePrev, final String format, final boolean indentation) throws Exception {
     this.format = format;
+    this.indentation = indentation;
     if (pw != null) {
       pw.close();
       pw = null;

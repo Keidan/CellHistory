@@ -142,7 +142,9 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
               prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DEL_PREV_FILE,
                   PreferencesRecorder.PREFS_DEFAULT_DEL_PREV_FILE),
               prefs.getString(PreferencesRecorder.PREFS_KEY_FORMATS,
-                  PreferencesRecorder.PREFS_DEFAULT_FORMATS));
+                  PreferencesRecorder.PREFS_DEFAULT_FORMATS),
+              prefs.getBoolean(PreferencesRecorder.PREFS_KEY_INDENTATION,
+                  PreferencesRecorder.PREFS_DEFAULT_INDENTATION));
           notificationShow();
         } catch (final Exception e) {
           Tools.toast(getActivity(), R.drawable.ic_launcher,

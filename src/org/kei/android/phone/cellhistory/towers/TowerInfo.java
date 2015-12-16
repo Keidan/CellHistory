@@ -136,68 +136,104 @@ public class TowerInfo {
 
   @Override
   public String toString() {
-    return toJSON();
+    return toJSON(true);
   }
   
-  public String toJSON() {
+  public String toJSON(final boolean indentation) {
     StringBuilder sb = new StringBuilder();
-
-    sb.append("{");
-    sb.append("\"timestamp\":").append(getTimestamp()).append(",");
-    sb.append("\"ope\":\"").append(getOperator()).append("\",");
-    sb.append("\"mcc\":").append(getMCC()).append(",");
-    sb.append("\"mnc\":").append(getMNC()).append(",");
-    sb.append("\"cid\":").append(getCellId()).append(",");
-    sb.append("\"lac\":").append(getLac()).append(",");
-    sb.append("\"lat\":\"").append(getLatitude()).append("\",");
-    sb.append("\"lon\":\"").append(getLongitude()).append("\",");
-    sb.append("\"spd\":").append(getSpeed()).append(",");
-    sb.append("\"dist\":").append(getDistance()).append(",");
-    sb.append("\"psc\":").append(getPsc()).append(",");
-    sb.append("\"type\":\"").append(getType()).append("\",");
-    sb.append("\"net\":\"").append(getNetworkName()).append("\",");
-    sb.append("\"lvl\":").append(getLvl()).append(",");
-    sb.append("\"asu\":").append(getAsu()).append(",");
-    sb.append("\"ss\":").append(getSignalStrength()).append(",");
-    sb.append("\"ssp\":").append(getSignalStrengthPercent()).append(",");
+    if(indentation) sb.append("  ");
+    sb.append("{").append(indentation ? "\n" : "");
+    String spaces = indentation ? "    " : null;
+    sb.append(lineJSON(spaces, "timestamp", getTimestamp(), false, false));
+    sb.append(lineJSON(spaces, "ope", getOperator(), true, false));
+    sb.append(lineJSON(spaces, "mcc", getMCC(), false, false));
+    sb.append(lineJSON(spaces, "mnc", getMNC(), false, false));
+    sb.append(lineJSON(spaces, "cid", getCellId(), false, false));
+    sb.append(lineJSON(spaces, "lac", getLac(), false, false));
+    sb.append(lineJSON(spaces, "lat", getLatitude(), true, false));
+    sb.append(lineJSON(spaces, "lon", getLongitude(), true, false));
+    sb.append(lineJSON(spaces, "spd", getSpeed(), false, false));
+    sb.append(lineJSON(spaces, "dist", getDistance(), false, false));
+    sb.append(lineJSON(spaces, "psc", getPsc(), false, false));
+    sb.append(lineJSON(spaces, "type", getType(), true, false));
+    sb.append(lineJSON(spaces, "net", getNetworkName(), true, false));
+    sb.append(lineJSON(spaces, "lvl", getLvl(), false, false));
+    sb.append(lineJSON(spaces, "asu", getAsu(), false, false));
+    sb.append(lineJSON(spaces, "ss", getSignalStrength(), false, false));
+    sb.append(lineJSON(spaces, "ssp", getSignalStrengthPercent(), false, true));
     int size = getNeighboring().size();
-    sb.append("\"neighborings\": [");
+    if(spaces != null) sb.append(spaces);
+    sb.append("\"neighborings\": [").append(indentation ? "\n" : "");
     for(int i = 0; i < size; ++i) {
       NeighboringInfo ni = getNeighboring().get(i);
-      sb.append(ni.toJSON());
+      sb.append(ni.toJSON(indentation));
       if(i < size - 1) sb.append(",");
+      sb.append(indentation ? "\n" : "");
     }
-    sb.append("]");
+    sb.append(indentation ? "  " : "").append("]").append(indentation ? "\n" : "");
     sb.append("}");
     return sb.toString();
   }
   
-  public String toXML() {
+  public static String lineJSON(final String spaces, final String tag, final Object value, final boolean string, final boolean end) {
     StringBuilder sb = new StringBuilder();
-    sb.append("  <tower>\n");
-    sb.append("    <timestamp>").append(getTimestamp()).append("</timestamp>\n");
-    sb.append("    <ope>").append(getOperator()).append("</ope>\n");
-    sb.append("    <mcc>").append(getMCC()).append("</mcc>\n");
-    sb.append("    <mnc>").append(String.format("%02d", getMNC())).append("</mnc>\n");
-    sb.append("    <cid>").append(getCellId()).append("<cid>\n");
-    sb.append("    <lac>").append(getLac()).append("</lac>\n");
-    sb.append("    <lat>").append(getLatitude()).append("</lat>\n");
-    sb.append("    <lon>").append(getLongitude()).append("</lon>\n");
-    sb.append("    <spd>").append(getSpeed()).append("</spd>\n");
-    sb.append("    <dist>").append(getDistance()).append("</dist>\n");
-    sb.append("    <psc>").append(getPsc()).append("</psc>\n");
-    sb.append("    <type>").append(getType()).append("</type>\n");
-    sb.append("    <net>").append(getNetworkName()).append("</net>\n");
-    sb.append("    <lvl>").append(getLvl()).append("</lvl>\n");
-    sb.append("    <asu>").append(getAsu()).append("</asu>\n");
-    sb.append("    <ss>").append(getSignalStrength()).append("</ss>\n");
-    sb.append("    <ssp>").append(getSignalStrengthPercent()).append("</ssp>\n");
-    sb.append("    <neighborings>\n");
+    if(spaces != null)
+      sb.append(spaces);
+    sb.append("\"").append(tag).append("\":");
+    if(string) sb.append("\"");
+    sb.append(value);
+    if(string) sb.append("\"");
+    if(spaces != null)
+      sb.append(!end ? ",\n" : "\n");
+    else
+      sb.append(!end ? "," : "");
+    return sb.toString();
+  }
+  
+  public String toXML(final boolean indentation) {
+    StringBuilder sb = new StringBuilder();
+    if(indentation) sb.append("  ");
+    sb.append("<tower>");
+    if(indentation) sb.append("\n");
+    String spaces = indentation ? "    " : null;
+    sb.append(lineXML(spaces, "timestamp", getTimestamp()));
+    sb.append(lineXML(spaces, "ope", getOperator()));
+    sb.append(lineXML(spaces, "mcc", getMCC()));
+    sb.append(lineXML(spaces, "mnc", String.format("%02d", getMNC())));
+    sb.append(lineXML(spaces, "cid", getCellId()));
+    sb.append(lineXML(spaces, "lac", getLac()));
+    sb.append(lineXML(spaces, "lat", getLatitude()));
+    sb.append(lineXML(spaces, "lon", getLongitude()));
+    sb.append(lineXML(spaces, "spd", getSpeed()));
+    sb.append(lineXML(spaces, "dist", getDistance()));
+    sb.append(lineXML(spaces, "psc", getPsc()));
+    sb.append(lineXML(spaces, "type", getType()));
+    sb.append(lineXML(spaces, "net", getNetworkName()));
+    sb.append(lineXML(spaces, "lvl", getLvl()));
+    sb.append(lineXML(spaces, "asu", getAsu()));
+    sb.append(lineXML(spaces, "ss", getSignalStrength()));
+    sb.append(lineXML(spaces, "ssp", getSignalStrengthPercent()));
+    if(indentation) sb.append("    ");
+    sb.append("<neighborings>");
+    if(indentation) sb.append("\n");
     for(NeighboringInfo ni : getNeighboring()) {
-      sb.append(ni.toXML());
+      sb.append(ni.toXML(indentation));
     }
-    sb.append("    </neighborings>\n");
-    sb.append("  </tower>\n");
+    if(indentation) sb.append("    ");
+    sb.append("</neighborings>");
+    if(indentation) sb.append("\n  ");
+    sb.append("</tower>");
+    if(indentation) sb.append("\n");
+    return sb.toString();
+  }
+  
+  public static String lineXML(final String spaces, final String tag, final Object value) {
+    StringBuilder sb = new StringBuilder();
+    if(spaces != null)
+      sb.append(spaces);
+    sb.append("<").append(tag).append(">").append(value).append("</").append(tag).append(">");
+    if(spaces != null)
+      sb.append("\n");
     return sb.toString();
   }
   

@@ -46,6 +46,7 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesRecorder extends EffectPreferenceActivity implements OnSharedPreferenceChangeListener {
+  public static final String   PREFS_KEY_INDENTATION         = "recorderIndentation";
   public static final String   PREFS_KEY_FORMATS             = "recorderFormats";
   public static final String   PREFS_KEY_SAVE_PATH           = "recorderSavePath";
   public static final String   PREFS_KEY_FLUSH               = "recorderFlush";
@@ -62,6 +63,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   public static final boolean  PREFS_DEFAULT_SAVE            = true;
   public static final boolean  PREFS_DEFAULT_DEL_PREV_FILE   = true;
   public static final boolean  PREFS_DEFAULT_DETECT_CHANGE   = true;
+  public static final boolean  PREFS_DEFAULT_INDENTATION     = true;
   public static final String   PREFS_DEFAULT_FORMATS         = RecorderCtx.FORMAT_JSON;
   private MyPreferenceFragment prefFrag                      = null;
   private SharedPreferences    prefs                         = null;
@@ -125,9 +127,11 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
     summary = getResources().getString(R.string.pref_neighboring_sep_summary);
     summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_NEIGHBORING_SEP, PREFS_DEFAULT_NEIGHBORING_SEP) + "'";
     sep2.setSummary(summary);
+    pref = (Preference)prefFrag.findPreference(PREFS_KEY_INDENTATION);
     boolean en = prefs.getString(PREFS_KEY_FORMATS, PREFS_DEFAULT_FORMATS).equals(RecorderCtx.FORMAT_CSV);
     sep1.setEnabled(en);
     sep2.setEnabled(en);
+    pref.setEnabled(!en);
     
     pref = (Preference)prefFrag.findPreference(PREFS_KEY_FORMATS);
     summary = getResources().getString(R.string.pref_formats_summary);

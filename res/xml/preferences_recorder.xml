@@ -27,6 +27,11 @@
             android:summary="@string/pref_neighboring_sep_summary"
             android:title="@string/pref_neighboring_sep_title"   
     		android:inputType="text" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderIndentation"
+            android:summary="@string/pref_indentation_summary"
+            android:title="@string/pref_indentation_title" />
         <EditTextPreference
             android:key="recorderFlush"
             android:defaultValue="25"

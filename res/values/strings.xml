@@ -106,6 +106,8 @@
     <string name="pref_detect_change_summary">Writes the entry only if a signal change is detected.</string>
 	<string name="pref_formats_title">Format</string>
     <string name="pref_formats_summary">File format (CSV, JSON, XML)</string>
+	<string name="pref_indentation_title">Indentation</string>
+    <string name="pref_indentation_summary">Indentation of the output file (increase the file size).</string>
     
     <string name="pref_geolocation_title">Cell location</string>
     <string name="pref_geolocation_summary">Locates the current telephony cell using the network requests.</string>

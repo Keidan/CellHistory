@@ -51,7 +51,7 @@ public class NeighboringInfo {
   
   @Override
   public String toString() {
-    return toJSON();
+    return toJSON(true);
   }
 
   public String toString(final String sep) {
@@ -65,29 +65,38 @@ public class NeighboringInfo {
     return sb.toString();
   }
 
-  public String toJSON() {
+  public String toJSON(final boolean indentation) {
     final StringBuilder sb = new StringBuilder();
-    sb.append("{");
-    sb.append("\"old\":").append(oldMethod ? 1 : 0).append(",");
-    sb.append("\"lac\":").append(lac).append(",");
-    sb.append("\"cid\":").append(cid).append(",");
-    sb.append("\"asu\":").append(asu).append(",");
-    sb.append("\"nt\":\"").append(type).append("\",");
-    sb.append("\"str\":").append(strength);
-    sb.append("}");
+    if(indentation) sb.append("    ");
+    sb.append("{").append(indentation ? "\n" : "");
+    final String spaces = indentation ? "      " : null;
+    sb.append(TowerInfo.lineJSON(spaces, "old", oldMethod ? 1 : 0, false, false));
+    sb.append(TowerInfo.lineJSON(spaces, "lac", lac, false, false));
+    sb.append(TowerInfo.lineJSON(spaces, "cid", cid, false, false));
+    sb.append(TowerInfo.lineJSON(spaces, "asu", asu, false, false));
+    sb.append(TowerInfo.lineJSON(spaces, "nt", type, true, false));
+    sb.append(TowerInfo.lineJSON(spaces, "str", strength, false, true));
+    if(indentation) sb.append("    ");
+    sb.append("}").append(indentation ? "\n" : "");
+    
     return sb.toString();
   }
   
-  public String toXML() {
+  public String toXML(final boolean indentation) {
     final StringBuilder sb = new StringBuilder();
-    sb.append("      <neighboring>\n");
-    sb.append("        <old>").append(oldMethod ? 1 : 0).append("</old>\n");
-    sb.append("        <lac>").append(lac).append("</lac>\n");
-    sb.append("        <cid>").append(cid).append("</cid>\n");
-    sb.append("        <asu>").append(asu).append("</asu>\n");
-    sb.append("        <nt>").append(type).append("</nt>\n");
-    sb.append("        <str>").append(strength).append("</str>\n");
-    sb.append("      </neighboring>\n");
+    if(indentation) sb.append("      ");
+    sb.append("<neighboring>");
+    if(indentation) sb.append("\n");
+    String spaces = indentation ? "        " : null;
+    sb.append(TowerInfo.lineXML(spaces, "old", oldMethod ? 1 : 0));
+    sb.append(TowerInfo.lineXML(spaces, "lac", lac));
+    sb.append(TowerInfo.lineXML(spaces, "cid", cid));
+    sb.append(TowerInfo.lineXML(spaces, "asu", asu));
+    sb.append(TowerInfo.lineXML(spaces, "nt", type));
+    sb.append(TowerInfo.lineXML(spaces, "str", strength));
+    if(indentation) sb.append("      ");
+    sb.append("</neighboring>");
+    if(indentation) sb.append("\n");
     return sb.toString();
   }
   
