@@ -141,37 +141,34 @@ public class TowerInfo {
   
   public String toJSON(final boolean indentation) {
     StringBuilder sb = new StringBuilder();
-    if(indentation) sb.append("  ");
-    sb.append("{").append(indentation ? "\n" : "");
-    String spaces = indentation ? "    " : null;
-    sb.append(lineJSON(spaces, "timestamp", getTimestamp(), false, false));
-    sb.append(lineJSON(spaces, "ope", getOperator(), true, false));
-    sb.append(lineJSON(spaces, "mcc", getMCC(), false, false));
-    sb.append(lineJSON(spaces, "mnc", getMNC(), false, false));
-    sb.append(lineJSON(spaces, "cid", getCellId(), false, false));
-    sb.append(lineJSON(spaces, "lac", getLac(), false, false));
-    sb.append(lineJSON(spaces, "lat", getLatitude(), true, false));
-    sb.append(lineJSON(spaces, "lon", getLongitude(), true, false));
-    sb.append(lineJSON(spaces, "spd", getSpeed(), false, false));
-    sb.append(lineJSON(spaces, "dist", getDistance(), false, false));
-    sb.append(lineJSON(spaces, "psc", getPsc(), false, false));
-    sb.append(lineJSON(spaces, "type", getType(), true, false));
-    sb.append(lineJSON(spaces, "net", getNetworkName(), true, false));
-    sb.append(lineJSON(spaces, "lvl", getLvl(), false, false));
-    sb.append(lineJSON(spaces, "asu", getAsu(), false, false));
-    sb.append(lineJSON(spaces, "ss", getSignalStrength(), false, false));
-    sb.append(lineJSON(spaces, "ssp", getSignalStrengthPercent(), false, true));
+    
+    sb.append(indentation ? "    " : "").append("{").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"timestamp\":").append(getTimestamp()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"ope\":\"").append(getOperator()).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"mcc\":").append(getMCC()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"mnc\":").append(getMNC()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"cid\":").append(getCellId()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"lac\":").append(getLac()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"lat\":\"").append(getLatitude()).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"lon\":\"").append(getLongitude()).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"spd\":").append(getSpeed()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"dist\":").append(getDistance()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"psc\":").append(getPsc()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"type\":\"").append(getType()).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"net\":\"").append(getNetworkName()).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"lvl\":").append(getLvl()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"asu\":").append(getAsu()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"ss\":").append(getSignalStrength()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"ssp\":").append(getSignalStrengthPercent()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"neighborings\": [").append(indentation ? "\n" : "");
     int size = getNeighboring().size();
-    if(spaces != null) sb.append(spaces);
-    sb.append("\"neighborings\": [").append(indentation ? "\n" : "");
     for(int i = 0; i < size; ++i) {
       NeighboringInfo ni = getNeighboring().get(i);
       sb.append(ni.toJSON(indentation));
-      if(i < size - 1) sb.append(",");
-      sb.append(indentation ? "\n" : "");
+      if(i < size - 1) sb.append(indentation ? "      " : "").append(",").append(indentation ? "\n" : "");
     }
-    sb.append(indentation ? "  " : "").append("]").append(indentation ? "\n" : "");
-    sb.append("}");
+    sb.append(indentation ? "      " : "").append("]").append(indentation ? "\n" : "");
+    sb.append(indentation ? "    " : "").append("}").append(indentation ? "\n" : "");
     return sb.toString();
   }
   

@@ -67,18 +67,14 @@ public class NeighboringInfo {
 
   public String toJSON(final boolean indentation) {
     final StringBuilder sb = new StringBuilder();
-    if(indentation) sb.append("    ");
-    sb.append("{").append(indentation ? "\n" : "");
-    final String spaces = indentation ? "      " : null;
-    sb.append(TowerInfo.lineJSON(spaces, "old", oldMethod ? 1 : 0, false, false));
-    sb.append(TowerInfo.lineJSON(spaces, "lac", lac, false, false));
-    sb.append(TowerInfo.lineJSON(spaces, "cid", cid, false, false));
-    sb.append(TowerInfo.lineJSON(spaces, "asu", asu, false, false));
-    sb.append(TowerInfo.lineJSON(spaces, "nt", type, true, false));
-    sb.append(TowerInfo.lineJSON(spaces, "str", strength, false, true));
-    if(indentation) sb.append("    ");
-    sb.append("}").append(indentation ? "\n" : "");
-    
+    sb.append(indentation ? "        " : "").append("{").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"old\":").append(oldMethod ? 1 : 0).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"lac\":").append(lac).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"cid\":").append(cid).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"asu\":").append(asu).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"nt\":\"").append(type).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"str\":").append(strength).append(indentation ? "\n" : "");
+    sb.append(indentation ? "        " : "").append("}").append(indentation ? "\n" : "");
     return sb.toString();
   }
   

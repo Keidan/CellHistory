@@ -82,10 +82,6 @@ public class RecorderCtx {
         if(i < len - 1) {
           pw.print(",");
           size++;
-          if(indentation) {
-            pw.print("\n");
-            size++;
-          }
         }
       }
       ss = (indentation ? "  " : "") + "]" + ((indentation) ? "\n" : "");
