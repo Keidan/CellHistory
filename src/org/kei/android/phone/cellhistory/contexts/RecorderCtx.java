@@ -36,6 +36,8 @@ public class RecorderCtx {
   private File               currentFile = null;
   private final List<String> frames      = new ArrayList<String>();
   private PrintWriter        pw          = null;
+  private boolean            json        = false;
+  
 
   public void writeData(final String sep, final String sepNb, final int limit,
       final CellHistoryApp ctx, final boolean detectChange) {
@@ -44,22 +46,36 @@ public class RecorderCtx {
         if (ctx.getBackupTowerInfo() == null
             || !ctx.getBackupTowerInfo().equals(ctx.getGlobalTowerInfo())) {
           ctx.setBackupTowerInfo(new TowerInfo(ctx.getGlobalTowerInfo()));
-          frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+          if(!json) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+          else frames.add(ctx.getGlobalTowerInfo().toJSON());
           counter++;
         }
       } else {
-        frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+        if(!json) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+        else frames.add(ctx.getGlobalTowerInfo().toJSON());
         counter++;
       }
-      if (frames.size() >= limit) {
-        for (final String s : frames) {
-          pw.println(s);
-          size += s.length() + 1;
-        }
-        frames.clear();
-        pw.flush();
-      }
+      if (frames.size() >= limit)
+        write();
     }
+  }
+  
+  private void write() {
+    String ss = "{\"towers\": [";
+    pw.print(ss);
+    size += ss.length();
+    int len = frames.size();
+    for (int i = 0; i < len; ++i) {
+      String s = frames.get(i);
+      pw.print(s);
+      size += s.length() + 1;
+      if(i < len - 1) pw.print(",");
+    }
+    ss = "]}";
+    pw.print(ss);
+    size += ss.length();
+    frames.clear();
+    pw.flush();
   }
   
   public boolean isRunning() {
@@ -68,13 +84,8 @@ public class RecorderCtx {
 
   public void flushAndClose() {
     if (pw != null) {
-      if (!frames.isEmpty()) {
-        for (final String f : frames) {
-          pw.println(f);
-          size += f.length() + 1;
-        }
-        pw.flush();
-      }
+      if (!frames.isEmpty())
+        write();
       pw.close();
       pw = null;
     }
@@ -82,7 +93,8 @@ public class RecorderCtx {
   }
 
   public void writeHeader(final String root, final String name, final String sep,
-      final String sepNb, final boolean deletePrev) throws Exception {
+      final String sepNb, final boolean deletePrev, boolean json) throws Exception {
+    this.json = json;
     if (pw != null) {
       pw.close();
       pw = null;
@@ -93,23 +105,26 @@ public class RecorderCtx {
     }
     size = 0;
     counter = 1L;
+    String fmt = json ? "json" : "csv";
     currentFile = new File(root, new SimpleDateFormat(
-        "yyyyMMdd_hhmmssa'_" + name + ".csv'", Locale.US).format(new Date()));
+        "yyyyMMdd_hhmmssa'_" + name + "." + fmt + "'", Locale.US).format(new Date()));
     pw = new PrintWriter(currentFile);
-    // add title
-    final StringBuilder sb = new StringBuilder();
-    sb.append("#TIMESTAMP").append(sep).append("OPE").append(sep).append("MCC")
-        .append(sep).append("MNC").append(sep).append("CID").append(sep)
-    .append("LAC").append(sep).append("LAT").append(sep).append("LON")
-        .append(sep).append("SPD").append(sep).append("DIST").append(sep).append("PSC").append(sep)
-    .append("TYPE").append(sep).append("NET").append(sep).append("LVL")
-        .append(sep).append("ASU").append(sep).append("STR").append(sep)
-    .append("PER").append(sep).append("NEIGBORING(").append("LAC")
-        .append(sepNb).append("CID").append(sepNb).append("ASU").append(sepNb)
-    .append("NT").append(sepNb).append("STR").append(")...");
-    String s = sb.toString();
-    size = s.length() + 1;
-    pw.println(s);
+    if(!json) {
+      // add title
+      final StringBuilder sb = new StringBuilder();
+      sb.append("#TIMESTAMP").append(sep).append("OPE").append(sep).append("MCC")
+          .append(sep).append("MNC").append(sep).append("CID").append(sep)
+      .append("LAC").append(sep).append("LAT").append(sep).append("LON")
+          .append(sep).append("SPD").append(sep).append("DIST").append(sep).append("PSC").append(sep)
+      .append("TYPE").append(sep).append("NET").append(sep).append("LVL")
+          .append(sep).append("ASU").append(sep).append("STR").append(sep)
+      .append("PER").append(sep).append("NEIGBORING(").append("OLD").append(sepNb).append("LAC")
+          .append(sepNb).append("CID").append(sepNb).append("ASU").append(sepNb)
+      .append("NT").append(sepNb).append("STR").append(")...");
+      String s = sb.toString();
+      size = s.length() + 1;
+      pw.println(s);
+    }
   }
   
   /**

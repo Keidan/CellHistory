@@ -51,7 +51,7 @@ public class NeighboringInfo {
   
   @Override
   public String toString() {
-    return toString(DEFAULT_TOSTRING_SEP);
+    return toJSON();
   }
 
   public String toString(final String sep) {
@@ -62,6 +62,19 @@ public class NeighboringInfo {
     sb.append(asu).append(sep);
     sb.append(type).append(sep);
     sb.append(strength);
+    return sb.toString();
+  }
+
+  public String toJSON() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("{");
+    sb.append("\"old\":").append(oldMethod ? 1 : 0).append(",");
+    sb.append("\"lac\":").append(lac).append(",");
+    sb.append("\"cid\":").append(cid).append(",");
+    sb.append("\"asu\":").append(asu).append(",");
+    sb.append("\"nt\":\"").append(type).append("\",");
+    sb.append("\"str\":").append(strength);
+    sb.append("}");
     return sb.toString();
   }
   

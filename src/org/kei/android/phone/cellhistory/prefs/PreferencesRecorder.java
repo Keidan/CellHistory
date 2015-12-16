@@ -44,6 +44,7 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesRecorder extends EffectPreferenceActivity implements OnSharedPreferenceChangeListener {
+  public static final String   PREFS_KEY_SUPPORT_JSON           = "recorderSupportJSon";
   public static final String   PREFS_KEY_SAVE_PATH              = "recorderSavePath";
   public static final String   PREFS_KEY_FLUSH                  = "recorderFlush";
   public static final String   PREFS_KEY_SEP                    = "recorderSep";
@@ -57,6 +58,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   public static final boolean  PREFS_DEFAULT_SAVE               = true;
   public static final boolean  PREFS_DEFAULT_DEL_PREV_FILE      = true;
   public static final boolean  PREFS_DEFAULT_DETECT_CHANGE      = true;
+  public static final boolean  PREFS_DEFAULT_SUPPORT_JSON       = true;
   private MyPreferenceFragment prefFrag                         = null;
   private SharedPreferences    prefs                            = null;
 
@@ -87,14 +89,17 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
     summary = getResources().getString(R.string.pref_flush_summary);
     summary += "\nFlush: " + prefs.getString(PREFS_KEY_FLUSH, PREFS_DEFAULT_FLUSH);
     flush.setSummary(summary);
-    EditTextPreference sep = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_SEP);
+    EditTextPreference sep1 = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_SEP);
     summary = getResources().getString(R.string.pref_sep_summary);
     summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_SEP, PREFS_DEFAULT_SEP) + "'";
-    sep.setSummary(summary);
-    sep = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_NEIGHBORING_SEP);
+    sep1.setSummary(summary);
+    EditTextPreference sep2 = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_NEIGHBORING_SEP);
     summary = getResources().getString(R.string.pref_neighboring_sep_summary);
     summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_NEIGHBORING_SEP, PREFS_DEFAULT_NEIGHBORING_SEP) + "'";
-    sep.setSummary(summary);
+    sep2.setSummary(summary);
+    boolean en = prefs.getBoolean(PREFS_KEY_SUPPORT_JSON, PREFS_DEFAULT_SUPPORT_JSON);
+    sep1.setEnabled(!en);
+    sep2.setEnabled(!en);
   }
   
   private void checkValues() {
@@ -119,7 +124,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   }
   @Override
   public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP)) {
+    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP) || key.equals(PREFS_KEY_SUPPORT_JSON)) {
       updateSummaries();
     }
   }

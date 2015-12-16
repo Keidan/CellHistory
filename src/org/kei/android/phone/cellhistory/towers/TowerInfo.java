@@ -134,9 +134,44 @@ public class TowerInfo {
     this.lock.unlock();
   }
 
+  @Override
   public String toString() {
-    return toString(DEFAULT_TOSTRING_SEP, NeighboringInfo.DEFAULT_TOSTRING_SEP);
+    return toJSON();
   }
+  
+  public String toJSON() {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("{");
+    sb.append("\"timestamp\":").append(getTimestamp()).append(",");
+    sb.append("\"ope\":\"").append(getOperator()).append("\",");
+    sb.append("\"mcc\":").append(getMCC()).append(",");
+    sb.append("\"mnc\":").append(getMNC()).append(",");
+    sb.append("\"cid\":").append(getCellId()).append(",");
+    sb.append("\"lac\":").append(getLac()).append(",");
+    sb.append("\"lat\":\"").append(getLatitude()).append("\",");
+    sb.append("\"lon\":\"").append(getLongitude()).append("\",");
+    sb.append("\"spd\":").append(getSpeed()).append(",");
+    sb.append("\"dist\":").append(getDistance()).append(",");
+    sb.append("\"psc\":").append(getPsc()).append(",");
+    sb.append("\"type\":\"").append(getType()).append("\",");
+    sb.append("\"net\":\"").append(getNetworkName()).append("\",");
+    sb.append("\"lvl\":").append(getLvl()).append(",");
+    sb.append("\"asu\":").append(getAsu()).append(",");
+    sb.append("\"ss\":").append(getSignalStrength()).append(",");
+    sb.append("\"ssp\":").append(getSignalStrengthPercent()).append(",");
+    int size = getNeighboring().size();
+    sb.append("\"neighborings\": [");
+    for(int i = 0; i < size; ++i) {
+      NeighboringInfo ni = getNeighboring().get(i);
+      sb.append(ni.toJSON());
+      if(i < size - 1) sb.append(",");
+    }
+    sb.append("]");
+    sb.append("}");
+    return sb.toString();
+  }
+  
   public String toString(final String sep, final String neighboringSep) {
     StringBuilder sb = new StringBuilder();
     // #TIMESTAMP,OPE,MCC,MNC,CID,LAC,LAT,LON,SPD,DIST,PSC,TYPE,NET,LVL,ASU,SS,SSP
