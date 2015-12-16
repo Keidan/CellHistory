@@ -9,6 +9,12 @@
         <item name="1">org.kei.android.phone.cellhistory.prefs.THEME_DARK</item>
     </string-array>
     
+    <string-array name="entries_formats">
+        <item name="0">CSV</item>
+        <item name="1">JSON</item>
+        <item name="2">XML</item>
+    </string-array>
+    
     <string-array name="entries_animations">
         <item name="0">Fade</item>
         <item name="1">Slide RightToLeft</item>

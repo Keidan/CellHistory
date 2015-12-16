@@ -141,8 +141,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
                   PreferencesRecorder.PREFS_DEFAULT_NEIGHBORING_SEP),
               prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DEL_PREV_FILE,
                   PreferencesRecorder.PREFS_DEFAULT_DEL_PREV_FILE),
-              prefs.getBoolean(PreferencesRecorder.PREFS_KEY_SUPPORT_JSON,
-                  PreferencesRecorder.PREFS_DEFAULT_SUPPORT_JSON));
+              prefs.getString(PreferencesRecorder.PREFS_KEY_FORMATS,
+                  PreferencesRecorder.PREFS_DEFAULT_FORMATS));
           notificationShow();
         } catch (final Exception e) {
           Tools.toast(getActivity(), R.drawable.ic_launcher,

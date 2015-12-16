@@ -78,6 +78,19 @@ public class NeighboringInfo {
     return sb.toString();
   }
   
+  public String toXML() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("      <neighboring>\n");
+    sb.append("        <old>").append(oldMethod ? 1 : 0).append("</old>\n");
+    sb.append("        <lac>").append(lac).append("</lac>\n");
+    sb.append("        <cid>").append(cid).append("</cid>\n");
+    sb.append("        <asu>").append(asu).append("</asu>\n");
+    sb.append("        <nt>").append(type).append("</nt>\n");
+    sb.append("        <str>").append(strength).append("</str>\n");
+    sb.append("      </neighboring>\n");
+    return sb.toString();
+  }
+  
   /**
    * @return the lac
    */

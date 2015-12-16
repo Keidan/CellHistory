@@ -31,12 +31,15 @@ import org.kei.android.phone.cellhistory.towers.TowerInfo;
  *******************************************************************************
  */
 public class RecorderCtx {
+  public static final String FORMAT_CSV = "CSV";
+  public static final String FORMAT_JSON = "JSON";
+  public static final String FORMAT_XML = "XML";
   private long               counter     = 0L;
   private long               size        = 0L;
   private File               currentFile = null;
   private final List<String> frames      = new ArrayList<String>();
   private PrintWriter        pw          = null;
-  private boolean            json        = false;
+  private String             format      = FORMAT_JSON;
   
 
   public void writeData(final String sep, final String sepNb, final int limit,
@@ -46,13 +49,16 @@ public class RecorderCtx {
         if (ctx.getBackupTowerInfo() == null
             || !ctx.getBackupTowerInfo().equals(ctx.getGlobalTowerInfo())) {
           ctx.setBackupTowerInfo(new TowerInfo(ctx.getGlobalTowerInfo()));
-          if(!json) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
-          else frames.add(ctx.getGlobalTowerInfo().toJSON());
+
+          if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+          else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON());
+          else frames.add(ctx.getGlobalTowerInfo().toXML());
           counter++;
         }
       } else {
-        if(!json) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
-        else frames.add(ctx.getGlobalTowerInfo().toJSON());
+        if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+        else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON());
+        else frames.add(ctx.getGlobalTowerInfo().toXML());
         counter++;
       }
       if (frames.size() >= limit)
@@ -61,19 +67,40 @@ public class RecorderCtx {
   }
   
   private void write() {
-    String ss = "{\"towers\": [";
-    pw.print(ss);
-    size += ss.length();
-    int len = frames.size();
-    for (int i = 0; i < len; ++i) {
-      String s = frames.get(i);
-      pw.print(s);
-      size += s.length() + 1;
-      if(i < len - 1) pw.print(",");
+    if(format.equals(FORMAT_JSON)) {
+      String ss = "{\"towers\": [";
+      pw.print(ss);
+      size += ss.length();
+      int len = frames.size();
+      for (int i = 0; i < len; ++i) {
+        String s = frames.get(i);
+        pw.print(s);
+        size += s.length();
+        if(i < len - 1) {
+          pw.print(",");
+          size++;
+        }
+      }
+      ss = "]}";
+      pw.print(ss);
+      size += ss.length();
+    } else if(format.equals(FORMAT_CSV)) {
+      for (final String s : frames) {
+        pw.println(s);
+        size += s.length() + 1;
+      }
+    } else if(format.equals(FORMAT_XML)) {
+      String ss = "<towers>\n";
+      pw.print(ss);
+      size += ss.length();
+      for (final String s : frames) {
+        pw.println(s);
+        size += s.length() + 1;
+      }
+      ss = "</towers>\n";
+      pw.print(ss);
+      size += ss.length();
     }
-    ss = "]}";
-    pw.print(ss);
-    size += ss.length();
     frames.clear();
     pw.flush();
   }
@@ -93,8 +120,8 @@ public class RecorderCtx {
   }
 
   public void writeHeader(final String root, final String name, final String sep,
-      final String sepNb, final boolean deletePrev, boolean json) throws Exception {
-    this.json = json;
+      final String sepNb, final boolean deletePrev, final String format) throws Exception {
+    this.format = format;
     if (pw != null) {
       pw.close();
       pw = null;
@@ -105,11 +132,13 @@ public class RecorderCtx {
     }
     size = 0;
     counter = 1L;
-    String fmt = json ? "json" : "csv";
+    String fmt = "json";
+    if(format.equals(FORMAT_CSV)) fmt = "csv";
+    else if(format.equals(FORMAT_XML)) fmt = "xml";
     currentFile = new File(root, new SimpleDateFormat(
         "yyyyMMdd_hhmmssa'_" + name + "." + fmt + "'", Locale.US).format(new Date()));
     pw = new PrintWriter(currentFile);
-    if(!json) {
+    if(format.equals(FORMAT_CSV)) {
       // add title
       final StringBuilder sb = new StringBuilder();
       sb.append("#TIMESTAMP").append(sep).append("OPE").append(sep).append("MCC")
@@ -122,6 +151,10 @@ public class RecorderCtx {
           .append(sepNb).append("CID").append(sepNb).append("ASU").append(sepNb)
       .append("NT").append(sepNb).append("STR").append(")...");
       String s = sb.toString();
+      size = s.length() + 1;
+      pw.println(s);
+    } else if(format.equals(FORMAT_XML)) {
+      String s = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
       size = s.length() + 1;
       pw.println(s);
     }

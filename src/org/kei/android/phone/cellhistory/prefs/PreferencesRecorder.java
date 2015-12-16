@@ -8,6 +8,7 @@ import org.kei.android.atk.view.EffectPreferenceActivity;
 import org.kei.android.atk.view.chooser.FileChooser;
 import org.kei.android.atk.view.chooser.FileChooserActivity;
 import org.kei.android.phone.cellhistory.R;
+import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
@@ -44,7 +45,7 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class PreferencesRecorder extends EffectPreferenceActivity implements OnSharedPreferenceChangeListener {
-  public static final String   PREFS_KEY_SUPPORT_JSON           = "recorderSupportJSon";
+  public static final String   PREFS_KEY_FORMATS           = "recorderFormats";
   public static final String   PREFS_KEY_SAVE_PATH              = "recorderSavePath";
   public static final String   PREFS_KEY_FLUSH                  = "recorderFlush";
   public static final String   PREFS_KEY_SEP                    = "recorderSep";
@@ -58,7 +59,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   public static final boolean  PREFS_DEFAULT_SAVE               = true;
   public static final boolean  PREFS_DEFAULT_DEL_PREV_FILE      = true;
   public static final boolean  PREFS_DEFAULT_DETECT_CHANGE      = true;
-  public static final boolean  PREFS_DEFAULT_SUPPORT_JSON       = true;
+  public static final String   PREFS_DEFAULT_FORMATS             = RecorderCtx.FORMAT_JSON;
   private MyPreferenceFragment prefFrag                         = null;
   private SharedPreferences    prefs                            = null;
 
@@ -97,9 +98,14 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
     summary = getResources().getString(R.string.pref_neighboring_sep_summary);
     summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_NEIGHBORING_SEP, PREFS_DEFAULT_NEIGHBORING_SEP) + "'";
     sep2.setSummary(summary);
-    boolean en = prefs.getBoolean(PREFS_KEY_SUPPORT_JSON, PREFS_DEFAULT_SUPPORT_JSON);
-    sep1.setEnabled(!en);
-    sep2.setEnabled(!en);
+    boolean en = prefs.getString(PREFS_KEY_FORMATS, PREFS_DEFAULT_FORMATS).equals(RecorderCtx.FORMAT_CSV);
+    sep1.setEnabled(en);
+    sep2.setEnabled(en);
+    
+    pref = (Preference)prefFrag.findPreference(PREFS_KEY_FORMATS);
+    summary = getResources().getString(R.string.pref_formats_summary);
+    summary += "\nFormat: " + prefs.getString(PREFS_KEY_FORMATS, PREFS_DEFAULT_FORMATS);
+    pref.setSummary(summary);
   }
   
   private void checkValues() {
@@ -124,7 +130,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   }
   @Override
   public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP) || key.equals(PREFS_KEY_SUPPORT_JSON)) {
+    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP) || key.equals(PREFS_KEY_FORMATS)) {
       updateSummaries();
     }
   }

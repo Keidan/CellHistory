@@ -172,6 +172,35 @@ public class TowerInfo {
     return sb.toString();
   }
   
+  public String toXML() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("  <tower>\n");
+    sb.append("    <timestamp>").append(getTimestamp()).append("</timestamp>\n");
+    sb.append("    <ope>").append(getOperator()).append("</ope>\n");
+    sb.append("    <mcc>").append(getMCC()).append("</mcc>\n");
+    sb.append("    <mnc>").append(String.format("%02d", getMNC())).append("</mnc>\n");
+    sb.append("    <cid>").append(getCellId()).append("<cid>\n");
+    sb.append("    <lac>").append(getLac()).append("</lac>\n");
+    sb.append("    <lat>").append(getLatitude()).append("</lat>\n");
+    sb.append("    <lon>").append(getLongitude()).append("</lon>\n");
+    sb.append("    <spd>").append(getSpeed()).append("</spd>\n");
+    sb.append("    <dist>").append(getDistance()).append("</dist>\n");
+    sb.append("    <psc>").append(getPsc()).append("</psc>\n");
+    sb.append("    <type>").append(getType()).append("</type>\n");
+    sb.append("    <net>").append(getNetworkName()).append("</net>\n");
+    sb.append("    <lvl>").append(getLvl()).append("</lvl>\n");
+    sb.append("    <asu>").append(getAsu()).append("</asu>\n");
+    sb.append("    <ss>").append(getSignalStrength()).append("</ss>\n");
+    sb.append("    <ssp>").append(getSignalStrengthPercent()).append("</ssp>\n");
+    sb.append("    <neighborings>\n");
+    for(NeighboringInfo ni : getNeighboring()) {
+      sb.append(ni.toXML());
+    }
+    sb.append("    </neighborings>\n");
+    sb.append("  </tower>\n");
+    return sb.toString();
+  }
+  
   public String toString(final String sep, final String neighboringSep) {
     StringBuilder sb = new StringBuilder();
     // #TIMESTAMP,OPE,MCC,MNC,CID,LAC,LAT,LON,SPD,DIST,PSC,TYPE,NET,LVL,ASU,SS,SSP

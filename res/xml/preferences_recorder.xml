@@ -5,11 +5,14 @@
             android:key="recorderSavePath"
             android:summary="@string/pref_save_path_summary"
             android:title="@string/pref_save_path_title" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="recorderSupportJSon"
-            android:summary="@string/pref_support_json_summary"
-            android:title="@string/pref_support_json_title" />
+        
+        <ListPreference
+            android:key="recorderFormats"
+            android:defaultValue="JSON"
+            android:entries="@array/entries_formats"
+            android:summary="@string/pref_formats_summary"
+            android:entryValues="@array/entries_formats"
+            android:title="@string/pref_formats_title" />
         <EditTextPreference
             android:key="recorderSep"
             android:maxLength="1"
