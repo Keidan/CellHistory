@@ -83,6 +83,7 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   private int               color_blue_dark              = Color.BLACK;
   private int               color_blue_dark_transparent  = Color.BLACK;
   private String            txtGpsDisabled               = "";
+  private String            txtGpsColdStart              = "";
   private String            txtGpsDisabledOption         = "";
   private String            txtGpsOutOfService           = "";
   private String            txtGpsTemporarilyUnavailable = "";
@@ -113,6 +114,7 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     default_color = new TextView(getActivity()).getTextColors().getDefaultColor();
     /* texts */
     txtGpsDisabled = resources.getString(R.string.txtGpsDisabled);
+    txtGpsColdStart = resources.getString(R.string.txtGpsColdStart);
     txtGpsDisabledOption = resources
         .getString(R.string.txtGpsDisabledOption);
     txtGpsOutOfService = resources
@@ -136,9 +138,9 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     txtDistance = (TextView) getView().findViewById(R.id.txtDistance);
     txtSpeedError = (TextView) getView().findViewById(R.id.txtSpeedError);
     txtDistanceError = (TextView) getView().findViewById(R.id.txtDistanceError);
-    txtSpeedError.setText(getResources().getString(R.string.txtGpsDisabled));
+    txtSpeedError.setText(R.string.txtGpsDisabled);
     txtSpeedError.setTextColor(color_red);
-    txtDistanceError.setText(getResources().getString(R.string.txtGpsDisabled));
+    txtDistanceError.setText(txtGpsDisabled);
     txtDistanceError.setTextColor(color_red);
     
     txtGeolocation.setOnClickListener(this);
@@ -360,8 +362,10 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   
   @Override
   public void gpsUpdate(GpsTaskEvent event) {
-    if(event == GpsTaskEvent.AVAILABLE) {
+    if(event == GpsTaskEvent.UPDATE) {
       setGpsVisibility(true);
+    } else if(event == GpsTaskEvent.COLD_START) {
+      resetGpsInfo(txtGpsColdStart, color_red);
     } else if(event == GpsTaskEvent.DISABLED) {
       resetGpsInfo(txtGpsDisabled, color_red);
     } else if(event == GpsTaskEvent.ENABLED) {

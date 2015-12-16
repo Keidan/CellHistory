@@ -36,6 +36,7 @@
 	<string name="lblSpeed">Speed: </string>
 	<string name="lblDistance">Distance: </string>
 	<string name="txtGpsDisabled">GPS service disabled.</string>
+	<string name="txtGpsColdStart">GPS cold start.</string>
 	<string name="txtGpsDisabledOption">GPS option disabled.</string>
 	<string name="txtGpsOutOfService">GPS out of service.</string>
 	<string name="txtGpsTemporarilyUnavailable">GPS temporarily unavailable.</string>

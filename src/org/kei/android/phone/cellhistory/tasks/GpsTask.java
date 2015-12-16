@@ -36,9 +36,10 @@ public class GpsTask implements LocationListener {
   private LocationManager lm          = null;
   private GpsListener     gpsListener = null;
   private GpsTaskEvent    lastEvent   = null;
-  
+  private int             oldDelay    = 0;
+ 
   public static enum GpsTaskEvent {
-    OUT_OF_SERVICE, TEMPORARILY_UNAVAILABLE, AVAILABLE, ENABLED, DISABLED;
+    OUT_OF_SERVICE, TEMPORARILY_UNAVAILABLE, COLD_START, UPDATE, ENABLED, DISABLED;
   };
 
   public interface GpsListener {
@@ -48,7 +49,7 @@ public class GpsTask implements LocationListener {
   public GpsTask(final CellHistoryApp app) {
     this.app = app;
   }
-  
+ 
   public void setGpsListener(final GpsListener li) {
     this.gpsListener = li;
     if(lastEvent != null && li != null) {
@@ -62,26 +63,32 @@ public class GpsTask implements LocationListener {
   }
 
   public void start(final int delay) {
+    if(lm != null && oldDelay == delay) {
+      stop();
+      oldDelay = delay;
+    }
     if (lm == null) {
       lm = (LocationManager) activity
           .getSystemService(Context.LOCATION_SERVICE);
       if (lm != null) {
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, delay, 10f,
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, delay, 0f,
             this);
       }
     }
   }
-  
+ 
   public void stop() {
     if (lm != null) {
       lm.removeUpdates(this);
       lm = null;
     }
   }
-  
+ 
   @Override
   public void onLocationChanged(final Location location) {
     CellHistoryApp.addLog(app, location);
+    lastEvent = GpsTaskEvent.UPDATE;
+    if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
     double speed = 0.0;
     final Location loc1 = new Location("");
     app.getGlobalTowerInfo().lock();
@@ -116,10 +123,6 @@ public class GpsTask implements LocationListener {
           lastEvent = GpsTaskEvent.TEMPORARILY_UNAVAILABLE;
           if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
           break;
-        case LocationProvider.AVAILABLE:
-          lastEvent = GpsTaskEvent.AVAILABLE;
-          if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
-          break;
       }
     }
   }
@@ -129,6 +132,8 @@ public class GpsTask implements LocationListener {
     if (provider.equals(LocationManager.GPS_PROVIDER)) {
       CellHistoryApp.addLog(app, "onProviderEnabled(" + provider + ")");
       lastEvent = GpsTaskEvent.ENABLED;
+      if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+      lastEvent = GpsTaskEvent.COLD_START;
       if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
     }
   }
