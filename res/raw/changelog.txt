@@ -19,6 +19,21 @@
     </style>
   </head>
   <body>
+  	$ 2.9
+  	  % Version 2.9
+  	  _ 2015-12-17
+  	  * Support of JSON format in addition to of CSV format.
+  	  * Support of XML format in addition to of CSV format.
+  	  * Remove useless logs.
+  	  * Fill the progress bar of the recorder before editing the text that displays the number of packets.
+  	  * Display the notification if the user opens the preferences and moves the application in the background.
+  	  * Add an option to disable the indentation in order to reduce the file size.
+  	  * Add message for the cold start of the GPS.
+  	  * The recorder notification is not updated when the user move the application in background.
+  	  * Change the text color of the speed and distance text fields when the GPS is really started.
+  	  * Improve the GPS management.
+  	  * Display the satellites number.
+  	  
   	$ 2.8
   	  % Version 2.8
   	  _ 2015-12-15
