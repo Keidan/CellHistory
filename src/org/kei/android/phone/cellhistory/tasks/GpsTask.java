@@ -1,13 +1,18 @@
 package org.kei.android.phone.cellhistory.tasks;
 
+import java.util.Iterator;
+
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.location.GpsStatus.Listener;
 import android.os.Bundle;
 
 /**
@@ -29,17 +34,17 @@ import android.os.Bundle;
  *
  *******************************************************************************
  */
-public class GpsTask implements LocationListener {
+public class GpsTask implements LocationListener, Listener {
   /* context */
   private CellHistoryApp  app         = null;
   private Activity        activity    = null;
   private LocationManager lm          = null;
   private GpsListener     gpsListener = null;
-  private GpsTaskEvent    lastEvent   = null;
+  private GpsTaskEvent    lastEvent   = GpsTaskEvent.WAIT_FOR_SATELLITES;
   private int             oldDelay    = 0;
- 
+  
   public static enum GpsTaskEvent {
-    OUT_OF_SERVICE, TEMPORARILY_UNAVAILABLE, COLD_START, UPDATE, ENABLED, DISABLED;
+    OUT_OF_SERVICE, TEMPORARILY_UNAVAILABLE, WAIT_FOR_SATELLITES, UPDATE, ENABLED, DISABLED;
   };
 
   public interface GpsListener {
@@ -71,6 +76,7 @@ public class GpsTask implements LocationListener {
       lm = (LocationManager) activity
           .getSystemService(Context.LOCATION_SERVICE);
       if (lm != null) {
+        lm.addGpsStatusListener(this);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, delay, 0f,
             this);
       }
@@ -80,8 +86,41 @@ public class GpsTask implements LocationListener {
   public void stop() {
     if (lm != null) {
       lm.removeUpdates(this);
+      lm.removeGpsStatusListener(this);
       lm = null;
     }
+  }
+  
+  public void onGpsStatusChanged(int event) {
+    int n = -1;
+    final GpsStatus status = lm.getGpsStatus(null);
+    if(status != null) {
+      final Iterable<GpsSatellite> sats = status.getSatellites();
+      if(sats != null) {
+        final Iterator<GpsSatellite> itr = sats.iterator();
+        if(itr != null) {
+          n = 0;
+          while (itr.hasNext()) { 
+            GpsSatellite gs = itr.next();
+            if(gs.usedInFix()) n++;
+          }
+        }
+      }
+    }
+    if(n != -1) {
+      if(n != 0) {
+        lastEvent = GpsTaskEvent.UPDATE;
+        if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+      }
+      CellHistoryApp.addLog(app, "GPS: Satellites: " + n);
+      app.getGlobalTowerInfo().lock();
+      try {
+        app.getGlobalTowerInfo().setSatellites(n);
+      } finally {
+        app.getGlobalTowerInfo().unlock();
+      }
+    } else
+      CellHistoryApp.addLog(app, "GPS: No satellites found");
   }
  
   @Override
@@ -133,7 +172,7 @@ public class GpsTask implements LocationListener {
       CellHistoryApp.addLog(app, "onProviderEnabled(" + provider + ")");
       lastEvent = GpsTaskEvent.ENABLED;
       if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
-      lastEvent = GpsTaskEvent.COLD_START;
+      lastEvent = GpsTaskEvent.WAIT_FOR_SATELLITES;
       if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
     }
   }

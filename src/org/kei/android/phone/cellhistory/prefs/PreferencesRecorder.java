@@ -62,9 +62,9 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
                                                                  .getAbsolutePath();
   public static final boolean  PREFS_DEFAULT_SAVE            = true;
   public static final boolean  PREFS_DEFAULT_DEL_PREV_FILE   = true;
-  public static final boolean  PREFS_DEFAULT_DETECT_CHANGE   = true;
+  public static final boolean  PREFS_DEFAULT_DETECT_CHANGE   = false;
   public static final boolean  PREFS_DEFAULT_INDENTATION     = true;
-  public static final String   PREFS_DEFAULT_FORMATS         = RecorderCtx.FORMAT_JSON;
+  public static final String   PREFS_DEFAULT_FORMATS         = RecorderCtx.FORMAT_CSV;
   private MyPreferenceFragment prefFrag                      = null;
   private SharedPreferences    prefs                         = null;
   private boolean              exit                          = false;

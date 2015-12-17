@@ -68,6 +68,7 @@ public class TowerInfo {
   private long                  timestamp             = new Date().getTime();
   private double                speed                 = 0.0;
   private double                distance              = 0.0;
+  private int                   satellites            = 0;
   
   public TowerInfo() {
     neighboring = new ArrayList<NeighboringInfo>();
@@ -95,6 +96,7 @@ public class TowerInfo {
     latitude = ti.latitude;
     speed = ti.speed;
     distance = ti.distance;
+    satellites = ti.satellites;
     neighboring.clear();
     neighboring.addAll(ti.getNeighboring());
   }
@@ -105,7 +107,7 @@ public class TowerInfo {
         && lac == ti.lac && psc == ti.psc && signalStrength == ti.signalStrength 
         && signalStrengthPercent == ti.signalStrengthPercent && type == ti.type 
         && asu == ti.asu && lvl == ti.lvl && network == ti.network && networkName.equals(ti.networkName)
-        && speed == ti.speed && distance == ti.distance;
+        && speed == ti.speed && distance == ti.distance && satellites == ti.satellites;
     if(b) {
       int size1 = neighboring.size();
       int size2 = ti.neighboring.size();
@@ -656,6 +658,20 @@ public class TowerInfo {
    */
   public void setDistance(double distance) {
     this.distance = distance;
+  }
+
+  /**
+   * @return the satellites
+   */
+  public int getSatellites() {
+    return satellites;
+  }
+
+  /**
+   * @param satellites the satellites to set
+   */
+  public void setSatellites(int satellites) {
+    this.satellites = satellites;
   }
 
 }

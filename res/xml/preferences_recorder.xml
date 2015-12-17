@@ -8,7 +8,7 @@
         
         <ListPreference
             android:key="recorderFormats"
-            android:defaultValue="JSON"
+            android:defaultValue="CSV"
             android:entries="@array/entries_formats"
             android:summary="@string/pref_formats_summary"
             android:entryValues="@array/entries_formats"
@@ -39,7 +39,7 @@
             android:title="@string/pref_flush_title"   
     		android:inputType="number" />
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="recorderDetectChange"
             android:summary="@string/pref_detect_change_summary"
             android:title="@string/pref_detect_change_title" />

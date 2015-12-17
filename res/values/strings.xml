@@ -4,6 +4,13 @@
     <string name="app_name">CellHistory</string>
     <string name="file_name">cellhistory</string>
 	<string name="empty"></string>
+	<string name="unit_m">m</string>
+	<string name="unit_km">Km</string>
+	<string name="unit_ms">m/s</string>
+	<string name="unit_mph">Mph</string>
+	<string name="unit_kmh">Km/h</string>
+	<string name="zero">0</string>
+	<string name="zero_real">0,0</string>
 	
 	<string name="notification">The application is running.</string>
 	
@@ -33,10 +40,11 @@
 	<string name="lblGeolocation">Geolocation: </string>
 	<string name="geoloc_disabled">Geolocation disabled.</string>
 	<string name="lblGeoProvider">Provider: </string>
+	<string name="lblSatellites">Satellites: </string>
 	<string name="lblSpeed">Speed: </string>
 	<string name="lblDistance">Distance: </string>
 	<string name="txtGpsDisabled">GPS service disabled.</string>
-	<string name="txtGpsColdStart">GPS cold start.</string>
+	<string name="txtGpsWaitSatellites">Waiting for satellites.</string>
 	<string name="txtGpsDisabledOption">GPS option disabled.</string>
 	<string name="txtGpsOutOfService">GPS out of service.</string>
 	<string name="txtGpsTemporarilyUnavailable">GPS temporarily unavailable.</string>

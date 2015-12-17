@@ -63,6 +63,7 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   private Spinner           spiGeoProvider               = null;
   private TextView          txtGeoProvider               = null;
   private TextView          txtGeolocation               = null;
+  private TextView          txtSatellites                = null;
   private TextView          txtSpeedMS                   = null;
   private TextView          txtSpeedKMH                  = null;
   private TextView          txtSpeedMPH                  = null;
@@ -72,6 +73,10 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   private TextView          txtDistance                  = null;
   private TextView          txtSpeedError                = null;
   private TextView          txtDistanceError             = null;
+  private TextView          lblUnitM                     = null;
+  private TextView          lblUnitMS                    = null;
+  private TextView          lblUnitKMH                   = null;
+  private TextView          lblUnitMPH                   = null;
   private TimeChartHelper   chart                        = null;
   private LinearLayout      chartSeparator               = null;
   /* context */
@@ -82,8 +87,10 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   private int               color_orange                 = Color.BLACK;
   private int               color_blue_dark              = Color.BLACK;
   private int               color_blue_dark_transparent  = Color.BLACK;
+  private String            unit_m                       = "";
+  private String            unit_km                      = "";
   private String            txtGpsDisabled               = "";
-  private String            txtGpsColdStart              = "";
+  private String            txtGpsWaitSatellites         = "";
   private String            txtGpsDisabledOption         = "";
   private String            txtGpsOutOfService           = "";
   private String            txtGpsTemporarilyUnavailable = "";
@@ -109,18 +116,19 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     color_red = resources.getColor(Color.RED);
     color_orange = resources.getColor(Color.ORANGE);
     color_blue_dark = resources.getColor(Color.BLUE_DARK);
-    color_blue_dark_transparent = resources
-        .getColor(Color.BLUE_DARK_TRANSPARENT);
+    color_blue_dark_transparent = resources.getColor(Color.BLUE_DARK_TRANSPARENT);
     default_color = new TextView(getActivity()).getTextColors().getDefaultColor();
     /* texts */
     txtGpsDisabled = resources.getString(R.string.txtGpsDisabled);
-    txtGpsColdStart = resources.getString(R.string.txtGpsColdStart);
+    txtGpsWaitSatellites = resources.getString(R.string.txtGpsWaitSatellites);
     txtGpsDisabledOption = resources
         .getString(R.string.txtGpsDisabledOption);
     txtGpsOutOfService = resources
         .getString(R.string.txtGpsOutOfService);
     txtGpsTemporarilyUnavailable = resources
         .getString(R.string.txtGpsTemporarilyUnavailable);
+    unit_m = resources.getString(R.string.unit_m);
+    unit_km = resources.getString(R.string.unit_km);
     
     /* UI */
     chartSeparator = (LinearLayout) getView().findViewById(R.id.chartSeparator);
@@ -128,17 +136,22 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     txtGeoProvider = (TextView) getView().findViewById(R.id.txtGeoProvider);
     txtGeolocation = (TextView) getView().findViewById(R.id.txtGeolocation);
 
+    txtSatellites = (TextView) getView().findViewById(R.id.txtSatellites);
     txtSpeedMS = (TextView) getView().findViewById(R.id.txtSpeedMS);
     txtSpeedKMH = (TextView) getView().findViewById(R.id.txtSpeedKMH);
     txtSpeedMPH = (TextView) getView().findViewById(R.id.txtSpeedMPH);
     rbSpeedMS = (RadioButton) getView().findViewById(R.id.rbSpeedMS);
     rbSpeedKMH = (RadioButton) getView().findViewById(R.id.rbSpeedKMH);
     rbSpeedMPH = (RadioButton) getView().findViewById(R.id.rbSpeedMPH);
+    lblUnitM = (TextView) getView().findViewById(R.id.lblUnitM);
+    lblUnitMS = (TextView) getView().findViewById(R.id.lblUnitMS);
+    lblUnitKMH = (TextView) getView().findViewById(R.id.lblUnitKMH);
+    lblUnitMPH = (TextView) getView().findViewById(R.id.lblUnitMPH);
     
     txtDistance = (TextView) getView().findViewById(R.id.txtDistance);
     txtSpeedError = (TextView) getView().findViewById(R.id.txtSpeedError);
     txtDistanceError = (TextView) getView().findViewById(R.id.txtDistanceError);
-    txtSpeedError.setText(R.string.txtGpsDisabled);
+    txtSpeedError.setText(txtGpsDisabled);
     txtSpeedError.setTextColor(color_red);
     txtDistanceError.setText(txtGpsDisabled);
     txtDistanceError.setTextColor(color_red);
@@ -209,15 +222,19 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     double s_ms = speed;
     double s_kmh = speed * 3.6;
     double s_mph = speed * 2.2369362920544;
-    txtSpeedMS.setText(String.format("%.02f", s_ms) + " m/s");
-    txtSpeedKMH.setText(String.format("%.02f", s_kmh) + " km/h");
-    txtSpeedMPH.setText(String.format("%.02f", speed * 2.2369362920544) + " mph");
+    txtSpeedMS.setText(String.format("%.02f", s_ms));
+    txtSpeedKMH.setText(String.format("%.02f", s_kmh));
+    txtSpeedMPH.setText(String.format("%.02f", speed * 2.2369362920544));
       
     final double dist = app.getGlobalTowerInfo().getDistance();
-    if (dist > 1000)
-      txtDistance.setText(String.format("%.02f", dist / 1000) + " km");
-    else
-      txtDistance.setText(String.format("%.02f", dist) + " m");
+    if (dist > 1000) {
+      lblUnitM.setText(unit_km);
+      txtDistance.setText(String.format("%.02f", dist / 1000));
+    }
+    else {
+      lblUnitM.setText(unit_m);
+      txtDistance.setText(String.format("%.02f", dist));
+    }
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE) && prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
             PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
@@ -231,6 +248,7 @@ OnItemSelectedListener, OnClickListener, GpsListener {
             new Date().getTime(), s);
       }
     }
+    txtSatellites.setText("" + app.getGlobalTowerInfo().getSatellites());
   }
   
   @Override
@@ -259,7 +277,10 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   public void onResume() {
     super.onResume();
     app.getProviderCtx().clear();
-    
+    txtSpeedMS.setTextColor(color_red);
+    txtSpeedKMH.setTextColor(color_red);
+    txtSpeedMPH.setTextColor(color_red);
+    txtDistance.setTextColor(color_red);
     chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
               PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
     setChartVisible(prefs.getBoolean(Preferences.PREFS_KEY_CHART_ENABLE,
@@ -362,13 +383,22 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   
   @Override
   public void gpsUpdate(GpsTaskEvent event) {
+    Log.d("TAFG", "gpsUpdate: " + event);
     if(event == GpsTaskEvent.UPDATE) {
+      txtSpeedMS.setTextColor(default_color);
+      txtSpeedKMH.setTextColor(default_color);
+      txtSpeedMPH.setTextColor(default_color);
+      txtDistance.setTextColor(default_color);
       setGpsVisibility(true);
-    } else if(event == GpsTaskEvent.COLD_START) {
-      resetGpsInfo(txtGpsColdStart, color_red);
+    } else if(event == GpsTaskEvent.WAIT_FOR_SATELLITES) {
+      resetGpsInfo(txtGpsWaitSatellites, color_red);
     } else if(event == GpsTaskEvent.DISABLED) {
       resetGpsInfo(txtGpsDisabled, color_red);
     } else if(event == GpsTaskEvent.ENABLED) {
+      txtSpeedMS.setTextColor(color_red);
+      txtSpeedKMH.setTextColor(color_red);
+      txtSpeedMPH.setTextColor(color_red);
+      txtDistance.setTextColor(color_red);
       setGpsVisibility(true);
     } else if(event == GpsTaskEvent.OUT_OF_SERVICE) {
       resetGpsInfo(txtGpsOutOfService, color_red);
@@ -389,6 +419,10 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     txtDistanceError.setTextColor(color);
     txtSpeedError.setText(txt);
     txtSpeedError.setTextColor(color);
+    txtSpeedMS.setTextColor(color_red);
+    txtSpeedKMH.setTextColor(color_red);
+    txtSpeedMPH.setTextColor(color_red);
+    txtDistance.setTextColor(color_red);
     setGpsVisibility(false);
   }
   
@@ -399,6 +433,10 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     if (txtSpeedMS.getVisibility() != v) txtSpeedMS.setVisibility(v);
     if (txtSpeedKMH.getVisibility() != v) txtSpeedKMH.setVisibility(v);
     if (txtSpeedMPH.getVisibility() != v) txtSpeedMPH.setVisibility(v);
+    if (lblUnitM.getVisibility() != v) lblUnitM.setVisibility(v);
+    if (lblUnitMS.getVisibility() != v) lblUnitMS.setVisibility(v);
+    if (lblUnitKMH.getVisibility() != v) lblUnitKMH.setVisibility(v);
+    if (lblUnitMPH.getVisibility() != v) lblUnitMPH.setVisibility(v);
     if (chart.getVisibility() == View.VISIBLE) {
       if (rbSpeedMS.getVisibility() != v) rbSpeedMS.setVisibility(v);
       if (rbSpeedKMH.getVisibility() != v) rbSpeedKMH.setVisibility(v);
@@ -406,7 +444,6 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     }
     if (txtDistanceError.getVisibility() != v2) txtDistanceError.setVisibility(v2);
     if (txtSpeedError.getVisibility() != v2) txtSpeedError.setVisibility(v2);
-    
-  }
+   }
 
 }
