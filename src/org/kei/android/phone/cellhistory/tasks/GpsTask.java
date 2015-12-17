@@ -43,6 +43,8 @@ public class GpsTask implements LocationListener, Listener {
   private GpsTaskEvent    lastEvent   = GpsTaskEvent.WAIT_FOR_SATELLITES;
   private int             oldDelay    = 0;
   private boolean         disabled    = false;
+  private boolean         connected   = false;
+  private boolean         enabled     = false;
   
   public static enum GpsTaskEvent {
     OUT_OF_SERVICE, TEMPORARILY_UNAVAILABLE, WAIT_FOR_SATELLITES, UPDATE, ENABLED, DISABLED;
@@ -98,6 +100,8 @@ public class GpsTask implements LocationListener, Listener {
       disabled = false;
       return;
     }
+    connected = true;
+    if(!enabled) enabled = true;
     final GpsStatus status = lm.getGpsStatus(null);
     if(status != null) {
       final Iterable<GpsSatellite> sats = status.getSatellites();
@@ -183,6 +187,7 @@ public class GpsTask implements LocationListener, Listener {
       if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
       lastEvent = GpsTaskEvent.WAIT_FOR_SATELLITES;
       if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+      enabled = true;
     }
   }
   
@@ -202,9 +207,32 @@ public class GpsTask implements LocationListener, Listener {
     if (provider.equals(LocationManager.GPS_PROVIDER)) {
       CellHistoryApp.addLog(app, "onProviderDisabled(" + provider + ")");
       disabled = true;
+      connected = enabled = false;
       reset();
       lastEvent = GpsTaskEvent.DISABLED;
       if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
     }
   }
+
+  /**
+   * @return the disabled
+   */
+  public boolean isDisabled() {
+    return disabled;
+  }
+
+  /**
+   * @return the connected
+   */
+  public boolean isConnected() {
+    return connected;
+  }
+
+  /**
+   * @return the enabled
+   */
+  public boolean isEnabled() {
+    return enabled;
+  }
+  
 }

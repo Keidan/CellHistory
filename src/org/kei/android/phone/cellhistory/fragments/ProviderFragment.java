@@ -292,7 +292,10 @@ OnItemSelectedListener, OnClickListener, GpsListener {
       spiGeoProvider.setVisibility(View.VISIBLE);
       if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
           PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
-        setGpsVisibility(true);
+        if(app.getGpsTask().isConnected() && app.getGpsTask().isEnabled())
+          setGpsVisibility(true);
+        else
+          setGpsVisibility(false);
         app.getGpsTask().setGpsListener(this);
       } else {
         app.getGpsTask().setGpsListener(null);
