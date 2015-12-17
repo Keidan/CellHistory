@@ -19,9 +19,21 @@
     </style>
   </head>
   <body>
+  	$ 2.10
+  	  % Version 2.10
+      _ 2015-12-17
+      * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>, <font color="#fbca04">new feature</font>
+  	  * Support of JSON format in addition to of CSV format.
+  	  * Fix bad detection when the GPS is disabled.
+  	  * Fix bad text assignment.
+  	  * Replace the content of the recorder notification with a progress bar for the buffer field.
+  	  * Replace the content of the application notification.
+  	  * Add notion of "scope" to the file changelog.txt
+  	  
   	$ 2.9
   	  % Version 2.9
-  	  _ 2015-12-17
+      _ 2015-12-17
+      * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>, <font color="#fbca04">new feature</font>
   	  * Support of JSON format in addition to of CSV format.
   	  * Support of XML format in addition to of CSV format.
   	  * Remove useless logs.
@@ -37,6 +49,7 @@
   	$ 2.8
   	  % Version 2.8
   	  _ 2015-12-15
+      * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>, <font color="#fbca04">new feature</font>
   	  * Fix crash with the notifications, when the user restarts the recorder.
   	  * The version is not displayed the first time.
   	  * Change the color of the recorder icon (in green).
@@ -46,6 +59,7 @@
     $ 2.7
       % Version 2.7
       _ 2015-12-15
+      * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>, <font color="#fbca04">new feature</font>
       * Improve the UI management of the speed field and the distance field.
       * Remove the retry text with the geolocation.
       * Add an option to select how the user want to display the speed value.
@@ -64,32 +78,38 @@
     $ 2.6
       % Version 2.6
       _ 2015-12-14
+      * Scope: <font color="#fc2929">bug</font>
       * Hide the speed chart if the option is not checked.
       
     $ 2.5
       % Version 2.5
       _ 2015-12-14
+      * Scope: <font color="#84b6eb">enhancement</font>
       * Remove the accelerometer and use only the GPS speed.
 
     $ 2.4
       % Version 2.4
       _ 2015-12-14
+      * Scope: <font color="#fc2929">bug</font>, <font color="#fbca04">new feature</font>
       * Add an other tab slide transition
       * #4 Bad timers management.
 
     $ 2.3
       % Version 2.3
       _ 2015-12-13
+      * Scope: <font color="#fbca04">new feature</font>
       * Add an option to switch between speed from accelerometer and from GPS.
 
     $ 2.2
       % Version 2.2
       _ 2015-12-13
+      * Scope: <font color="#84b6eb">enhancement</font>
       * Add an adaptive filter to remove the wrong measures.
 
     $ 2.1
       % Version 2.1
       _ 2015-12-13
+      * Scope: <font color="#84b6eb">enhancement</font>, <font color="#fbca04">new feature</font>
       * Add an option to disable the GPS service usage.
       * Exports the frequency of all the timers.
       * Disable GPS option if the geolocation is not allowed.
