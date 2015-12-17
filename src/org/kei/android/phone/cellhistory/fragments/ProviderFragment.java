@@ -383,7 +383,6 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   
   @Override
   public void gpsUpdate(GpsTaskEvent event) {
-    Log.d("TAFG", "gpsUpdate: " + event);
     if(event == GpsTaskEvent.UPDATE) {
       txtSpeedMS.setTextColor(default_color);
       txtSpeedKMH.setTextColor(default_color);
