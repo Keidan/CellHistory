@@ -23,12 +23,12 @@
   	  % Version 2.10
       _ 2015-12-17
       * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>, <font color="#fbca04">new feature</font>
-  	  * Support of JSON format in addition to of CSV format.
   	  * Fix bad detection when the GPS is disabled.
   	  * Fix bad text assignment.
   	  * Replace the content of the recorder notification with a progress bar for the buffer field.
   	  * Replace the content of the application notification.
   	  * Add notion of "scope" to the file changelog.txt
+  	  * Rename 'Saving path' to 'Working directory'.
   	  
   	$ 2.9
   	  % Version 2.9
