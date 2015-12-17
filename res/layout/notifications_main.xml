@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+ 
+    <ImageView
+        android:id="@+id/imagenotileft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:contentDescription="@string/empty" />
+ 
+    <TextView
+        android:id="@+id/title"
+		style="@android:style/TextAppearance.StatusBar.EventContent.Title"
+		android:textStyle="bold"
+		android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imagenotileft" />
+ 
+    <TextView
+        android:id="@+id/textSummary"
+		style="@android:style/TextAppearance.StatusBar.EventContent"
+		android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_toEndOf="@+id/imagenotileft" />
+ 
+    <TextView
+        android:id="@+id/textSS"
+		style="@android:style/TextAppearance.StatusBar.EventContent"
+		android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textSummary"
+        android:layout_toEndOf="@+id/imagenotileft" />
+ 
+</RelativeLayout>

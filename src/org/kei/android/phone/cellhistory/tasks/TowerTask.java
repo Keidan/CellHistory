@@ -210,6 +210,7 @@ public class TowerTask extends PhoneStateListener implements Runnable {
         else if(tm.getPhoneType() == TelephonyManager.PHONE_TYPE_SIP)
           app.getGlobalTowerInfo().setType("SIP");
       }
+      app.notificationUpdate(app.getGlobalTowerInfo().getSignalStrength(), app.getGlobalTowerInfo().getSignalStrengthPercent());
     } catch(Throwable t) {
       Log.e("TAG", "Exception: " + t.getMessage(), t);
     }finally {

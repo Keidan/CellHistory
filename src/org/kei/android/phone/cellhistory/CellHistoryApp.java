@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.RemoteViews;
 
 /**
  *******************************************************************************
@@ -128,19 +129,46 @@ public class CellHistoryApp extends Application {
   public void notificationRecorderShow(int max) {
     if(nfyRecorderHelper == null)
       nfyRecorderHelper = new NotificationHelper(getApplicationContext(), notifyRecorderID);
-    String aVeryLongString = "Records: 0\n";
-    aVeryLongString += "Buffer: 0/"  + max + "\n";
-    aVeryLongString += "Size: 0octet\n";
-    nfyRecorderHelper.setExtra(false, false);
-    nfyRecorderHelper.show(R.drawable.ic_launcher_green, "ticker",  getString(R.string.app_name), aVeryLongString, getPendingIntent());
+    final RemoteViews contentView = getRecorderRemoteViews(0, "0 octet", 0, max);
+    nfyRecorderHelper.show(contentView, R.drawable.ic_launcher_green, "ticker", getPendingIntent());
+  }
+  
+  public void notificationRecorderUpdate(final long records, final String size, final int buffer, final int max) {
+    if(nfyRecorderHelper == null) return;
+    final RemoteViews contentView = getRecorderRemoteViews(records, size, buffer, max);
+    nfyRecorderHelper.update(contentView);
+  }
+  
+  private RemoteViews getRecorderRemoteViews(final long records, final String size, final int buffer, final int max) {
+    final RemoteViews contentView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification_recorder);
+    contentView.setImageViewResource(R.id.imagenotileft, R.drawable.ic_launcher_green);
+    contentView.setTextViewText(R.id.title, getString(R.string.app_name));
+    contentView.setTextViewText(R.id.textBuffer, "Buffer: ");
+    contentView.setTextViewText(R.id.textPackets, "Records: " + records);
+    contentView.setTextViewText(R.id.textSize, "Size: " + size);
+    contentView.setProgressBar(R.id.pbBuffer, max, buffer, false);
+    return contentView;
+  }
+  private RemoteViews getRemoteViews(final int ss, final int ssp) {
+    final RemoteViews contentView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notifications_main);
+    contentView.setImageViewResource(R.id.imagenotileft, R.drawable.ic_launcher);
+    contentView.setTextViewText(R.id.title, getString(R.string.app_name));
+    contentView.setTextViewText(R.id.textSummary, getString(R.string.notification));
+    contentView.setTextViewText(R.id.textSS, "Signal strength: " + ss + " dBm (" + ssp + "%)");
+    return contentView;
   }
   
   public void notificationShow() {
     if(nfyHelper == null)
       nfyHelper = new NotificationHelper(getApplicationContext(), notifyID);
-    nfyHelper.setExtra(false, false);
-    nfyHelper.show(R.drawable.ic_launcher, null, getString(R.string.app_name),
-        getString(R.string.notification), getPendingIntent());
+    final RemoteViews contentView = getRemoteViews(0, 0);
+    nfyHelper.show(contentView, R.drawable.ic_launcher, "ticker", getPendingIntent());
+  }
+  
+  public void notificationUpdate(final int ss, final int ssp) {
+    if(nfyHelper == null) return;
+    final RemoteViews contentView = getRemoteViews(ss, ssp);
+    nfyHelper.update(contentView);
   }
   
   public NotificationHelper getNfyRecorderHelper() {
