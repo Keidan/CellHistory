@@ -67,10 +67,7 @@ public class RecorderCtx {
       }
       if (frames.size() >= limit)
         write();
-      String message = "Records: " + records + "\n";
-      message += "Buffer: " + frames.size() + "/"  + limit + "\n";
-      message += "Size: " + convertToHuman(size) + "\n";
-      ctx.getNfyRecorderHelper().update(message);
+      ctx.notificationRecorderUpdate(records, convertToHuman(size), frames.size(), limit);
     }
   }
   
