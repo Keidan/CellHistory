@@ -102,8 +102,8 @@
     
     <string name="pref_delete_file_title">Previous file</string>
     <string name="pref_delete_file_summary">Removes the previous session file before starting.</string>
-	<string name="pref_save_path_title">Saving path</string>
-    <string name="pref_save_path_summary">Click to select the saving folder.</string>
+	<string name="pref_save_path_title">Directory</string>
+    <string name="pref_save_path_summary">Click to select the working directory.</string>
 	<string name="pref_flush_title">Flush</string>
     <string name="pref_flush_summary">Maximum of items before flushing the temporary buffer.</string>
 	<string name="pref_sep_title">Separator</string>
