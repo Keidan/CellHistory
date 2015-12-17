@@ -65,7 +65,7 @@
     <string name="pref_geolocation_management_summary">Configure the geolocation.</string>
     <string name="pref_recorder_summary">Configure the recorder.</string>
     <string name="pref_timers_title">Timers</string>
-    <string name="pref_timers_summary">Configuration the application timers.</string>
+    <string name="pref_timers_summary">Configure the application timers.</string>
 	
 	<string name="pref_title_ui">User Interface</string>
 	<string name="pref_title_recorder">Recorder</string>

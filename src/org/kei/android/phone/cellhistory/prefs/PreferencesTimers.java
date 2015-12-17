@@ -115,7 +115,7 @@ OnSharedPreferenceChangeListener {
     ep = (EditTextPreference) prefFrag
         .findPreference(PREFS_KEY_TIMERS_TASK_GPS);
     summary = getResources().getString(
-        R.string.pref_timers_task_provider_summary);
+        R.string.pref_timers_task_gps_summary);
     summary += "\nTimer: "
         + prefs.getString(PREFS_KEY_TIMERS_TASK_GPS,
             PREFS_DEFAULT_TIMERS_TASK_GPS) + " ms.";
