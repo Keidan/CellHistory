@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -54,6 +55,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   public static final String   PREFS_KEY_NEIGHBORING_SEP     = "recorderNeighboringSep";
   public static final String   PREFS_KEY_DEL_PREV_FILE       = "recorderDeletePrevFile";
   public static final String   PREFS_KEY_DETECT_CHANGE       = "recorderDetectChange";
+  public static final String   PREFS_KEY_DETECT_CHANGE_FILTER= "recorderDetectChangeFilter";
   public static final String   PREFS_DEFAULT_FLUSH           = "25";
   public static final String   PREFS_DEFAULT_SEP             = TowerInfo.DEFAULT_TOSTRING_SEP;
   public static final String   PREFS_DEFAULT_NEIGHBORING_SEP = NeighboringInfo.DEFAULT_TOSTRING_SEP;
@@ -137,6 +139,10 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
     summary = getResources().getString(R.string.pref_formats_summary);
     summary += "\nFormat: " + prefs.getString(PREFS_KEY_FORMATS, PREFS_DEFAULT_FORMATS);
     pref.setSummary(summary);
+    
+    final CheckBoxPreference dc = (CheckBoxPreference)prefFrag.findPreference(PREFS_KEY_DETECT_CHANGE);
+    pref = (Preference)prefFrag.findPreference(PREFS_KEY_DETECT_CHANGE_FILTER);
+    pref.setEnabled(dc.isChecked());
   }
   
   private void checkValues() {
@@ -159,10 +165,22 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
         return true;
       }
     });
+    final Preference dc = prefFrag.findPreference(PREFS_KEY_DETECT_CHANGE_FILTER);
+    dc
+    .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+      @Override
+      public boolean onPreferenceClick(final Preference preference) {
+        preferences = true;
+        Tools.switchTo(PreferencesRecorder.this,
+            PreferencesRecorderFilters.class);
+        return true;
+      }
+    });
   }
   @Override
   public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP) || key.equals(PREFS_KEY_FORMATS)) {
+    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP) 
+        || key.equals(PREFS_KEY_FORMATS) || key.equals(PREFS_KEY_DETECT_CHANGE)) {
       updateSummaries();
     }
   }

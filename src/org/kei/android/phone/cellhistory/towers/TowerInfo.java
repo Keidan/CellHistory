@@ -101,33 +101,6 @@ public class TowerInfo {
     neighboring.addAll(ti.getNeighboring());
   }
   
-  public boolean equals(final TowerInfo ti) {
-    boolean b = provider.equals(ti.provider) && operator.equals(ti.operator) 
-        && mcc == ti.mcc && mnc == ti.mnc && cellId == ti.cellId 
-        && lac == ti.lac && psc == ti.psc && signalStrength == ti.signalStrength 
-        && signalStrengthPercent == ti.signalStrengthPercent && type == ti.type 
-        && asu == ti.asu && lvl == ti.lvl && network == ti.network && networkName.equals(ti.networkName)
-        && speed == ti.speed && distance == ti.distance && satellites == ti.satellites;
-    if(b) {
-      int size1 = neighboring.size();
-      int size2 = ti.neighboring.size();
-      if(size1 != size2) return false;
-      boolean found = false;
-      for(int i = 0; i < size1; ++i) {
-        NeighboringInfo ni1 = neighboring.get(i);
-        for(int j = 0; j < size2; ++j) {
-          NeighboringInfo ni2 = ti.neighboring.get(j);
-          if(ni1.toString().equals(ni2.toString())) {
-            found = true;
-            break;
-          }
-        }
-        if(!found) return false;
-      }
-    }
-    return b;
-  }
-  
   public void lock() {
     this.lock.lock();
   }

@@ -60,6 +60,9 @@
         <activity
             android:name="org.kei.android.phone.cellhistory.prefs.PreferencesRecorder">
         </activity>
+        <activity
+            android:name="org.kei.android.phone.cellhistory.prefs.PreferencesRecorderFilters">
+        </activity>
     </application>
 
 </manifest>

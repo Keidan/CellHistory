@@ -38,11 +38,15 @@
             android:summary="@string/pref_flush_summary"
             android:title="@string/pref_flush_title"   
     		android:inputType="number" />
-        <CheckBoxPreference
-            android:defaultValue="false"
+		<CheckBoxPreference
+			android:defaultValue="false"
             android:key="recorderDetectChange"
             android:summary="@string/pref_detect_change_summary"
             android:title="@string/pref_detect_change_title" />
+		<Preference
+            android:key="recorderDetectChangeFilter"
+            android:summary="@string/pref_detect_change_filter_summary"
+            android:title="@string/pref_detect_change_filter_title" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="recorderDeletePrevFile"

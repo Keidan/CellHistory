@@ -7,10 +7,10 @@ import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.EffectPreferenceActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
-import org.kei.android.phone.cellhistory.activities.LogActivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
@@ -148,16 +148,27 @@ public class Preferences extends EffectPreferenceActivity {
             return true;
           }
         });
-    prefFrag.findPreference(PREFS_KEY_LOG).setOnPreferenceClickListener(
+
+    Preference p = prefFrag.findPreference(PREFS_KEY_LOG_ENABLE);
+    prefFrag.findPreference(PREFS_KEY_LOG).setEnabled(((CheckBoxPreference)p).isChecked());
+    p.setOnPreferenceClickListener(
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {
-            preferences = true;
-            Tools.switchTo(Preferences.this, LogActivity.class);
+            prefFrag.findPreference(PREFS_KEY_LOG).setEnabled(((CheckBoxPreference)preference).isChecked());
             return true;
           }
         });
     prefFrag.findPreference(PREFS_KEY_TIMERS).setOnPreferenceClickListener(
+        new Preference.OnPreferenceClickListener() {
+          @Override
+          public boolean onPreferenceClick(final Preference preference) {
+            preferences = true;
+            Tools.switchTo(Preferences.this, PreferencesTimers.class);
+            return true;
+          }
+        });
+    prefFrag.findPreference(PREFS_KEY_LOG).setOnPreferenceClickListener(
         new Preference.OnPreferenceClickListener() {
           @Override
           public boolean onPreferenceClick(final Preference preference) {

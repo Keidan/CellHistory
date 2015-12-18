@@ -1,10 +1,10 @@
 package org.kei.android.phone.cellhistory.fragments;
 
-import org.kei.android.atk.utils.Tools;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.PreferencesRecorder;
+import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 import android.content.SharedPreferences;
@@ -101,27 +101,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   public void onClick(final View v) {
     if (v.equals(toggleOnOff)) {
       if (toggleOnOff.isChecked()) {
-        try {
-          app.getRecorderCtx().writeHeader(
-              prefs.getString(PreferencesRecorder.PREFS_KEY_SAVE_PATH,
-                  PreferencesRecorder.PREFS_DEFAULT_SAVE_PATH),
-              getResources().getString(R.string.file_name),
-              prefs.getString(PreferencesRecorder.PREFS_KEY_SEP,
-                  PreferencesRecorder.PREFS_DEFAULT_SEP),
-              prefs.getString(PreferencesRecorder.PREFS_KEY_NEIGHBORING_SEP,
-                  PreferencesRecorder.PREFS_DEFAULT_NEIGHBORING_SEP),
-              prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DEL_PREV_FILE,
-                  PreferencesRecorder.PREFS_DEFAULT_DEL_PREV_FILE),
-              prefs.getString(PreferencesRecorder.PREFS_KEY_FORMATS,
-                  PreferencesRecorder.PREFS_DEFAULT_FORMATS),
-              prefs.getBoolean(PreferencesRecorder.PREFS_KEY_INDENTATION,
-                  PreferencesRecorder.PREFS_DEFAULT_INDENTATION));
-          app.notificationRecorderShow(pbBuffer.getMax());
-        } catch (final Exception e) {
-          Tools.toast(getActivity(), R.drawable.ic_launcher,
-              "Unable to start the capture: " + e.getMessage());
-          Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
-        }
+        app.getRecorderTask().start(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_RECORDER,
+                  PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_RECORDER)));
       } else {
         stopProcess();
       }
@@ -133,7 +114,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       @Override
       public void run() {
         toggleOnOff.setChecked(false);
-        app.getRecorderCtx().flushAndClose();
+        app.getRecorderTask().stop();
         app.getNfyRecorderHelper().hide();
       }
     });

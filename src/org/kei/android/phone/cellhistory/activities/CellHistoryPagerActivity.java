@@ -89,6 +89,8 @@ IThemeActivity, OnPageChangeListener {
     app.getProviderTask().initialize(this, prefs);
     app.getTowerTask().initialize(this, prefs);
     app.getGpsTask().initialize(this);
+    app.getRecorderCtx().initialize(prefs);
+    app.getRecorderTask().initialize(this, prefs);
 
     fragments = new Vector<Fragment>();
     fragments.add(new TowerFragment());
@@ -193,7 +195,7 @@ IThemeActivity, OnPageChangeListener {
     app.getProviderTask().stop();
     app.getGpsTask().stop();
     app.getTowerTask().stop();
-    app.getRecorderCtx().flushAndClose();
+    app.getRecorderTask().stop();
   }
   
   private final Runnable uiTask = new Runnable() {

@@ -75,13 +75,15 @@
     
     
     <string name="pref_timers_ui_title">User interface</string>
-    <string name="pref_timers_ui_summary">Used to refresh the UI.</string>
+    <string name="pref_timers_ui_summary">Used to refresh the UI (restart required).</string>
     <string name="pref_timers_task_provider_title">Provider</string>
-    <string name="pref_timers_task_provider_summary">Used to retrieve the cell tower location.</string>
+    <string name="pref_timers_task_provider_summary">Used to retrieve the cell tower location (restart required).</string>
     <string name="pref_timers_task_gps_title">GPS</string>
-    <string name="pref_timers_task_gps_summary">Used to retrieve the speed and the distance.</string>
+    <string name="pref_timers_task_gps_summary">Used to retrieve the speed and the distance (restart required).</string>
     <string name="pref_timers_task_tower_title">Tower</string>
-    <string name="pref_timers_task_tower_summary">Used to retrieve the cell tower informations.</string>
+    <string name="pref_timers_task_tower_summary">Used to retrieve the cell tower informations (restart required).</string>
+    <string name="pref_timers_task_recorder_title">Recorder</string>
+    <string name="pref_timers_task_recorder_summary">Used to write the data (restart required).</string>
     
 	<string name="pref_title_geolocation_opencellid">Geolocation OpenCellID</string>
 	<string name="pref_title_geolocation_google">Geolocation Google</string>
@@ -109,7 +111,9 @@
 	<string name="pref_neighboring_sep_title">Neighboring separator</string>
     <string name="pref_neighboring_sep_summary">The separator to use to separate each "neighboring entries" into the current CSV line.</string>
 	<string name="pref_detect_change_title">Change only</string>
-    <string name="pref_detect_change_summary">Writes the entry only if a signal change is detected.</string>
+    <string name="pref_detect_change_summary">Writes the entry only if a data change is detected.</string>
+	<string name="pref_detect_change_filter_title">Filters</string>
+    <string name="pref_detect_change_filter_summary">Configure the filters.</string>
 	<string name="pref_formats_title">Format</string>
     <string name="pref_formats_summary">File format (CSV, JSON, XML)</string>
 	<string name="pref_indentation_title">Indentation</string>
@@ -135,5 +139,40 @@
 	
     <string name="pref_changelog_title">Changelog</string>
 	<string name="pref_changelog_summary">Click to display the application changelog.</string>
+	
+	
+     <string name="pref_recorder_filter_title">Filters</string>
+     <string name="pref_recorder_filter_provider_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_provider_title">Provider</string>
+     <string name="pref_recorder_filter_operator_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_operator_title">Operator</string>
+     <string name="pref_recorder_filter_mcc_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_mcc_title">MCC</string>
+     <string name="pref_recorder_filter_mnc_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_mnc_title">MNC</string>
+     <string name="pref_recorder_filter_cellid_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_cellid_title">CellId</string>
+     <string name="pref_recorder_filter_lac_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_lac_title">LAC</string>
+     <string name="pref_recorder_filter_psc_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_psc_title">PSC</string>
+     <string name="pref_recorder_filter_signalstrength_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_signalstrength_title">Signal strength</string>
+     <string name="pref_recorder_filter_type_summary">Mobile type</string>
+     <string name="pref_recorder_filter_type_title">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_asu_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_asu_title">ASU</string>
+     <string name="pref_recorder_filter_level_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_level_title">Level</string>
+     <string name="pref_recorder_filter_networkid_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_networkid_title">Mobile network</string>
+     <string name="pref_recorder_filter_speed_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_speed_title">Speed</string>
+     <string name="pref_recorder_filter_distance_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_distance_title">Distance</string>
+     <string name="pref_recorder_filter_satellites_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_satellites_title">Satellites</string>
+     <string name="pref_recorder_filter_neighboring_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_neighboring_title">Neighboring</string>
 	
 </resources>

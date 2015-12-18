@@ -35,12 +35,14 @@ OnSharedPreferenceChangeListener {
   public static final String   PREFS_KEY_TIMERS_UI                = "timersUI";
   public static final String   PREFS_KEY_TIMERS_TASK_TOWER        = "timersTaskTower";
   public static final String   PREFS_KEY_TIMERS_TASK_PROVIDER     = "timersTaskProvider";
+  public static final String   PREFS_KEY_TIMERS_TASK_RECORDER     = "timersTaskRecorder";
   public static final String   PREFS_KEY_TIMERS_TASK_GPS          = "timersTaskGps";
 
   public static final String   PREFS_DEFAULT_TIMERS_UI            = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_TOWER    = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_PROVIDER = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_GPS      = "1000";
+  public static final String   PREFS_DEFAULT_TIMERS_TASK_RECORDER = "1000";
   private MyPreferenceFragment prefFrag                           = null;
   private SharedPreferences    prefs                              = null;
   private boolean              exit                               = false;
@@ -119,6 +121,14 @@ OnSharedPreferenceChangeListener {
     summary += "\nTimer: "
         + prefs.getString(PREFS_KEY_TIMERS_TASK_GPS,
             PREFS_DEFAULT_TIMERS_TASK_GPS) + " ms.";
+    ep.setSummary(summary);
+    ep = (EditTextPreference) prefFrag
+        .findPreference(PREFS_KEY_TIMERS_TASK_RECORDER);
+    summary = getResources().getString(
+        R.string.pref_timers_task_recorder_summary);
+    summary += "\nTimer: "
+        + prefs.getString(PREFS_KEY_TIMERS_TASK_RECORDER,
+            PREFS_DEFAULT_TIMERS_TASK_RECORDER) + " ms.";
     ep.setSummary(summary);
   }
 

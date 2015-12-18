@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.Locale;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
+import org.kei.android.phone.cellhistory.prefs.PreferencesRecorderFilters;
+import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
+
+import android.content.SharedPreferences;
 
 /**
  *******************************************************************************
@@ -31,29 +35,35 @@ import org.kei.android.phone.cellhistory.towers.TowerInfo;
  *******************************************************************************
  */
 public class RecorderCtx {
-  private static final int   SIZE_1KB    = 0x400;
-  private static final int   SIZE_1MB    = 0x100000;
-  private static final int   SIZE_1GB    = 0x40000000;
-  public static final String FORMAT_CSV  = "CSV";
-  public static final String FORMAT_JSON = "JSON";
-  public static final String FORMAT_XML  = "XML";
-  private long               counter     = 0L;
-  private long               size        = 0L;
-  private File               currentFile = null;
-  private final List<String> frames      = new ArrayList<String>();
-  private PrintWriter        pw          = null;
-  private String             format      = FORMAT_JSON;
-  private boolean            indentation = true;
+  private static final int        SIZE_1KB    = 0x400;
+  private static final int        SIZE_1MB    = 0x100000;
+  private static final int        SIZE_1GB    = 0x40000000;
+  public static final String      FORMAT_CSV  = "CSV";
+  public static final String      FORMAT_JSON = "JSON";
+  public static final String      FORMAT_XML  = "XML";
+  private long                    counter     = 0L;
+  private long                    size        = 0L;
+  private File                    currentFile = null;
+  private final List<String>      frames      = new ArrayList<String>();
+  private PrintWriter             pw          = null;
+  private String                  format      = FORMAT_JSON;
+  private boolean                 indentation = true;
+  private SharedPreferences       prefs;
   
+  public RecorderCtx() {
+  }
+
+  public void initialize(final SharedPreferences prefs) {
+    this.prefs = prefs;
+  }
 
   public void writeData(final String sep, final String sepNb, final int limit,
       final CellHistoryApp ctx, final boolean detectChange, long records) {
     if (pw != null) {
       if (detectChange) {
         if (ctx.getBackupTowerInfo() == null
-            || !ctx.getBackupTowerInfo().equals(ctx.getGlobalTowerInfo())) {
+            || !sameTowerInfo(ctx.getBackupTowerInfo(), ctx.getGlobalTowerInfo())) {
           ctx.setBackupTowerInfo(new TowerInfo(ctx.getGlobalTowerInfo()));
-
           if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
           else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON(indentation));
           else frames.add(ctx.getGlobalTowerInfo().toXML(indentation));
@@ -184,6 +194,93 @@ public class RecorderCtx {
       size = s.length() + 1;
       pw.println(s);
     }
+  }
+  
+  public boolean sameTowerInfo(final TowerInfo backup, final TowerInfo current) {
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_PROVIDER,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_PROVIDER)) 
+      if(!backup.getProvider().equals(current.getProvider())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_OPERATOR,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_OPERATOR)) 
+      if(!backup.getOperator().equals(current.getOperator())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_MCC,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_MNC)) 
+      if(!(backup.getMCC() == current.getMCC())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_MNC,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_MNC)) 
+      if(!(backup.getMNC() == current.getMNC())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_CELL_ID,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_CELL_ID)) 
+      if(!(backup.getCellId() == current.getCellId())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_LAC,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_LAC)) 
+      if(!(backup.getLac() == current.getLac())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_PSC,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_PSC)) 
+      if(!(backup.getPsc() == current.getPsc())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_SIGNAL_STRENGTH,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_SIGNAL_STRENGTH)) {
+      if(!(backup.getSignalStrength() == current.getSignalStrength())) return false;
+      if(!(backup.getSignalStrengthPercent() == current.getSignalStrengthPercent())) return false;
+    }
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_TYPE,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_TYPE)) 
+      if(!backup.getType().equals(current.getType())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_ASU,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_ASU)) 
+      if(!(backup.getAsu() == current.getAsu())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_LEVEL,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_LEVEL)) 
+      if(!(backup.getLvl() == current.getLvl())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_NETOWRK_ID,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_NETWORK_ID)) {
+      if(!(backup.getNetwork() == current.getNetwork())) return false;
+      if(!backup.getNetworkName().equals(current.getNetworkName())) return false;
+    }
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_SPEED,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_SPEED)) 
+      if(!(backup.getSpeed() == current.getSpeed())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DISTANCE,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DISTANCE)) 
+      if(!(backup.getDistance() == current.getDistance())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_SATELLITES,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_SATELLITES)) 
+      if(!(backup.getSatellites() == current.getSatellites())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_NEIGHBORING,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_NEIGHBORING)) {
+      int size1 = backup.getNeighboring().size();
+      int size2 = current.getNeighboring().size();
+      if(size1 != size2) return false;
+      boolean found = false;
+      for(int i = 0; i < size1; ++i) {
+        NeighboringInfo ni1 = backup.getNeighboring().get(i);
+        for(int j = 0; j < size2; ++j) {
+          NeighboringInfo ni2 = current.getNeighboring().get(j);
+          if(ni1.toString().equals(ni2.toString())) {
+            found = true;
+            break;
+          }
+        }
+        if(!found) return false;
+      }
+    }
+    return true;
   }
   
   /**

@@ -15,6 +15,7 @@ import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
 import org.kei.android.phone.cellhistory.tasks.GpsTask;
 import org.kei.android.phone.cellhistory.tasks.ProviderTask;
+import org.kei.android.phone.cellhistory.tasks.RecorderTask;
 import org.kei.android.phone.cellhistory.tasks.TowerTask;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
@@ -49,11 +50,12 @@ public class CellHistoryApp extends Application {
   private static final int   CIRCULAR_BUFFER_DEPTH = 1500;
   private Buffer             logs                  = null;
   private Lock               lock                  = null;
-  private final TowerInfo    globalTi              = new TowerInfo();
+  private TowerInfo          globalTi              = null;
   private TowerInfo          backupTi              = null;
   private ProviderCtx        providerCtx           = null;
   private RecorderCtx        recorderCtx           = null;
   private ProviderTask       providerTask          = null;
+  private RecorderTask       recorderTask          = null;
   private GpsTask            gpsTask               = null;
   private TowerTask          towerTask             = null;
   private int                currentSlideIndex     = 0;
@@ -68,6 +70,7 @@ public class CellHistoryApp extends Application {
     providerCtx = new ProviderCtx();
     recorderCtx = new RecorderCtx();
     providerTask = new ProviderTask(this);
+    recorderTask = new RecorderTask(this);
     towerTask = new TowerTask(this);
     gpsTask = new GpsTask(this);
   }
@@ -185,6 +188,9 @@ public class CellHistoryApp extends Application {
   }
   
   public TowerInfo getGlobalTowerInfo() {
+    if(globalTi == null) {
+      globalTi = new TowerInfo();
+    }
     return globalTi;
   }
   
@@ -210,6 +216,10 @@ public class CellHistoryApp extends Application {
   
   public TowerTask getTowerTask() {
     return towerTask;
+  }
+  
+  public RecorderTask getRecorderTask() {
+    return recorderTask;
   }
   
   public GpsTask getGpsTask() {

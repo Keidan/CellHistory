@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/pref_recorder_filter_title" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterOperator"
+            android:summary="@string/pref_recorder_filter_operator_summary"
+            android:title="@string/pref_recorder_filter_operator_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterMCC"
+            android:summary="@string/pref_recorder_filter_mcc_summary"
+            android:title="@string/pref_recorder_filter_mcc_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterMNC"
+            android:summary="@string/pref_recorder_filter_mnc_summary"
+            android:title="@string/pref_recorder_filter_mnc_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterCellID"
+            android:summary="@string/pref_recorder_filter_cellid_summary"
+            android:title="@string/pref_recorder_filter_cellid_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterLAC"
+            android:summary="@string/pref_recorder_filter_lac_summary"
+            android:title="@string/pref_recorder_filter_lac_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterPSC"
+            android:summary="@string/pref_recorder_filter_psc_summary"
+            android:title="@string/pref_recorder_filter_psc_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterType"
+            android:summary="@string/pref_recorder_filter_type_summary"
+            android:title="@string/pref_recorder_filter_type_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterNetworkId"
+            android:summary="@string/pref_recorder_filter_networkid_summary"
+            android:title="@string/pref_recorder_filter_networkid_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterASU"
+            android:summary="@string/pref_recorder_filter_asu_summary"
+            android:title="@string/pref_recorder_filter_asu_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterLevel"
+            android:summary="@string/pref_recorder_filter_level_summary"
+            android:title="@string/pref_recorder_filter_level_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterSignalStrength"
+            android:summary="@string/pref_recorder_filter_signalstrength_summary"
+            android:title="@string/pref_recorder_filter_signalstrength_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterNeighboring"
+            android:summary="@string/pref_recorder_filter_neighboring_summary"
+            android:title="@string/pref_recorder_filter_neighboring_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterProvider"
+            android:summary="@string/pref_recorder_filter_provider_summary"
+            android:title="@string/pref_recorder_filter_provider_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterDistance"
+            android:summary="@string/pref_recorder_filter_distance_summary"
+            android:title="@string/pref_recorder_filter_distance_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterSatellites"
+            android:summary="@string/pref_recorder_filter_satellites_summary"
+            android:title="@string/pref_recorder_filter_satellites_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterSpeed"
+            android:summary="@string/pref_recorder_filter_speed_summary"
+            android:title="@string/pref_recorder_filter_speed_title" />
+    </PreferenceCategory>
+</PreferenceScreen>

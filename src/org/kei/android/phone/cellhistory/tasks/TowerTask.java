@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
-import org.kei.android.phone.cellhistory.prefs.PreferencesRecorder;
 import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
@@ -98,7 +97,6 @@ public class TowerTask extends PhoneStateListener implements Runnable {
     }
   
   public void run() {
-    long records = 0;
     app.getGlobalTowerInfo().lock();
     try {
       app.getGlobalTowerInfo().setTimestamp(new Date().getTime());
@@ -190,7 +188,6 @@ public class TowerTask extends PhoneStateListener implements Runnable {
       } else
         CellHistoryApp.addLog(activity, "Invalid TelephonyManager");
       app.getGlobalTowerInfo().setRecords(app.getRecorderCtx().getCounter());
-      records = app.getGlobalTowerInfo().getRecords();
       if(app.getProviderCtx().isValid()) {
         String [] split = app.getProviderCtx().getOldLoc().split(",");
         app.getGlobalTowerInfo().setLatitude(Double.parseDouble(split[0]));
@@ -218,18 +215,10 @@ public class TowerTask extends PhoneStateListener implements Runnable {
           app.getGlobalTowerInfo().getSignalStrength(), 
           app.getGlobalTowerInfo().getSignalStrengthPercent());
     } catch(Throwable t) {
-      Log.e("TAG", "Exception: " + t.getMessage(), t);
+      Log.e(getClass().getSimpleName(), "Exception: " + t.getMessage(), t);
     }finally {
       app.getGlobalTowerInfo().unlock();
     }
-    app.getRecorderCtx().writeData(
-        prefs.getString(PreferencesRecorder.PREFS_KEY_SEP, PreferencesRecorder.PREFS_DEFAULT_SEP), 
-        prefs.getString(PreferencesRecorder.PREFS_KEY_NEIGHBORING_SEP, PreferencesRecorder.PREFS_DEFAULT_NEIGHBORING_SEP), 
-        Integer.parseInt(prefs.getString(PreferencesRecorder.PREFS_KEY_FLUSH, PreferencesRecorder.PREFS_DEFAULT_FLUSH)), 
-        app, 
-        prefs.getBoolean(PreferencesRecorder.PREFS_KEY_DETECT_CHANGE, PreferencesRecorder.PREFS_DEFAULT_DETECT_CHANGE),
-        records
-        );
   }
   
 }
