@@ -63,6 +63,10 @@
         <activity
             android:name="org.kei.android.phone.cellhistory.prefs.PreferencesRecorderFilters">
         </activity>
+        <service android:name="org.kei.android.phone.cellhistory.services.TowerService"/>
+        <service android:name="org.kei.android.phone.cellhistory.services.ProviderService"/>
+        <service android:name="org.kei.android.phone.cellhistory.services.RecorderService"/>
+        <service android:name="org.kei.android.phone.cellhistory.services.GpsService"/>
     </application>
 
 </manifest>

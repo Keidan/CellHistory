@@ -1,11 +1,13 @@
-package org.kei.android.phone.cellhistory.tasks;
+package org.kei.android.phone.cellhistory.services.tasks;
 
 import java.util.Iterator;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
+import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -14,12 +16,11 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.location.GpsStatus.Listener;
 import android.os.Bundle;
-
 /**
  *******************************************************************************
- * @file ProviderTask.java
+ * @file GpsServiceTask.java
  * @author Keidan
- * @date 12/12/2015
+ * @date 19/12/2015
  * @par Project CellHistory
  *
  * @par Copyright 2015 Keidan, all right reserved
@@ -34,59 +35,44 @@ import android.os.Bundle;
  *
  *******************************************************************************
  */
-public class GpsTask implements LocationListener, Listener {
-  /* context */
-  private CellHistoryApp  app         = null;
-  private Activity        activity    = null;
-  private LocationManager lm          = null;
-  private GpsListener     gpsListener = null;
-  private GpsTaskEvent    lastEvent   = GpsTaskEvent.WAIT_FOR_SATELLITES;
-  private int             oldDelay    = 0;
-  private boolean         disabled    = false;
-  private boolean         connected   = false;
-  private boolean         enabled     = false;
+public class GpsServiceTask implements LocationListener, Listener  {
+  public static final String NOTIFICATION                  = "org.kei.android.phone.cellhistory.fragments";
+  public static final String EVENT                         = "event";
+  public static final int    EVENT_DISABLED                = 0;
+  public static final int    EVENT_ENABLED                 = 1;
+  public static final int    EVENT_CONNECTED               = 2;
+  public static final int    EVENT_UPDATE                  = 3;
+  public static final int    EVENT_WAIT_FOR_SATELLITES     = 4;
+  public static final int    EVENT_OUT_OF_SERVICE          = 5;
+  public static final int    EVENT_TEMPORARILY_UNAVAILABLE = 6;
+  private CellHistoryApp     app                           = null;
+  private Context            context                       = null;
+  private SharedPreferences  prefs                         = null;
+  private LocationManager    lm                            = null;
+  private boolean            disabled                      = false;
   
-  public static enum GpsTaskEvent {
-    OUT_OF_SERVICE, TEMPORARILY_UNAVAILABLE, WAIT_FOR_SATELLITES, UPDATE, ENABLED, DISABLED;
-  };
-
-  public interface GpsListener {
-    public void gpsUpdate(GpsTaskEvent event);
-  }
-
-  public GpsTask(final CellHistoryApp app) {
+  public GpsServiceTask(final Context context, final CellHistoryApp app, final SharedPreferences prefs) {
+    this.context = context;
+    this.prefs = prefs;
     this.app = app;
   }
- 
-  public void setGpsListener(final GpsListener li) {
-    this.gpsListener = li;
-    if(lastEvent != null && li != null) {
-      li.gpsUpdate(lastEvent);
-      lastEvent = null;
-    }
-  }
-
-  public void initialize(final Activity activity) {
-    this.activity = activity;
-  }
-
-  public void start(final int delay) {
-    if(lm != null && oldDelay == delay) {
-      stop();
-      oldDelay = delay;
-    }
+  
+  public void register() {
+    unregister();
     if (lm == null) {
-      lm = (LocationManager) activity
+      lm = (LocationManager) context
           .getSystemService(Context.LOCATION_SERVICE);
       if (lm != null) {
         lm.addGpsStatusListener(this);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, delay, 0f,
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.parseInt(prefs
+            .getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_GPS,
+                PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_GPS)), 0f,
             this);
       }
     }
   }
- 
-  public void stop() {
+  
+  public void unregister() {
     if (lm != null) {
       lm.removeUpdates(this);
       lm.removeGpsStatusListener(this);
@@ -94,14 +80,18 @@ public class GpsTask implements LocationListener, Listener {
     }
   }
   
+  private void publishEvent(int result) {
+    Intent intent = new Intent(NOTIFICATION);
+    intent.putExtra(EVENT, result);
+    context.sendBroadcast(intent);
+  }
+
   public void onGpsStatusChanged(int event) {
     int n = -1;
     if(disabled) {
       disabled = false;
       return;
     }
-    connected = true;
-    if(!enabled) enabled = true;
     final GpsStatus status = lm.getGpsStatus(null);
     if(status != null) {
       final Iterable<GpsSatellite> sats = status.getSatellites();
@@ -118,8 +108,7 @@ public class GpsTask implements LocationListener, Listener {
     }
     if(n != -1) {
       if(n != 0) {
-        lastEvent = GpsTaskEvent.UPDATE;
-        if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+        publishEvent(EVENT_UPDATE);
       }
       CellHistoryApp.addLog(app, "GPS: Satellites: " + n);
       app.getGlobalTowerInfo().lock();
@@ -135,8 +124,7 @@ public class GpsTask implements LocationListener, Listener {
   @Override
   public void onLocationChanged(final Location location) {
     CellHistoryApp.addLog(app, location);
-    lastEvent = GpsTaskEvent.UPDATE;
-    if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+    publishEvent(EVENT_UPDATE);
     double speed = 0.0;
     final Location loc1 = new Location("");
     app.getGlobalTowerInfo().lock();
@@ -164,14 +152,12 @@ public class GpsTask implements LocationListener, Listener {
         case LocationProvider.OUT_OF_SERVICE:
           reset();
           CellHistoryApp.addLog(app, "onStatusChanged(" + provider + ", OUT_OF_SERVICE)");
-          lastEvent = GpsTaskEvent.OUT_OF_SERVICE;
-          if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+          publishEvent(EVENT_OUT_OF_SERVICE);
           break;
         case LocationProvider.TEMPORARILY_UNAVAILABLE:
           reset();
           CellHistoryApp.addLog(app, "onStatusChanged(" + provider + ", TEMPORARILY_UNAVAILABLE)");
-          lastEvent = GpsTaskEvent.TEMPORARILY_UNAVAILABLE;
-          if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+          publishEvent(EVENT_TEMPORARILY_UNAVAILABLE);
           break;
       }
     }
@@ -183,11 +169,8 @@ public class GpsTask implements LocationListener, Listener {
       CellHistoryApp.addLog(app, "onProviderEnabled(" + provider + ")");
       disabled = false;
       reset();
-      lastEvent = GpsTaskEvent.ENABLED;
-      if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
-      lastEvent = GpsTaskEvent.WAIT_FOR_SATELLITES;
-      if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
-      enabled = true;
+      publishEvent(EVENT_ENABLED);
+      publishEvent(EVENT_WAIT_FOR_SATELLITES);
     }
   }
   
@@ -207,32 +190,8 @@ public class GpsTask implements LocationListener, Listener {
     if (provider.equals(LocationManager.GPS_PROVIDER)) {
       CellHistoryApp.addLog(app, "onProviderDisabled(" + provider + ")");
       disabled = true;
-      connected = enabled = false;
       reset();
-      lastEvent = GpsTaskEvent.DISABLED;
-      if (gpsListener != null) gpsListener.gpsUpdate(lastEvent);
+      publishEvent(EVENT_DISABLED);
     }
   }
-
-  /**
-   * @return the disabled
-   */
-  public boolean isDisabled() {
-    return disabled;
-  }
-
-  /**
-   * @return the connected
-   */
-  public boolean isConnected() {
-    return connected;
-  }
-
-  /**
-   * @return the enabled
-   */
-  public boolean isEnabled() {
-    return enabled;
-  }
-  
 }

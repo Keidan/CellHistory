@@ -13,10 +13,6 @@ import org.kei.android.phone.cellhistory.activities.CellHistoryPagerActivity;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
-import org.kei.android.phone.cellhistory.tasks.GpsTask;
-import org.kei.android.phone.cellhistory.tasks.ProviderTask;
-import org.kei.android.phone.cellhistory.tasks.RecorderTask;
-import org.kei.android.phone.cellhistory.tasks.TowerTask;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 import android.app.Application;
@@ -54,10 +50,6 @@ public class CellHistoryApp extends Application {
   private TowerInfo          backupTi              = null;
   private ProviderCtx        providerCtx           = null;
   private RecorderCtx        recorderCtx           = null;
-  private ProviderTask       providerTask          = null;
-  private RecorderTask       recorderTask          = null;
-  private GpsTask            gpsTask               = null;
-  private TowerTask          towerTask             = null;
   private int                currentSlideIndex     = 0;
   private NotificationHelper nfyHelper             = null;
   private NotificationHelper nfyRecorderHelper     = null;
@@ -69,12 +61,8 @@ public class CellHistoryApp extends Application {
     lock = new ReentrantLock();
     providerCtx = new ProviderCtx();
     recorderCtx = new RecorderCtx();
-    providerTask = new ProviderTask(this);
-    recorderTask = new RecorderTask(this);
-    towerTask = new TowerTask(this);
-    gpsTask = new GpsTask(this);
   }
-
+  
   public Buffer getLogBuffer() {
     if (logs == null)
       logs = new CircularFifoBuffer(CIRCULAR_BUFFER_DEPTH);
@@ -210,22 +198,6 @@ public class CellHistoryApp extends Application {
     return recorderCtx;
   }
   
-  public ProviderTask getProviderTask() {
-    return providerTask;
-  }
-  
-  public TowerTask getTowerTask() {
-    return towerTask;
-  }
-  
-  public RecorderTask getRecorderTask() {
-    return recorderTask;
-  }
-  
-  public GpsTask getGpsTask() {
-    return gpsTask;
-  }
-
   public int getCurrentSlideIndex() {
     return currentSlideIndex;
   }

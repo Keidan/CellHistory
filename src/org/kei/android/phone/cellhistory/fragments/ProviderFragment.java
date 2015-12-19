@@ -11,13 +11,16 @@ import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
-import org.kei.android.phone.cellhistory.tasks.GpsTask.GpsListener;
-import org.kei.android.phone.cellhistory.tasks.GpsTask.GpsTaskEvent;
+import org.kei.android.phone.cellhistory.services.ProviderService;
+import org.kei.android.phone.cellhistory.services.tasks.GpsServiceTask;
 import org.kei.android.phone.cellhistory.towers.CellIdHelper;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 import org.kei.android.phone.cellhistory.views.TimeChartHelper;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
@@ -58,7 +61,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
  *******************************************************************************
  */
 public class ProviderFragment extends Fragment implements UITaskFragment,
-OnItemSelectedListener, OnClickListener, GpsListener {
+OnItemSelectedListener, OnClickListener {
   /* UI */
   private Spinner           spiGeoProvider               = null;
   private TextView          txtGeoProvider               = null;
@@ -95,6 +98,8 @@ OnItemSelectedListener, OnClickListener, GpsListener {
   private String            txtGpsOutOfService           = "";
   private String            txtGpsTemporarilyUnavailable = "";
   private int               default_color                = android.graphics.Color.TRANSPARENT;
+  private boolean           connected                    = false;
+  private boolean           enabled                      = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -263,9 +268,7 @@ OnItemSelectedListener, OnClickListener, GpsListener {
       editor.putString(PreferencesGeolocation.PREFS_KEY_CURRENT_PROVIDER, newP);
       editor.commit();
       app.getProviderCtx().clear();
-      app.getProviderTask().start(
-          Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
+      getActivity().startService(new Intent(getActivity(), ProviderService.class));
     }
   }
 
@@ -292,21 +295,25 @@ OnItemSelectedListener, OnClickListener, GpsListener {
       spiGeoProvider.setVisibility(View.VISIBLE);
       if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
           PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
-        if(app.getGpsTask().isConnected() && app.getGpsTask().isEnabled())
+        if(connected && enabled)
           setGpsVisibility(true);
         else
           setGpsVisibility(false);
-        app.getGpsTask().setGpsListener(this);
       } else {
-        app.getGpsTask().setGpsListener(null);
         resetGpsInfo(txtGpsDisabledOption, color_orange);
       }
     } else {
-      app.getGpsTask().setGpsListener(null);
       txtGeoProvider.setVisibility(View.VISIBLE);
       spiGeoProvider.setVisibility(View.GONE);
       resetGpsInfo(txtGpsDisabledOption, color_orange);
     }
+    getActivity().registerReceiver(receiver, new IntentFilter(GpsServiceTask.NOTIFICATION));
+  }
+  
+  @Override
+  public void onPause() {
+    super.onPause();
+    getActivity().unregisterReceiver(receiver);
   }
   
   private void setChartVisible(final boolean visible) {
@@ -384,31 +391,44 @@ OnItemSelectedListener, OnClickListener, GpsListener {
     }
   }
   
-  @Override
-  public void gpsUpdate(GpsTaskEvent event) {
-    if(event == GpsTaskEvent.UPDATE) {
-      txtSpeedMS.setTextColor(default_color);
-      txtSpeedKMH.setTextColor(default_color);
-      txtSpeedMPH.setTextColor(default_color);
-      txtDistance.setTextColor(default_color);
-      setGpsVisibility(true);
-    } else if(event == GpsTaskEvent.WAIT_FOR_SATELLITES) {
-      resetGpsInfo(txtGpsWaitSatellites, color_red);
-    } else if(event == GpsTaskEvent.DISABLED) {
-      resetGpsInfo(txtGpsDisabled, color_red);
-    } else if(event == GpsTaskEvent.ENABLED) {
-      txtSpeedMS.setTextColor(color_red);
-      txtSpeedKMH.setTextColor(color_red);
-      txtSpeedMPH.setTextColor(color_red);
-      txtDistance.setTextColor(color_red);
-      setGpsVisibility(true);
-    } else if(event == GpsTaskEvent.OUT_OF_SERVICE) {
-      resetGpsInfo(txtGpsOutOfService, color_red);
-    } else if(event == GpsTaskEvent.TEMPORARILY_UNAVAILABLE) {
-      resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
-    }
-  }
+  private BroadcastReceiver receiver = new BroadcastReceiver() {
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      Bundle bundle = intent.getExtras();
+      if (bundle != null) {
+        int event = bundle.getInt(GpsServiceTask.EVENT);
+        Log.i(getClass().getSimpleName(), "Event: " + event);
+        if (event == GpsServiceTask.EVENT_CONNECTED) {
+          connected = true;
+        } else if (event == GpsServiceTask.EVENT_DISABLED) {
+          connected = false;
+          enabled = false;
+          resetGpsInfo(txtGpsDisabled, color_red);
+        } else if (event == GpsServiceTask.EVENT_ENABLED) {
+          enabled = true;
+          txtSpeedMS.setTextColor(color_red);
+          txtSpeedKMH.setTextColor(color_red);
+          txtSpeedMPH.setTextColor(color_red);
+          txtDistance.setTextColor(color_red);
+          setGpsVisibility(true);
+        } else if (event == GpsServiceTask.EVENT_OUT_OF_SERVICE) {
+          resetGpsInfo(txtGpsOutOfService, color_red);
+        } else if (event == GpsServiceTask.EVENT_TEMPORARILY_UNAVAILABLE) {
+          resetGpsInfo(txtGpsTemporarilyUnavailable, color_red);
+        } else if (event == GpsServiceTask.EVENT_UPDATE) {
+          txtSpeedMS.setTextColor(default_color);
+          txtSpeedKMH.setTextColor(default_color);
+          txtSpeedMPH.setTextColor(default_color);
+          txtDistance.setTextColor(default_color);
+          setGpsVisibility(true);
+        } else if (event == GpsServiceTask.EVENT_WAIT_FOR_SATELLITES) {
+          resetGpsInfo(txtGpsWaitSatellites, color_red);
+        }
+      }
+    }
+  };
+  
   private void resetGpsInfo(final String txt, int color) {
     app.getGlobalTowerInfo().lock();
     try {

@@ -20,8 +20,12 @@ import org.kei.android.phone.cellhistory.prefs.Preferences;
 import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.prefs.PreferencesUI;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
-import org.kei.android.phone.cellhistory.utils.DepthPageTransformer;
-import org.kei.android.phone.cellhistory.utils.ZoomOutPageTransformer;
+import org.kei.android.phone.cellhistory.services.GpsService;
+import org.kei.android.phone.cellhistory.services.ProviderService;
+import org.kei.android.phone.cellhistory.services.RecorderService;
+import org.kei.android.phone.cellhistory.services.TowerService;
+import org.kei.android.phone.cellhistory.transformers.DepthPageTransformer;
+import org.kei.android.phone.cellhistory.transformers.ZoomOutPageTransformer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -86,11 +90,7 @@ IThemeActivity, OnPageChangeListener {
     /* context */
     app = CellHistoryApp.getApp(this);
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    app.getProviderTask().initialize(this, prefs);
-    app.getTowerTask().initialize(this, prefs);
-    app.getGpsTask().initialize(this);
     app.getRecorderCtx().initialize(prefs);
-    app.getRecorderTask().initialize(this, prefs);
 
     fragments = new Vector<Fragment>();
     fragments.add(new TowerFragment());
@@ -110,23 +110,14 @@ IThemeActivity, OnPageChangeListener {
     /* task */
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
-      app.getProviderTask().start(
-          Integer.parseInt(prefs.getString(
-              PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
-
-      app.getGpsTask().start(
-          Integer.parseInt(prefs.getString(
-              PreferencesTimers.PREFS_KEY_TIMERS_TASK_GPS,
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_GPS)));
+      startService(new Intent(this, ProviderService.class));
+      startService(new Intent(this, GpsService.class));
     } else {
-      app.getProviderTask().stop();
+      stopService(new Intent(this, ProviderService.class));
+      stopService(new Intent(this, GpsService.class));
     }
 
-    app.getTowerTask().start(
-        Integer.parseInt(prefs.getString(
-            PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
-            PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
+    startService(new Intent(this, TowerService.class));
   }
 
   private void setTransformer() {
@@ -153,7 +144,6 @@ IThemeActivity, OnPageChangeListener {
 
   @Override
   protected void onResume() {
-    super.onResume();
     preferences = false;
     app.getNfyHelper().hide();
     setTransformer();
@@ -166,22 +156,21 @@ IThemeActivity, OnPageChangeListener {
     
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
-      app.getProviderTask().start(
-          Integer.parseInt(prefs.getString(
-              PreferencesTimers.PREFS_KEY_TIMERS_TASK_TOWER,
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_TOWER)));
-      app.getGpsTask().start(
-          Integer.parseInt(prefs.getString(
-              PreferencesTimers.PREFS_KEY_TIMERS_TASK_GPS,
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_GPS)));
+      startService(new Intent(this, ProviderService.class));
+      if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
+          PreferencesGeolocation.PREFS_DEFAULT_GPS))
+        startService(new Intent(this, GpsService.class));
+      else
+        stopService(new Intent(this, GpsService.class));
     } else {
-      app.getProviderTask().stop();
-      app.getGpsTask().stop();
+      stopService(new Intent(this, ProviderService.class));
+      stopService(new Intent(this, GpsService.class));
     }
     execUpdateUI = new ScheduledThreadPoolExecutor(1);
     execUpdateUI.scheduleWithFixedDelay(uiTask, 0L, Integer.parseInt(prefs
         .getString(PreferencesTimers.PREFS_KEY_TIMERS_UI,
             PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)), TimeUnit.MILLISECONDS);
+    super.onResume();
   }
   
   @Override
@@ -192,10 +181,10 @@ IThemeActivity, OnPageChangeListener {
       execUpdateUI.shutdownNow();
       execUpdateUI = null;
     }
-    app.getProviderTask().stop();
-    app.getGpsTask().stop();
-    app.getTowerTask().stop();
-    app.getRecorderTask().stop();
+    stopService(new Intent(this, ProviderService.class));
+    stopService(new Intent(this, GpsService.class));
+    stopService(new Intent(this, RecorderService.class));
+    stopService(new Intent(this, TowerService.class));
   }
   
   private final Runnable uiTask = new Runnable() {

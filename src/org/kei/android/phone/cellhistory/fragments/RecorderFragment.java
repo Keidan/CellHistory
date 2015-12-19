@@ -4,9 +4,10 @@ import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.PreferencesRecorder;
-import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
+import org.kei.android.phone.cellhistory.services.RecorderService;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -101,8 +102,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   public void onClick(final View v) {
     if (v.equals(toggleOnOff)) {
       if (toggleOnOff.isChecked()) {
-        app.getRecorderTask().start(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_RECORDER,
-                  PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_RECORDER)));
+        getActivity().startService(new Intent(getActivity(), RecorderService.class));
       } else {
         stopProcess();
       }
@@ -114,7 +114,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       @Override
       public void run() {
         toggleOnOff.setChecked(false);
-        app.getRecorderTask().stop();
+        getActivity().stopService(new Intent(getActivity(), RecorderService.class));
         app.getNfyRecorderHelper().hide();
       }
     });
