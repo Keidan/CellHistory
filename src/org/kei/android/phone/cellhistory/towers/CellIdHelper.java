@@ -12,7 +12,7 @@ import org.kei.android.phone.cellhistory.towers.request.CellIdRequestEntity;
 import org.kei.android.phone.cellhistory.towers.request.GoogleHiddenRequestEntity;
 import org.kei.android.phone.cellhistory.towers.request.OpenCellIdRequestEntity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 
@@ -40,7 +40,7 @@ public class CellIdHelper {
   public static final String   GOOGLE_HIDDENT_API    = "Google hidden API";
   public static final String   OPEN_CELL_ID_API      = "OpenCellID";
   
-  public static int tryToLocate(final Activity activity, final TowerInfo ti, int cfg_timeout, final String mode, final String apiKeyOpenCellID) {
+  public static int tryToLocate(final Context context, final TowerInfo ti, int cfg_timeout, final String mode, final String apiKeyOpenCellID) {
     int timeout = cfg_timeout * 1000, ret = CellIdRequestEntity.OK;
     HttpConnectionManager connectionManager = new SimpleHttpConnectionManager();
     connectionManager.getParams().setConnectionTimeout(timeout);
@@ -72,13 +72,13 @@ public class CellIdHelper {
       // Open it
       connection.open();
       if(mode.equals(OPEN_CELL_ID_API))
-        ret = new OpenCellIdRequestEntity(ti).decode(activity, baseURL, connection, timeout);
+        ret = new OpenCellIdRequestEntity(ti).decode(baseURL, connection, timeout);
       else
-        ret = new GoogleHiddenRequestEntity(ti).decode(activity, baseURL, connection, timeout);
+        ret = new GoogleHiddenRequestEntity(ti).decode(baseURL, connection, timeout);
     } catch(Exception e) {
       Log.e(CellIdHelper.class.getSimpleName(), "Exception: " + e.getMessage(), e);
       ret = CellIdRequestEntity.EXCEPTION;
-      CellHistoryApp.addLog(activity, "tryToLocate::Exception: " + e.getMessage());
+      CellHistoryApp.addLog(context, "tryToLocate::Exception: " + e.getMessage());
     } finally {
       connection.close();
     }

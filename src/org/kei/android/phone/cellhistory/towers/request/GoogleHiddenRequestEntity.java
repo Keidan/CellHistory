@@ -14,9 +14,6 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
-import android.app.Activity;
-
-
 /**
  *******************************************************************************
  * @file GoogleApiRequestEntity.java
@@ -76,7 +73,7 @@ public class GoogleHiddenRequestEntity implements RequestEntity, CellIdRequestEn
 
 
   @Override
-  public int decode(final Activity activity, final String url, HttpConnection connection, final int timeout) throws Exception {
+  public int decode(final String url, HttpConnection connection, final int timeout) throws Exception {
     int ret = OK;
     // Post (send) data to the connection
     final PostMethod postMethod = new PostMethod(url);

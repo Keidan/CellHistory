@@ -2,8 +2,6 @@ package org.kei.android.phone.cellhistory.towers.request;
 
 import org.apache.commons.httpclient.HttpConnection;
 
-import android.app.Activity;
-
 /**
  *******************************************************************************
  * @file CellIdRequestEntity.java
@@ -29,5 +27,5 @@ public interface CellIdRequestEntity {
   public static final int    BAD_REQUEST     = 400;
   public static final int    EXCEPTION       = 500;
   
-  public int decode(final Activity activity, final String url, HttpConnection connection, final int timeout) throws Exception;
+  public int decode(final String url, HttpConnection connection, final int timeout) throws Exception;
 }

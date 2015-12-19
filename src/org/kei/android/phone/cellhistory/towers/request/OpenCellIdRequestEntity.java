@@ -16,8 +16,6 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.json.JSONObject;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
-import android.app.Activity;
-
 /**
  *******************************************************************************
  * @file OpenCellIdRequestEntity.java
@@ -69,7 +67,7 @@ public class OpenCellIdRequestEntity implements RequestEntity,
   }
   
   @Override
-  public int decode(final Activity activity, final String url,
+  public int decode(final String url,
       final HttpConnection connection, final int timeout) throws Exception {
     int ret = OK;
     final GetMethod getMethod = new GetMethod(url);
