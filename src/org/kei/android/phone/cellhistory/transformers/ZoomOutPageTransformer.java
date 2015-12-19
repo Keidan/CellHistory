@@ -1,4 +1,4 @@
-package org.kei.android.phone.cellhistory.utils;
+package org.kei.android.phone.cellhistory.transformers;
 
 import android.support.v4.view.ViewPager.PageTransformer;
 import android.view.View;
