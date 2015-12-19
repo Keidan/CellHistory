@@ -120,6 +120,7 @@ public class TowerInfo {
     sb.append(indentation ? "    " : "").append("{").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"timestamp\":").append(getTimestamp()).append(",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"ope\":\"").append(getOperator()).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"provider\":\"").append(getProvider()).append("\",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"mcc\":").append(getMCC()).append(",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"mnc\":").append(getMNC()).append(",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"cid\":").append(getCellId()).append(",").append(indentation ? "\n" : "");
@@ -170,6 +171,7 @@ public class TowerInfo {
     String spaces = indentation ? "    " : null;
     sb.append(lineXML(spaces, "timestamp", getTimestamp()));
     sb.append(lineXML(spaces, "ope", getOperator()));
+    sb.append(lineXML(spaces, "provider", getProvider()));
     sb.append(lineXML(spaces, "mcc", getMCC()));
     sb.append(lineXML(spaces, "mnc", String.format("%02d", getMNC())));
     sb.append(lineXML(spaces, "cid", getCellId()));
@@ -211,8 +213,8 @@ public class TowerInfo {
   
   public String toString(final String sep, final String neighboringSep) {
     StringBuilder sb = new StringBuilder();
-    // #TIMESTAMP,OPE,MCC,MNC,CID,LAC,LAT,LON,SPD,DIST,PSC,TYPE,NET,LVL,ASU,SS,SSP
     sb.append(getTimestamp()).append(sep);
+    sb.append(getProvider()).append(sep);
     sb.append(getOperator()).append(sep);
     sb.append(getMCC()).append(sep);
     sb.append(String.format("%02d", getMNC())).append(sep);
