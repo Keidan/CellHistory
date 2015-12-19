@@ -55,6 +55,7 @@
 	<string name="action_settings">Settings</string>
 	<string name="action_clear">Clear</string>
     <string name="action_sharing">Share</string>
+    <string name="action_advanced">Advanced</string>
     
     <string name="pref_ui_title">User Interface</string>
     <string name="pref_geolocation_management_title">Geolocation</string>

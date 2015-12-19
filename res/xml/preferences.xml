@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreen">
     <PreferenceCategory android:title="@string/pref_title_settings" >
         <Preference
             android:key="prefUI"
@@ -27,7 +27,7 @@
             android:summary="@string/pref_recorder_summary">
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_title_logs" >
+    <PreferenceCategory android:title="@string/pref_title_logs" android:key="prefCatLogs">
         <CheckBoxPreference
             android:key="prefLogsEnable"
             android:defaultValue="false"
@@ -50,7 +50,7 @@
 		    android:enabled="false" 
 		    android:selectable="false"
 		    android:persistent="false"
-		    android:shouldDisableView="false">
+		    android:shouldDisableView="false" >
         </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -9,11 +9,17 @@ import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /**
  *******************************************************************************
@@ -34,7 +40,8 @@ import android.util.Log;
  *
  *******************************************************************************
  */
-public class Preferences extends EffectPreferenceActivity {
+public class Preferences extends EffectPreferenceActivity implements Preference.OnPreferenceClickListener{
+  public static final String   PREFS_KEY_SCREEN           = "prefScreen";
   public static final String   PREFS_KEY_CURRENT_TAB      = "prefCurrentTab";
   public static final String   PREFS_KEY_CHART_ENABLE     = "prefChartEnable";
   public static final String   PREFS_KEY_TIMERS           = "prefTimers";
@@ -45,19 +52,24 @@ public class Preferences extends EffectPreferenceActivity {
   public static final String   PREFS_KEY_RECORDER         = "prefRecorder";
   public static final String   PREFS_KEY_VERSION          = "prefVersion";
   public static final String   PREFS_KEY_CHANGELOG        = "prefChangelog";
+  public static final String   PREFS_KEY_CAT_LOGS         = "prefCatLogs";
+  public static final String   PREFS_KEY_ADVANCED         = "prefAdvanced";
   public static final boolean  PREFS_DEFAULT_CHART_ENABLE = true;
   public static final boolean  PREFS_DEFAULT_LOG_ENABLE   = false;
+  public static final boolean  PREFS_DEFAULT_ADVANCED     = false;
   public static final int      PREFS_DEFAULT_CURRENT_TAB  = 0;
   private MyPreferenceFragment prefFrag                   = null;
   private ChangeLog            changeLog                  = null;
   private boolean              exit                       = false;
   private boolean              preferences                = false;
   private CellHistoryApp       app                        = null;
+  private SharedPreferences    prefs                      = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     app = CellHistoryApp.getApp(this);
+    prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
     .replace(android.R.id.content, prefFrag).commit();
@@ -114,69 +126,51 @@ public class Preferences extends EffectPreferenceActivity {
 
   private void updateSummaries() {
   }
+
+  @Override
+  public boolean onPreferenceClick(final Preference preference) {
+    if (preference.equals(prefFrag.findPreference(PREFS_KEY_UI))) {
+      preferences = true;
+      Tools.switchTo(Preferences.this, PreferencesUI.class);
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_GEOLOCATION))) {
+      preferences = true;
+      Tools.switchTo(Preferences.this, PreferencesGeolocation.class);
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_RECORDER))) {
+      preferences = true;
+      Tools.switchTo(Preferences.this, PreferencesRecorder.class);
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_LOG_ENABLE))) {
+      prefFrag.findPreference(PREFS_KEY_LOG).setEnabled(
+          ((CheckBoxPreference) preference).isChecked());
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_TIMERS))) {
+      preferences = true;
+      Tools.switchTo(Preferences.this, PreferencesTimers.class);
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_LOG))) {
+      preferences = true;
+      Tools.switchTo(Preferences.this, PreferencesTimers.class);
+      return true;
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_CHANGELOG))) {
+      preferences = true;
+      changeLog.getFullLogDialog().show();
+    }
+    
+    return true;
+  }
   
   private void checkValues() {
     // addPreferencesFromResource is not done at the start
     getFragmentManager().executePendingTransactions();
     updateSummaries();
     prefFrag.findPreference(PREFS_KEY_UI)
-    .setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            preferences = true;
-            Tools.switchTo(Preferences.this, PreferencesUI.class);
-            return true;
-          }
-        });
+    .setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_GEOLOCATION)
-    .setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            preferences = true;
-            Tools.switchTo(Preferences.this, PreferencesGeolocation.class);
-            return true;
-          }
-        });
-    prefFrag.findPreference(PREFS_KEY_RECORDER).setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            preferences = true;
-            Tools.switchTo(Preferences.this, PreferencesRecorder.class);
-            return true;
-          }
-        });
+    .setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_RECORDER).setOnPreferenceClickListener(this);
 
     Preference p = prefFrag.findPreference(PREFS_KEY_LOG_ENABLE);
     prefFrag.findPreference(PREFS_KEY_LOG).setEnabled(((CheckBoxPreference)p).isChecked());
-    p.setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            prefFrag.findPreference(PREFS_KEY_LOG).setEnabled(((CheckBoxPreference)preference).isChecked());
-            return true;
-          }
-        });
-    prefFrag.findPreference(PREFS_KEY_TIMERS).setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            preferences = true;
-            Tools.switchTo(Preferences.this, PreferencesTimers.class);
-            return true;
-          }
-        });
-    prefFrag.findPreference(PREFS_KEY_LOG).setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            preferences = true;
-            Tools.switchTo(Preferences.this, PreferencesTimers.class);
-            return true;
-          }
-        });
+    p.setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_TIMERS).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_LOG).setOnPreferenceClickListener(this);
     
     /* author + versions */
 
@@ -188,15 +182,37 @@ public class Preferences extends EffectPreferenceActivity {
       Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
       prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(e.getMessage());
     }
-    prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(
-        new Preference.OnPreferenceClickListener() {
-          @Override
-          public boolean onPreferenceClick(final Preference preference) {
-            preferences = true;
-            changeLog.getFullLogDialog().show();
-            return true;
-          }
-        });
+    prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(this);
+    if(!prefs.getBoolean(PREFS_KEY_ADVANCED, PREFS_DEFAULT_ADVANCED)) {
+      PreferenceScreen screen = (PreferenceScreen)prefFrag.findPreference(PREFS_KEY_SCREEN);
+      Preference pref = prefFrag.findPreference(PREFS_KEY_CAT_LOGS);
+      screen.removePreference(pref);
+      pref = prefFrag.findPreference(PREFS_KEY_TIMERS);
+      screen.removePreference(pref);
+    }
+  }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.action_advanced:
+        Editor ed = prefs.edit();
+        ed.putBoolean(PREFS_KEY_ADVANCED, item.isChecked());
+        ed.commit();
+        Tools.switchTo(Preferences.this, Preferences.class);
+        finish();
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+      getMenuInflater().inflate(R.menu.menu_preferences, menu);
+      menu.findItem(R.id.action_advanced).setChecked(!
+          prefs.getBoolean(PREFS_KEY_ADVANCED, PREFS_DEFAULT_ADVANCED));
+      return true;
   }
   
   private static class MyPreferenceFragment extends PreferenceFragment {
