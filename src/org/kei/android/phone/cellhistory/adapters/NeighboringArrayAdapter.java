@@ -71,10 +71,9 @@ public class NeighboringArrayAdapter extends ArrayAdapter<NeighboringInfo> {
       } else {
         int color = defaultColor;
         if(o.getAsu() == 99) color = Color.RED;
-        
         updateTextViewColor(lac, ""+ o.getLac(), color);
         updateTextViewColor(cid, ""+ o.getCid(), color);
-        updateTextViewColor(asu, ""+ o.getAsu(), color);
+        updateTextViewColor(asu, String.format("%02d", o.getAsu()), color);
         updateTextViewColor(network, ""+ o.getType(), color);
         if(o.getAsu() == 99)
           updateTextViewColor(strength, "??? dBm", color);

@@ -133,8 +133,8 @@ public class TowerFragment extends Fragment implements UITaskFragment {
         + " ("
         + TowerInfo.LEVEL_NAMES[ti.getLvl() < TowerInfo.LEVEL_NAMES.length ? ti
             .getLvl() : 0] + ")");
-    txtSS.setText(ti.getSignalStrength() + " dBm (" + percent + "%)");
-    txtASU.setText(String.valueOf(ti.getAsu()));
+    txtSS.setText(ti.getSignalStrength() + " dBm (" + String.format("%02d", percent) + "%)");
+    txtASU.setText(String.format("%02d", ti.getAsu()));
     int color = getColor(percent, false);
     if (color == -1)
       color = txtLVL.getTextColors().getDefaultColor();

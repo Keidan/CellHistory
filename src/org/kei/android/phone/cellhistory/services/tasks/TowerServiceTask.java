@@ -48,7 +48,7 @@ import android.util.Log;
  *******************************************************************************
  */
 public class TowerServiceTask extends TimerTask {
-  private CellHistoryApp    app                     = null;
+  private CellHistoryApp          app                     = null;
   private Service                 service                 = null;
   private final SharedPreferences prefs;
   private TelephonyManager        telephonyManager        = null;
