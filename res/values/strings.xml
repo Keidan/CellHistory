@@ -163,8 +163,8 @@
      <string name="pref_recorder_filter_psc_title">PSC</string>
      <string name="pref_recorder_filter_signalstrength_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_signalstrength_title">Signal strength</string>
-     <string name="pref_recorder_filter_type_summary">Mobile type</string>
-     <string name="pref_recorder_filter_type_title">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_type_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_type_title">Mobile type</string>
      <string name="pref_recorder_filter_asu_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_asu_title">ASU</string>
      <string name="pref_recorder_filter_level_summary">Detect a changes if this value is updated.</string>
