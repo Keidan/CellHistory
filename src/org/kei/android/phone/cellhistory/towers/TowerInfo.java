@@ -69,6 +69,23 @@ public class TowerInfo {
   private double                speed                 = 0.0;
   private double                distance              = 0.0;
   private int                   satellites            = 0;
+  private boolean               allowOperator         = true;
+  private boolean               allowMCC              = true;
+  private boolean               allowMNC              = true;
+  private boolean               allowCellId           = true;
+  private boolean               allowLAC              = true;
+  private boolean               allowGeolocation      = true;
+  private boolean               allowPSC              = true;
+  private boolean               allowType             = true;
+  private boolean               allowNetwork          = true;
+  private boolean               allowASU              = true;
+  private boolean               allowLVL              = true;
+  private boolean               allowSS               = true;
+  private boolean               allowNeighboring      = true;
+  private boolean               allowProvider         = true;
+  private boolean               allowDistance         = true;
+  private boolean               allowSatellites       = true;
+  private boolean               allowSpeed            = true;
   
   public TowerInfo() {
     neighboring = new ArrayList<NeighboringInfo>();
@@ -119,29 +136,36 @@ public class TowerInfo {
     
     sb.append(indentation ? "    " : "").append("{").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"timestamp\":").append(getTimestamp()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"ope\":\"").append(getOperator()).append("\",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"provider\":\"").append(getProvider()).append("\",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"mcc\":").append(getMCC()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"mnc\":").append(getMNC()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"cid\":").append(getCellId()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"lac\":").append(getLac()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"lat\":\"").append(getLatitude()).append("\",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"lon\":\"").append(getLongitude()).append("\",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"spd\":").append(getSpeed()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"dist\":").append(getDistance()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"psc\":").append(getPsc()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"type\":\"").append(getType()).append("\",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"net\":\"").append(getNetworkName()).append("\",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"lvl\":").append(getLvl()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"asu\":").append(getAsu()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"ss\":").append(getSignalStrength()).append(",").append(indentation ? "\n" : "");
-    sb.append(indentation ? "      " : "").append("\"ssp\":").append(getSignalStrengthPercent()).append(",").append(indentation ? "\n" : "");
+    if(allowOperator) sb.append(indentation ? "      " : "").append("\"ope\":\"").append(getOperator()).append("\",").append(indentation ? "\n" : "");
+    if(allowProvider) sb.append(indentation ? "      " : "").append("\"provider\":\"").append(getProvider()).append("\",").append(indentation ? "\n" : "");
+    if(allowMCC) sb.append(indentation ? "      " : "").append("\"mcc\":").append(getMCC()).append(",").append(indentation ? "\n" : "");
+    if(allowMNC) sb.append(indentation ? "      " : "").append("\"mnc\":").append(getMNC()).append(",").append(indentation ? "\n" : "");
+    if(allowCellId) sb.append(indentation ? "      " : "").append("\"cid\":").append(getCellId()).append(",").append(indentation ? "\n" : "");
+    if(allowLAC) sb.append(indentation ? "      " : "").append("\"lac\":").append(getLac()).append(",").append(indentation ? "\n" : "");
+    if(allowGeolocation) {
+      sb.append(indentation ? "      " : "").append("\"lat\":\"").append(getLatitude()).append("\",").append(indentation ? "\n" : "");
+      sb.append(indentation ? "      " : "").append("\"lon\":\"").append(getLongitude()).append("\",").append(indentation ? "\n" : "");
+    }
+    if(allowSatellites) sb.append(indentation ? "      " : "").append("\"satellites\":").append(getSatellites()).append(",").append(indentation ? "\n" : "");
+    if(allowSpeed) sb.append(indentation ? "      " : "").append("\"spd\":").append(getSpeed()).append(",").append(indentation ? "\n" : "");
+    if(allowDistance) sb.append(indentation ? "      " : "").append("\"dist\":").append(getDistance()).append(",").append(indentation ? "\n" : "");
+    if(allowPSC) sb.append(indentation ? "      " : "").append("\"psc\":").append(getPsc()).append(",").append(indentation ? "\n" : "");
+    if(allowType) sb.append(indentation ? "      " : "").append("\"type\":\"").append(getType()).append("\",").append(indentation ? "\n" : "");
+    if(allowNetwork) sb.append(indentation ? "      " : "").append("\"net\":\"").append(getNetworkName()).append("\",").append(indentation ? "\n" : "");
+    if(allowLVL) sb.append(indentation ? "      " : "").append("\"lvl\":").append(getLvl()).append(",").append(indentation ? "\n" : "");
+    if(allowASU) sb.append(indentation ? "      " : "").append("\"asu\":").append(getAsu()).append(",").append(indentation ? "\n" : "");
+    if(allowSS) {
+      sb.append(indentation ? "      " : "").append("\"ss\":").append(getSignalStrength()).append(",").append(indentation ? "\n" : "");
+      sb.append(indentation ? "      " : "").append("\"ssp\":").append(getSignalStrengthPercent()).append(",").append(indentation ? "\n" : "");
+    }
     sb.append(indentation ? "      " : "").append("\"neighborings\": [").append(indentation ? "\n" : "");
-    int size = getNeighboring().size();
-    for(int i = 0; i < size; ++i) {
-      NeighboringInfo ni = getNeighboring().get(i);
-      sb.append(ni.toJSON(indentation));
-      if(i < size - 1) sb.append(indentation ? "      " : "").append(",").append(indentation ? "\n" : "");
+    if(allowNeighboring) {
+      int size = getNeighboring().size();
+      for(int i = 0; i < size; ++i) {
+        NeighboringInfo ni = getNeighboring().get(i);
+        sb.append(ni.toJSON(indentation));
+        if(i < size - 1) sb.append(indentation ? "      " : "").append(",").append(indentation ? "\n" : "");
+      }
     }
     sb.append(indentation ? "      " : "").append("]").append(indentation ? "\n" : "");
     sb.append(indentation ? "    " : "").append("}").append(indentation ? "\n" : "");
@@ -170,29 +194,35 @@ public class TowerInfo {
     if(indentation) sb.append("\n");
     String spaces = indentation ? "    " : null;
     sb.append(lineXML(spaces, "timestamp", getTimestamp()));
-    sb.append(lineXML(spaces, "ope", getOperator()));
-    sb.append(lineXML(spaces, "provider", getProvider()));
-    sb.append(lineXML(spaces, "mcc", getMCC()));
-    sb.append(lineXML(spaces, "mnc", String.format("%02d", getMNC())));
-    sb.append(lineXML(spaces, "cid", getCellId()));
-    sb.append(lineXML(spaces, "lac", getLac()));
-    sb.append(lineXML(spaces, "lat", getLatitude()));
-    sb.append(lineXML(spaces, "lon", getLongitude()));
-    sb.append(lineXML(spaces, "spd", getSpeed()));
-    sb.append(lineXML(spaces, "dist", getDistance()));
-    sb.append(lineXML(spaces, "psc", getPsc()));
-    sb.append(lineXML(spaces, "type", getType()));
-    sb.append(lineXML(spaces, "net", getNetworkName()));
-    sb.append(lineXML(spaces, "lvl", getLvl()));
-    sb.append(lineXML(spaces, "asu", getAsu()));
-    sb.append(lineXML(spaces, "ss", getSignalStrength()));
-    sb.append(lineXML(spaces, "ssp", getSignalStrengthPercent()));
+    if(allowOperator) sb.append(lineXML(spaces, "ope", getOperator()));
+    if(allowProvider) sb.append(lineXML(spaces, "provider", getProvider()));
+    if(allowMCC) sb.append(lineXML(spaces, "mcc", getMCC()));
+    if(allowMNC) sb.append(lineXML(spaces, "mnc", String.format("%02d", getMNC())));
+    if(allowCellId) sb.append(lineXML(spaces, "cid", getCellId()));
+    if(allowLAC) sb.append(lineXML(spaces, "lac", getLac()));
+    if(allowGeolocation) {
+      sb.append(lineXML(spaces, "lat", getLatitude()));
+      sb.append(lineXML(spaces, "lon", getLongitude()));
+    }
+    if(allowSatellites) sb.append(lineXML(spaces, "satellites", getSatellites()));
+    if(allowSpeed) sb.append(lineXML(spaces, "spd", getSpeed()));
+    if(allowDistance) sb.append(lineXML(spaces, "dist", getDistance()));
+    if(allowPSC) sb.append(lineXML(spaces, "psc", getPsc()));
+    if(allowType) sb.append(lineXML(spaces, "type", getType()));
+    if(allowNetwork) sb.append(lineXML(spaces, "net", getNetworkName()));
+    if(allowLVL) sb.append(lineXML(spaces, "lvl", getLvl()));
+    if(allowASU) sb.append(lineXML(spaces, "asu", getAsu()));
+    if(allowSS) {
+      sb.append(lineXML(spaces, "ss", getSignalStrength()));
+      sb.append(lineXML(spaces, "ssp", getSignalStrengthPercent()));
+    }
     if(indentation) sb.append("    ");
     sb.append("<neighborings>");
     if(indentation) sb.append("\n");
-    for(NeighboringInfo ni : getNeighboring()) {
-      sb.append(ni.toXML(indentation));
-    }
+    if(allowNeighboring) 
+      for(NeighboringInfo ni : getNeighboring()) {
+        sb.append(ni.toXML(indentation));
+      }
     if(indentation) sb.append("    ");
     sb.append("</neighborings>");
     if(indentation) sb.append("\n  ");
@@ -214,30 +244,76 @@ public class TowerInfo {
   public String toString(final String sep, final String neighboringSep) {
     StringBuilder sb = new StringBuilder();
     sb.append(getTimestamp()).append(sep);
-    sb.append(getProvider()).append(sep);
-    sb.append(getOperator()).append(sep);
-    sb.append(getMCC()).append(sep);
-    sb.append(String.format("%02d", getMNC())).append(sep);
-    sb.append(getCellId()).append(sep);
-    sb.append(getLac()).append(sep);
-    sb.append(getLatitude()).append(sep);
-    sb.append(getLongitude()).append(sep);
-    sb.append(getSpeed()).append(sep);
-    sb.append(getDistance()).append(sep);
-    sb.append(getPsc()).append(sep);
-    sb.append(getType()).append(sep);
-    sb.append(getNetworkName()).append(sep);
-    sb.append(getLvl()).append(sep);
-    sb.append(getAsu()).append(sep);
-    sb.append(getSignalStrength()).append(sep);
-    sb.append(getSignalStrengthPercent()).append(sep);
-    int size = getNeighboring().size();
-    for(int i = 0; i < size; ++i) {
-      NeighboringInfo ni = getNeighboring().get(i);
-      sb.append(ni.toString(neighboringSep));
-      if(i < size - 1) sb.append(neighboringSep);
+    if(allowOperator) sb.append(getOperator()).append(sep);
+    else sb.append(sep);
+    if(allowProvider) sb.append(getProvider()).append(sep);
+    else sb.append(sep);
+    if(allowMCC) sb.append(getMCC()).append(sep);
+    else sb.append(sep);
+    if(allowMNC) sb.append(String.format("%02d", getMNC())).append(sep);
+    else sb.append(sep);
+    if(allowCellId) sb.append(getCellId()).append(sep);
+    else sb.append(sep);
+    if(allowLAC) sb.append(getLac()).append(sep);
+    else sb.append(sep);
+    if(allowGeolocation) {
+      sb.append(getLatitude()).append(sep);
+      sb.append(getLongitude()).append(sep);
+    } else sb.append(sep).append(sep);
+    if(allowSatellites) sb.append(getSatellites()).append(sep);
+    else sb.append(sep);
+    if(allowSpeed) sb.append(getSpeed()).append(sep);
+    else sb.append(sep);
+    if(allowDistance) sb.append(getDistance()).append(sep);
+    else sb.append(sep);
+    if(allowPSC) sb.append(getPsc()).append(sep);
+    else sb.append(sep);
+    if(allowType) sb.append(getType()).append(sep);
+    else sb.append(sep);
+    if(allowNetwork) sb.append(getNetworkName()).append(sep);
+    else sb.append(sep);
+    if(allowLVL) sb.append(getLvl()).append(sep);
+    else sb.append(sep);
+    if(allowASU) sb.append(getAsu()).append(sep);
+    else sb.append(sep);
+    if(allowSS) {
+      sb.append(getSignalStrength()).append(sep);
+      sb.append(getSignalStrengthPercent()).append(sep);
+    } else sb.append(sep).append(sep);
+    if(allowNeighboring) {
+      int size = getNeighboring().size();
+      for(int i = 0; i < size; ++i) {
+        NeighboringInfo ni = getNeighboring().get(i);
+        sb.append(ni.toString(neighboringSep));
+        if(i < size - 1) sb.append(neighboringSep);
+      }
     }
     return sb.toString();
+  }
+  
+  public void allow(
+      final boolean allowOperator, final boolean allowMCC, final boolean allowMNC,
+      final boolean allowCellId, final boolean allowLAC, final boolean allowGeolocation, final boolean allowPSC,
+      final boolean allowType, final boolean allowNetwork, final boolean allowASU,
+      final boolean allowLVL, final boolean allowSS, final boolean allowNeighboring,
+      final boolean allowProvider, final boolean allowDistance, final boolean allowSatellites, final boolean allowSpeed) {
+    this.allowOperator = allowOperator;
+    this.allowMCC = allowMCC;
+    this.allowMNC = allowMNC;
+    this.allowCellId = allowCellId;
+    this.allowLAC = allowLAC;
+    this.allowGeolocation = allowGeolocation;
+    this.allowPSC = allowPSC;
+    this.allowType = allowType;
+    this.allowNetwork = allowNetwork;
+    this.allowASU = allowASU;
+    this.allowLVL = allowLVL;
+    this.allowSS = allowSS;
+    this.allowNeighboring = allowNeighboring;
+    this.allowProvider = allowProvider;
+    this.allowDistance = allowDistance;
+    this.allowSatellites = allowSatellites;
+    this.allowSpeed = allowSpeed;
   }
 
   public static String getNetworkType(final int networkType,
