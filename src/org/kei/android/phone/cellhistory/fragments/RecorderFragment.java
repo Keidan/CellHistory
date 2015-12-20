@@ -1,5 +1,6 @@
 package org.kei.android.phone.cellhistory.fragments;
 
+import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
@@ -94,7 +95,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   private Switch               swSpeed          = null;
   private CheckBox             chkDisplaySwitch = null;
   private ScrollView           switches         = null;
-
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -265,7 +265,10 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     } else if(buttonView.equals(chkDisplaySwitch)) {
       ed.putBoolean(SW_DISPLAY, isChecked);
       ed.commit();
-      switches.setVisibility(chkDisplaySwitch.isChecked() ? View.VISIBLE : View.GONE);
+      if(chkDisplaySwitch.isChecked())
+        Fx.setVisibilityAnimation(switches, View.VISIBLE, org.kei.android.atk.R.anim.fade_in);
+      else
+        Fx.setVisibilityAnimation(switches, View.GONE, org.kei.android.atk.R.anim.fade_out);
       return;
     }
     ed.commit();
@@ -286,5 +289,4 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       app.getGlobalTowerInfo().unlock();
     }
   }
-
 }

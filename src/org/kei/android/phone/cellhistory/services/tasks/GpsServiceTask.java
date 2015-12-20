@@ -92,6 +92,7 @@ public class GpsServiceTask implements LocationListener, Listener  {
       disabled = false;
       return;
     }
+    if(lm == null) return;
     final GpsStatus status = lm.getGpsStatus(null);
     if(status != null) {
       final Iterable<GpsSatellite> sats = status.getSatellites();
