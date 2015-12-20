@@ -19,6 +19,29 @@
     </style>
   </head>
   <body>
+  	$ 2.11
+  	  % Version 2.11
+  	  _ 2015-12-19
+  	  * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>
+  	  * Allow the user to customize critical data (recorder).
+  	  * Add recorder task.
+  	  * Disable the log display if the logs are not enabled.
+  	  * Add an advanced mode for the timers and the logs.
+  	  * Move classes to transformers package.
+  	  * Use services instead of the tasks to avoid the suspension effect when android goes in standby mode.
+  	  * Replace the activity field by a simple context.
+  	  * Add switches to select which data is eligible to save.
+  	  * Add provider to the written data.
+  	  * Add a checkbox to hide the new recorder feature.
+  	  * Add an animation when the checkbox of the 'recorder feature' is checked.
+  	  * Fix undesirable effect with the onResume method for the checkbox of the 'recorder feature'.
+  	  * Change the color of the Network label in the tower tabs.
+  	  * Fix text assignment for the mobile type.
+  	  * Change default value for the checkbox of the 'recorder feature'.
+  	  * Add full name for the labels text instead of the acronym.
+  	  * Align the signal strength percentage value to 2 digits filled with 0.
+  	  * Align the ASU value to 2 digits filled with 0.
+  	  
   	$ 2.10
   	  % Version 2.10
       _ 2015-12-17
