@@ -140,26 +140,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     chkDisplaySwitch = (CheckBox) getView().findViewById(R.id.chkDisplaySwitch);
     switches = (ScrollView) getView().findViewById(R.id.switches);
     
-    swOperator.setChecked(prefs.getBoolean(SW_OPERATOR, SW_DEFAULT));
-    swMCC.setChecked(prefs.getBoolean(SW_MCC, SW_DEFAULT));
-    swMNC.setChecked(prefs.getBoolean(SW_MNC, SW_DEFAULT));
-    swCellId.setChecked(prefs.getBoolean(SW_CELLID, SW_DEFAULT));
-    swLAC.setChecked(prefs.getBoolean(SW_LAC, SW_DEFAULT));
-    swGeolocation.setChecked(prefs.getBoolean(SW_GEOLOCATION, SW_DEFAULT));
-    swPSC.setChecked(prefs.getBoolean(SW_PSC, SW_DEFAULT));
-    swType.setChecked(prefs.getBoolean(SW_TYPE, SW_DEFAULT));
-    swNetwork.setChecked(prefs.getBoolean(SW_NETWORK, SW_DEFAULT));
-    swASU.setChecked(prefs.getBoolean(SW_ASU, SW_DEFAULT));
-    swLVL.setChecked(prefs.getBoolean(SW_LVL, SW_DEFAULT));
-    swSS.setChecked(prefs.getBoolean(SW_SS, SW_DEFAULT));
-    swNeighboring.setChecked(prefs.getBoolean(SW_NEIGHBORING, SW_DEFAULT));
-    swProvider.setChecked(prefs.getBoolean(SW_PROVIDER, SW_DEFAULT));
-    swDistance.setChecked(prefs.getBoolean(SW_DISTANCE, SW_DEFAULT));
-    swSatellites.setChecked(prefs.getBoolean(SW_SATELLITES, SW_DEFAULT));
-    swSpeed.setChecked(prefs.getBoolean(SW_SPEED, SW_DEFAULT));
-    chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT));
-    switches.setVisibility(chkDisplaySwitch.isChecked() ? View.VISIBLE : View.GONE);
-    
     swOperator.setOnCheckedChangeListener(this);
     swMCC.setOnCheckedChangeListener(this);
     swMNC.setOnCheckedChangeListener(this);
@@ -192,6 +172,27 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());
     pbBuffer.setMax(Integer.parseInt(prefs.getString(PreferencesRecorder.PREFS_KEY_FLUSH,
             PreferencesRecorder.PREFS_DEFAULT_FLUSH)));
+    
+    swOperator.setChecked(prefs.getBoolean(SW_OPERATOR, SW_DEFAULT));
+    swMCC.setChecked(prefs.getBoolean(SW_MCC, SW_DEFAULT));
+    swMNC.setChecked(prefs.getBoolean(SW_MNC, SW_DEFAULT));
+    swCellId.setChecked(prefs.getBoolean(SW_CELLID, SW_DEFAULT));
+    swLAC.setChecked(prefs.getBoolean(SW_LAC, SW_DEFAULT));
+    swGeolocation.setChecked(prefs.getBoolean(SW_GEOLOCATION, SW_DEFAULT));
+    swPSC.setChecked(prefs.getBoolean(SW_PSC, SW_DEFAULT));
+    swType.setChecked(prefs.getBoolean(SW_TYPE, SW_DEFAULT));
+    swNetwork.setChecked(prefs.getBoolean(SW_NETWORK, SW_DEFAULT));
+    swASU.setChecked(prefs.getBoolean(SW_ASU, SW_DEFAULT));
+    swLVL.setChecked(prefs.getBoolean(SW_LVL, SW_DEFAULT));
+    swSS.setChecked(prefs.getBoolean(SW_SS, SW_DEFAULT));
+    swNeighboring.setChecked(prefs.getBoolean(SW_NEIGHBORING, SW_DEFAULT));
+    swProvider.setChecked(prefs.getBoolean(SW_PROVIDER, SW_DEFAULT));
+    swDistance.setChecked(prefs.getBoolean(SW_DISTANCE, SW_DEFAULT));
+    swSatellites.setChecked(prefs.getBoolean(SW_SATELLITES, SW_DEFAULT));
+    swSpeed.setChecked(prefs.getBoolean(SW_SPEED, SW_DEFAULT));
+    chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT));
+    switches.setVisibility(chkDisplaySwitch.isChecked() ? View.VISIBLE : View.GONE);
+    updateTowerInfo();
   }
   
   @Override
