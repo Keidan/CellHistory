@@ -172,7 +172,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());
     pbBuffer.setMax(Integer.parseInt(prefs.getString(PreferencesRecorder.PREFS_KEY_FLUSH,
             PreferencesRecorder.PREFS_DEFAULT_FLUSH)));
-    
+    chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT));
     swOperator.setChecked(prefs.getBoolean(SW_OPERATOR, SW_DEFAULT));
     swMCC.setChecked(prefs.getBoolean(SW_MCC, SW_DEFAULT));
     swMNC.setChecked(prefs.getBoolean(SW_MNC, SW_DEFAULT));
