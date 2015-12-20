@@ -267,9 +267,9 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       ed.putBoolean(SW_DISPLAY, isChecked);
       ed.commit();
       if(chkDisplaySwitch.isChecked())
-        Fx.setVisibilityAnimation(switches, View.VISIBLE, org.kei.android.atk.R.anim.fade_in);
+        Fx.setVisibilityAnimationSync(chkDisplaySwitch, switches, View.VISIBLE, org.kei.android.atk.R.anim.fade_in);
       else
-        Fx.setVisibilityAnimation(switches, View.GONE, org.kei.android.atk.R.anim.fade_out);
+        Fx.setVisibilityAnimationSync(chkDisplaySwitch, switches, View.GONE, org.kei.android.atk.R.anim.fade_out);
       return;
     }
     ed.commit();
