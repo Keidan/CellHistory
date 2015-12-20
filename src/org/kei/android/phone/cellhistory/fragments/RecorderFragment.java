@@ -1,5 +1,8 @@
 package org.kei.android.phone.cellhistory.fragments;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
@@ -140,7 +143,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swSpeed = (Switch) getView().findViewById(R.id.swSpeed);
     chkDisplaySwitch = (CheckBox) getView().findViewById(R.id.chkDisplaySwitch);
     switches = (ScrollView) getView().findViewById(R.id.switches);
-    
     swOperator.setOnCheckedChangeListener(this);
     swMCC.setOnCheckedChangeListener(this);
     swMNC.setOnCheckedChangeListener(this);
@@ -173,7 +175,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());
     pbBuffer.setMax(Integer.parseInt(prefs.getString(PreferencesRecorder.PREFS_KEY_FLUSH,
             PreferencesRecorder.PREFS_DEFAULT_FLUSH)));
-    chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT_DISPLAY));
     swOperator.setChecked(prefs.getBoolean(SW_OPERATOR, SW_DEFAULT));
     swMCC.setChecked(prefs.getBoolean(SW_MCC, SW_DEFAULT));
     swMNC.setChecked(prefs.getBoolean(SW_MNC, SW_DEFAULT));
@@ -192,7 +193,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swSatellites.setChecked(prefs.getBoolean(SW_SATELLITES, SW_DEFAULT));
     swSpeed.setChecked(prefs.getBoolean(SW_SPEED, SW_DEFAULT));
     chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT_DISPLAY));
-    switches.setVisibility(chkDisplaySwitch.isChecked() ? View.VISIBLE : View.GONE);
+    switches.setAnimation(null);
+    if(chkDisplaySwitch.isChecked() && switches.getVisibility() != View.VISIBLE)
+      switches.setVisibility(View.VISIBLE);
+    else if(!chkDisplaySwitch.isChecked() && switches.getVisibility() != View.GONE)
+      switches.setVisibility(View.GONE);
     updateTowerInfo();
   }
   
@@ -267,10 +272,13 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     } else if(buttonView.equals(chkDisplaySwitch)) {
       ed.putBoolean(SW_DISPLAY, isChecked);
       ed.commit();
-      if(chkDisplaySwitch.isChecked())
-        Fx.setVisibilityAnimationSync(chkDisplaySwitch, switches, View.VISIBLE, org.kei.android.atk.R.anim.fade_in);
-      else
-        Fx.setVisibilityAnimationSync(chkDisplaySwitch, switches, View.GONE, org.kei.android.atk.R.anim.fade_out);
+      if(isChecked && switches.getVisibility() != View.VISIBLE) {
+        Fx.setVisibilityAnimation(switches, View.VISIBLE, org.kei.android.atk.R.anim.fade_in);
+        chkDisplaySwitch.setChecked(true);
+      } else if(!isChecked && switches.getVisibility() != View.GONE) {
+        Fx.setVisibilityAnimation(switches, View.GONE, org.kei.android.atk.R.anim.fade_out);
+        chkDisplaySwitch.setChecked(false);
+      }
       return;
     }
     ed.commit();
