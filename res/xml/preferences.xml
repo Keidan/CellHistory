@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreen">
-    <PreferenceCategory android:title="@string/pref_title_settings" >
+    <PreferenceCategory android:title="@string/pref_title_settings" android:key="prefCatSettings" >
         <Preference
             android:key="prefUI"
             android:summary="@string/pref_ui_summary"

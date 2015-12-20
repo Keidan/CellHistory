@@ -14,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -53,6 +54,7 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
   public static final String   PREFS_KEY_VERSION          = "prefVersion";
   public static final String   PREFS_KEY_CHANGELOG        = "prefChangelog";
   public static final String   PREFS_KEY_CAT_LOGS         = "prefCatLogs";
+  public static final String   PREFS_KEY_CAT_SETTINGS     = "prefCatSettings";
   public static final String   PREFS_KEY_ADVANCED         = "prefAdvanced";
   public static final boolean  PREFS_DEFAULT_CHART_ENABLE = true;
   public static final boolean  PREFS_DEFAULT_LOG_ENABLE   = false;
@@ -187,8 +189,9 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
       PreferenceScreen screen = (PreferenceScreen)prefFrag.findPreference(PREFS_KEY_SCREEN);
       Preference pref = prefFrag.findPreference(PREFS_KEY_CAT_LOGS);
       screen.removePreference(pref);
+      PreferenceCategory pc = (PreferenceCategory)prefFrag.findPreference(PREFS_KEY_CAT_SETTINGS);
       pref = prefFrag.findPreference(PREFS_KEY_TIMERS);
-      screen.removePreference(pref);
+      pc.removePreference(pref);
     }
   }
   
@@ -197,7 +200,7 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
     switch (item.getItemId()) {
       case R.id.action_advanced:
         Editor ed = prefs.edit();
-        ed.putBoolean(PREFS_KEY_ADVANCED, item.isChecked());
+        ed.putBoolean(PREFS_KEY_ADVANCED, !prefs.getBoolean(PREFS_KEY_ADVANCED, PREFS_DEFAULT_ADVANCED));
         ed.commit();
         Tools.switchTo(Preferences.this, Preferences.class);
         finish();
@@ -210,8 +213,7 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
       getMenuInflater().inflate(R.menu.menu_preferences, menu);
-      menu.findItem(R.id.action_advanced).setChecked(!
-          prefs.getBoolean(PREFS_KEY_ADVANCED, PREFS_DEFAULT_ADVANCED));
+      menu.findItem(R.id.action_advanced).setChecked(prefs.getBoolean(PREFS_KEY_ADVANCED, PREFS_DEFAULT_ADVANCED));
       return true;
   }
   
