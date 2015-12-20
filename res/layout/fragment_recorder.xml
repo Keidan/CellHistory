@@ -87,15 +87,19 @@
             android:text="@string/empty" />
     </GridLayout>
 
-    <TextView
+    <CheckBox
+        android:id="@+id/chkDisplaySwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginTop="10dp"
         android:text="@string/switch_description"
+        android:button="@null"
+        android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
         android:textColor="#0099cc" />
     
     <ScrollView
+        android:id="@+id/switches"
         android:layout_marginTop="5sp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

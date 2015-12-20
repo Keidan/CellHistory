@@ -18,9 +18,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -46,49 +48,52 @@ import android.widget.ToggleButton;
  */
 public class RecorderFragment extends Fragment implements UITaskFragment,
     OnClickListener, OnCheckedChangeListener {
-  private static final String  SW_OPERATOR    = "swOperator";
-  private static final String  SW_MCC         = "swMCC";
-  private static final String  SW_MNC         = "swMNC";
-  private static final String  SW_CELLID      = "swCellId";
-  private static final String  SW_LAC         = "swLAC";
-  private static final String  SW_GEOLOCATION = "swGeolocation";
-  private static final String  SW_PSC         = "swPSC";
-  private static final String  SW_TYPE        = "swType";
-  private static final String  SW_NETWORK     = "swNetwork";
-  private static final String  SW_ASU         = "swASU";
-  private static final String  SW_LVL         = "swLVL";
-  private static final String  SW_SS          = "swSS";
-  private static final String  SW_NEIGHBORING = "swNeighboring";
-  private static final String  SW_PROVIDER    = "swProvider";
-  private static final String  SW_DISTANCE    = "swDistance";
-  private static final String  SW_SATELLITES  = "swSatellites";
-  private static final String  SW_SPEED       = "swSpeed";
+  private static final String  SW_OPERATOR      = "swOperator";
+  private static final String  SW_MCC           = "swMCC";
+  private static final String  SW_MNC           = "swMNC";
+  private static final String  SW_CELLID        = "swCellId";
+  private static final String  SW_LAC           = "swLAC";
+  private static final String  SW_GEOLOCATION   = "swGeolocation";
+  private static final String  SW_PSC           = "swPSC";
+  private static final String  SW_TYPE          = "swType";
+  private static final String  SW_NETWORK       = "swNetwork";
+  private static final String  SW_ASU           = "swASU";
+  private static final String  SW_LVL           = "swLVL";
+  private static final String  SW_SS            = "swSS";
+  private static final String  SW_NEIGHBORING   = "swNeighboring";
+  private static final String  SW_PROVIDER      = "swProvider";
+  private static final String  SW_DISTANCE      = "swDistance";
+  private static final String  SW_SATELLITES    = "swSatellites";
+  private static final String  SW_SPEED         = "swSpeed";
+  private static final String  SW_DISPLAY       = "chkDisplaySwitch";
   private static final boolean SW_DEFAULT       = true;
   /* UI */
-  private TextView             txtRecords     = null;
-  private ProgressBar          pbBuffer       = null;
-  private TextView             txtSize        = null;
-  private ToggleButton         toggleOnOff    = null;
+  private TextView             txtRecords       = null;
+  private ProgressBar          pbBuffer         = null;
+  private TextView             txtSize          = null;
+  private ToggleButton         toggleOnOff      = null;
   /* context */
-  private SharedPreferences    prefs          = null;
-  private CellHistoryApp       app            = null;
-  private Switch               swOperator     = null;
-  private Switch               swMCC          = null;
-  private Switch               swMNC          = null;
-  private Switch               swCellId       = null;
-  private Switch               swLAC          = null;
-  private Switch               swGeolocation  = null;
-  private Switch               swPSC          = null;
-  private Switch               swType         = null;
-  private Switch               swNetwork      = null;
-  private Switch               swASU          = null;
-  private Switch               swLVL          = null;
-  private Switch               swSS           = null;
-  private Switch               swNeighboring  = null;
-  private Switch               swProvider     = null;
-  private Switch               swDistance     = null;
-  private Switch               swSatellites   = null;
-  private Switch               swSpeed        = null;
+  private SharedPreferences    prefs            = null;
+  private CellHistoryApp       app              = null;
+  private Switch               swOperator       = null;
+  private Switch               swMCC            = null;
+  private Switch               swMNC            = null;
+  private Switch               swCellId         = null;
+  private Switch               swLAC            = null;
+  private Switch               swGeolocation    = null;
+  private Switch               swPSC            = null;
+  private Switch               swType           = null;
+  private Switch               swNetwork        = null;
+  private Switch               swASU            = null;
+  private Switch               swLVL            = null;
+  private Switch               swSS             = null;
+  private Switch               swNeighboring    = null;
+  private Switch               swProvider       = null;
+  private Switch               swDistance       = null;
+  private Switch               swSatellites     = null;
+  private Switch               swSpeed          = null;
+  private CheckBox             chkDisplaySwitch = null;
+  private ScrollView           switches         = null;
 
 
   @Override
@@ -132,6 +137,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swDistance = (Switch) getView().findViewById(R.id.swDistance);
     swSatellites = (Switch) getView().findViewById(R.id.swSatellites);
     swSpeed = (Switch) getView().findViewById(R.id.swSpeed);
+    chkDisplaySwitch = (CheckBox) getView().findViewById(R.id.chkDisplaySwitch);
+    switches = (ScrollView) getView().findViewById(R.id.switches);
     
     swOperator.setChecked(prefs.getBoolean(SW_OPERATOR, SW_DEFAULT));
     swMCC.setChecked(prefs.getBoolean(SW_MCC, SW_DEFAULT));
@@ -150,6 +157,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swDistance.setChecked(prefs.getBoolean(SW_DISTANCE, SW_DEFAULT));
     swSatellites.setChecked(prefs.getBoolean(SW_SATELLITES, SW_DEFAULT));
     swSpeed.setChecked(prefs.getBoolean(SW_SPEED, SW_DEFAULT));
+    chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT));
+    switches.setVisibility(chkDisplaySwitch.isChecked() ? View.VISIBLE : View.GONE);
     
     swOperator.setOnCheckedChangeListener(this);
     swMCC.setOnCheckedChangeListener(this);
@@ -168,6 +177,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swDistance.setOnCheckedChangeListener(this);
     swSatellites.setOnCheckedChangeListener(this);
     swSpeed.setOnCheckedChangeListener(this);
+    chkDisplaySwitch.setOnCheckedChangeListener(this);
     
     updateTowerInfo();
     try {
@@ -252,6 +262,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       ed.putBoolean(SW_SATELLITES, isChecked);
     } else if(buttonView.equals(swSpeed)) {
       ed.putBoolean(SW_SPEED, isChecked);
+    } else if(buttonView.equals(chkDisplaySwitch)) {
+      ed.putBoolean(SW_DISPLAY, isChecked);
+      ed.commit();
+      switches.setVisibility(chkDisplaySwitch.isChecked() ? View.VISIBLE : View.GONE);
+      return;
     }
     ed.commit();
     updateTowerInfo();
