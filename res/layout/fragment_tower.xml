@@ -210,6 +210,7 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="7"
+                android:textColor="@color/green_dark"
                 android:text="@string/empty" />
 
             <TextView
