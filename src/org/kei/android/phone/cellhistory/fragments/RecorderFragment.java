@@ -1,8 +1,5 @@
 package org.kei.android.phone.cellhistory.fragments;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
