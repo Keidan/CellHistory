@@ -20,31 +20,31 @@
     
     <string name="switch_description">Data to save: </string>
 	<string name="lblNeighboring">Neighboring: </string>
-	<string name="lblProvider">Provider: </string>
+	<string name="lblProvider">Provider name: </string>
  
 	
 	<string name="toggleOn">Record ON</string>
 	<string name="toggleOff">Record OFF</string>
 	
-	<string name="lblOperator">Operator: </string>
-	<string name="lblMCC">MCC: </string>
-	<string name="lblMNC">MNC: </string>
-	<string name="lblCellId">Cell ID: </string>
-	<string name="lblLAC">LAC: </string>
-	<string name="lblPSC">PSC: </string>
-	<string name="lblType">Type: </string>
-	<string name="lblNetwork">Network: </string>
-	<string name="lblASU">ASU: </string>
-	<string name="lblLVL">LVL: </string>
-	<string name="lblSS">SS: </string>
-	<string name="lblSSP">SSP: </string>
+	<string name="lblOperator">Operator name: </string>
+	<string name="lblMCC">Mobile Country Code: </string>
+	<string name="lblMNC">Mobile Network Code: </string>
+	<string name="lblCellId">Cell Identifier: </string>
+	<string name="lblLAC">Local Area Code: </string>
+	<string name="lblPSC">Primary Scrambling Code: </string>
+	<string name="lblType">Mobile Type: </string>
+	<string name="lblNetwork">Mobile Network: </string>
+	<string name="lblASU">Arbitrary Strength Unit: </string>
+	<string name="lblLVL">Movile level: </string>
+	<string name="lblSS">Signal strength: </string>
+	<string name="lblSSP">Signal strength (%): </string>
 	
-	<string name="lblGeolocation">Geolocation: </string>
+	<string name="lblGeolocation">Cell location: </string>
 	<string name="geoloc_disabled">Geolocation disabled.</string>
 	<string name="lblGeoProvider">Provider: </string>
-	<string name="lblSatellites">Satellites: </string>
-	<string name="lblSpeed">Speed: </string>
-	<string name="lblDistance">Distance: </string>
+	<string name="lblSatellites">GPS Satellites: </string>
+	<string name="lblSpeed">GPS Speed: </string>
+	<string name="lblDistance">Cell distance: </string>
 	<string name="txtGpsDisabled">GPS service disabled.</string>
 	<string name="txtGpsWaitSatellites">Waiting for satellites.</string>
 	<string name="txtGpsDisabledOption">GPS option disabled.</string>
@@ -148,35 +148,35 @@
 	
      <string name="pref_recorder_filter_title">Filters</string>
      <string name="pref_recorder_filter_provider_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_provider_title">Provider</string>
+     <string name="pref_recorder_filter_provider_title">Provider name</string>
      <string name="pref_recorder_filter_operator_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_operator_title">Operator</string>
+     <string name="pref_recorder_filter_operator_title">Operator name</string>
      <string name="pref_recorder_filter_mcc_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_mcc_title">MCC</string>
+     <string name="pref_recorder_filter_mcc_title">Mobile Country Code</string>
      <string name="pref_recorder_filter_mnc_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_mnc_title">MNC</string>
+     <string name="pref_recorder_filter_mnc_title">Mobile Network Code</string>
      <string name="pref_recorder_filter_cellid_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_cellid_title">CellId</string>
+     <string name="pref_recorder_filter_cellid_title">Cell Identifier</string>
      <string name="pref_recorder_filter_lac_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_lac_title">LAC</string>
+     <string name="pref_recorder_filter_lac_title">Local Area Code</string>
      <string name="pref_recorder_filter_psc_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_psc_title">PSC</string>
+     <string name="pref_recorder_filter_psc_title">Primary Scrambling Code</string>
      <string name="pref_recorder_filter_signalstrength_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_signalstrength_title">Signal strength</string>
      <string name="pref_recorder_filter_type_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_type_title">Mobile type</string>
      <string name="pref_recorder_filter_asu_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_asu_title">ASU</string>
+     <string name="pref_recorder_filter_asu_title">Arbitrary Strength Unit</string>
      <string name="pref_recorder_filter_level_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_level_title">Level</string>
+     <string name="pref_recorder_filter_level_title">Mobile Level</string>
      <string name="pref_recorder_filter_networkid_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_networkid_title">Mobile network</string>
      <string name="pref_recorder_filter_speed_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_speed_title">Speed</string>
+     <string name="pref_recorder_filter_speed_title">GPS Speed</string>
      <string name="pref_recorder_filter_distance_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_distance_title">Distance</string>
+     <string name="pref_recorder_filter_distance_title">Cell distance</string>
      <string name="pref_recorder_filter_satellites_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_satellites_title">Satellites</string>
+     <string name="pref_recorder_filter_satellites_title">GPS Satellites</string>
      <string name="pref_recorder_filter_neighboring_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_neighboring_title">Neighboring</string>
 	
