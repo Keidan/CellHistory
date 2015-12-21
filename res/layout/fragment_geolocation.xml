@@ -44,7 +44,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_row="0"
                 android:text="@string/lblGeoProvider"
-                android:textColor="@color/label_color" />
+                android:textColor="?attr/labelTextColor" />
 
             <Spinner
                 android:id="@+id/spiGeoProvider"
@@ -82,7 +82,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_row="1"
                 android:text="@string/lblGeolocation"
-                android:textColor="@color/label_color" />
+                android:textColor="?attr/labelTextColor" />
 
             <TextView
                 android:id="@+id/txtGeolocation"
@@ -105,7 +105,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_row="2"
                 android:text="@string/lblSatellites"
-                android:textColor="@color/label_color" />
+                android:textColor="?attr/labelTextColor" />
 
             <TextView
                 android:id="@+id/txtSatellites"
@@ -128,7 +128,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_row="3"
                 android:text="@string/lblDistance"
-                android:textColor="@color/label_color" />
+                android:textColor="?attr/labelTextColor" />
 
             <TextView
                 android:id="@+id/txtDistance"
@@ -176,7 +176,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_row="4"
                 android:text="@string/lblSpeed"
-                android:textColor="@color/label_color" />
+                android:textColor="?attr/labelTextColor" />
 
             <TextView
                 android:id="@+id/txtSpeedError"

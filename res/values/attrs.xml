@@ -1,5 +1,9 @@
 <resources>
 
-    <attr name="textAppearanceTheme" format="reference" />
-
+    <attr name="labelTextColor" format="reference|color" />
+    <attr name="pagerTitleColor" format="reference|color" />
+    <attr name="spinnerDropdownColor" format="reference|color" />
+    <attr name="switchOnColor" format="reference|color" />
+    
+    
 </resources>

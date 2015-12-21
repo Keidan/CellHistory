@@ -30,6 +30,8 @@ import org.kei.android.phone.cellhistory.transformers.ZoomOutPageTransformer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -79,7 +81,7 @@ IThemeActivity, OnPageChangeListener {
 
   static {
     Fx.default_animation = Fx.ANIMATION_FADE;
-    Fx.default_theme = PreferencesUI.THEME_DARK;
+    Fx.default_theme = PreferencesUI.THEME_DARK_BLUE;
   }
 
   @Override
@@ -102,7 +104,9 @@ IThemeActivity, OnPageChangeListener {
     mPager = (ViewPager) findViewById(R.id.pager);
     PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pagerTabStrip);
     pagerTabStrip.setDrawFullUnderline(false);
-    pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.label_color));
+    TypedArray ta = getTheme().obtainStyledAttributes(new int [] { R.attr.pagerTitleColor });
+    pagerTabStrip.setTabIndicatorColor(ta.getColor(0, Color.BLACK));
+    ta.recycle();
     setTransformer();
     mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(),
         fragments);

@@ -158,7 +158,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swSatellites.setOnCheckedChangeListener(this);
     swSpeed.setOnCheckedChangeListener(this);
     chkDisplaySwitch.setOnCheckedChangeListener(this);
-    
     updateTowerInfo();
     try {
       processUI(app.getGlobalTowerInfo());

@@ -1,32 +1,29 @@
-<resources
-    xmlns:lib="http://schemas.android.com/apk/res-auto">
+<resources xmlns:lib="http://schemas.android.com/apk/res-auto">
 
-    <style name="themeLight" parent="AppBaseThemeLight">
-      <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
-    </style>
-
-    <style name="themeDark" parent="AppBaseThemeDark">
-      <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
-    </style>
-
-    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
-      <item name="android:textAppearance">@style/textAppearanceSpinnerItem</item>
-    </style>
-
-    <style name="textAppearanceSpinnerItem" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
-      <item name="android:textColor">@color/purple</item>
+    <style name="themeLightBlue" parent="AppBaseThemeLight">
+        <item name="android:spinnerItemStyle">@style/spinnerItemStyleBlue</item>
+        <item name="labelTextColor">@color/labelColorBlue</item>
+        <item name="pagerTitleColor">@color/pagerTitleColorBlue</item>
+        <item name="spinnerDropdownColor">@color/spinnerDropdownColorPurple</item>
     </style>
     
-    <style name="textStyleThemeLight" parent="@android:Widget.TextView">
-        <item name="android:textColor">@color/green</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:textSize">12sp</item>
+    <style name="themeDarkBlue" parent="AppBaseThemeDark">
+        <item name="android:spinnerItemStyle">@style/spinnerItemStyleBlue</item>
+        <item name="labelTextColor">@color/labelColorBlue</item>
+        <item name="pagerTitleColor">@color/pagerTitleColorBlue</item>
+        <item name="spinnerDropdownColor">@color/spinnerDropdownColorPurple</item>
     </style>
-    
-    <style name="textStyleThemeDark" parent="@android:Widget.TextView">
-        <item name="android:textColor">@color/green</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:textSize">12sp</item>
+
+    <style name="ActionBarStyle" parent="android:style/Widget.Holo.Light.ActionBar">     
+      <item name="android:backgroundStacked">#FFFF0000</item> 
+      <item name="android:backgroundSplit">#FFFF0000</item>
     </style>
-    
+
+    <style name="spinnerItemStyleBlue" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:textAppearance">@style/textAppearanceSpinnerItemBlue</item>
+    </style>
+
+    <style name="textAppearanceSpinnerItemBlue" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:textColor">@color/labelColorPurple</item>
+    </style>
 </resources>

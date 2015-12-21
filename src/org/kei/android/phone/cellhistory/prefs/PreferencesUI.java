@@ -40,8 +40,8 @@ import android.preference.PreferenceManager;
 public class PreferencesUI extends EffectPreferenceActivity {
   public static final String   TRANSITION_ZOOM                = "org.kei.android.phone.cellhistory.prefs.TRANSITION_ZOOM";
   public static final String   TRANSITION_DEPTH               = "org.kei.android.phone.cellhistory.prefs.TRANSITION_DEPTH";
-  public static final String   THEME_LIGHT                    = "org.kei.android.phone.cellhistory.prefs.THEME_LIGHT";
-  public static final String   THEME_DARK                     = "org.kei.android.phone.cellhistory.prefs.THEME_DARK";
+  public static final String   THEME_LIGHT_BLUE               = "org.kei.android.phone.cellhistory.prefs.THEME_LIGHT";
+  public static final String   THEME_DARK_BLUE                = "org.kei.android.phone.cellhistory.prefs.THEME_DARK";
   public static final String   PREFS_KEY_KEEP_SCREEN          = "uiKeepScreenOn";
   public static final String   PREFS_KEY_SLIDE_TRANSITION     = "uiSlideTransition";
   public static final boolean  PREFS_DEFAULT_KEEP_SCREEN      = true;

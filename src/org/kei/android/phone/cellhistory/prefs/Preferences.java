@@ -119,10 +119,10 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
     if (!Fx.switchThemeFromPref(a)) {
       final String theme = Tools.getPrefString(a.getBaseContext(),
           Fx.KEY_THEMES, Fx.default_theme);
-      if (theme.equals(PreferencesUI.THEME_DARK)) {
-        Fx.switchTheme(a, R.style.themeDark, false);
-      } else if (theme.equals(PreferencesUI.THEME_LIGHT)) {
-        Fx.switchTheme(a, R.style.themeLight, false);
+      if (theme.equals(PreferencesUI.THEME_DARK_BLUE)) {
+        Fx.switchTheme(a, R.style.themeDarkBlue, false);
+      } else if (theme.equals(PreferencesUI.THEME_LIGHT_BLUE)) {
+        Fx.switchTheme(a, R.style.themeLightBlue, false);
       }
     }
   }
