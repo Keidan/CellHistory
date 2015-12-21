@@ -30,11 +30,13 @@ import org.kei.android.phone.cellhistory.transformers.ZoomOutPageTransformer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -99,7 +101,9 @@ IThemeActivity, OnPageChangeListener {
     fragments.add(new RecorderFragment());
     
     mPager = (ViewPager) findViewById(R.id.pager);
-    
+    PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pagerTabStrip);
+    pagerTabStrip.setDrawFullUnderline(true);
+    pagerTabStrip.setTabIndicatorColor(Color.parseColor("#0099cc"));
     setTransformer();
     mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(),
         fragments);
