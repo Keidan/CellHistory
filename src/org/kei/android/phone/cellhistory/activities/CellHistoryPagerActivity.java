@@ -101,7 +101,7 @@ IThemeActivity, OnPageChangeListener {
     
     mPager = (ViewPager) findViewById(R.id.pager);
     PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pagerTabStrip);
-    pagerTabStrip.setDrawFullUnderline(true);
+    pagerTabStrip.setDrawFullUnderline(false);
     pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.label_color));
     setTransformer();
     mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(),
