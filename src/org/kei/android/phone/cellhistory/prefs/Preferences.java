@@ -7,6 +7,7 @@ import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.EffectPreferenceActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
+import org.kei.android.phone.cellhistory.activities.LogActivity;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -148,7 +149,7 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
       Tools.switchTo(Preferences.this, PreferencesTimers.class);
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_LOG))) {
       preferences = true;
-      Tools.switchTo(Preferences.this, PreferencesTimers.class);
+      Tools.switchTo(Preferences.this, LogActivity.class);
       return true;
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_CHANGELOG))) {
       preferences = true;
