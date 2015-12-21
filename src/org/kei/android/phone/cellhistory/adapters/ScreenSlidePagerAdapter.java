@@ -53,6 +53,8 @@ public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
       case 2:
         return "Neighboring";
       case 3:
+        return "Network";
+      case 4:
         return "Recorder";
       default:
         return null;

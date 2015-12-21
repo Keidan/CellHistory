@@ -11,6 +11,7 @@ import org.kei.android.atk.view.IThemeActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.adapters.ScreenSlidePagerAdapter;
+import org.kei.android.phone.cellhistory.fragments.NetworkFragment;
 import org.kei.android.phone.cellhistory.fragments.ProviderFragment;
 import org.kei.android.phone.cellhistory.fragments.NeighboringFragment;
 import org.kei.android.phone.cellhistory.fragments.RecorderFragment;
@@ -99,6 +100,7 @@ IThemeActivity, OnPageChangeListener {
     fragments.add(new TowerFragment());
     fragments.add(new ProviderFragment());
     fragments.add(new NeighboringFragment());
+    fragments.add(new NetworkFragment());
     fragments.add(new RecorderFragment());
     
     mPager = (ViewPager) findViewById(R.id.pager);
