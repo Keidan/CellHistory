@@ -19,6 +19,31 @@
     </style>
   </head>
   <body>
+  	$ 2.12
+  	  % Version 2.12
+      _ 2015-12-22
+      * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>, <font color="#fbca04">new feature</font>
+      * Changes the PagerTitleStrip for a PagerTabStrip to enhance the user experience.
+      * Export the text color of the labels into an xml file.
+      * Export the text color of the pager line into an xml file.
+      * Remove the full underline of the new PagerTabStrip object.
+      * Fix the log display (the window is not shown).
+      * Export the colors for theme usage.
+      * Add the network tab.
+      * Add mobile network information.
+      * Reorder the tabs.
+      * Add data activity information.
+      * Reset estimated speed.
+      * Update the color of the data activity view in accordance to the current activity.
+      * Invalid value for the frequency of the chart views
+      * Bad use of the rx/tx methods.
+      * Improve the network information tab.
+      * Add chart for the network tab.
+      * Update the charthelper class to use multiple time series (eg: rx + tx).
+      * Change the labels 'estimated speed' to 'theoretical speed'.
+      * Fix regression with the chart animation.
+      * Add network information to the recorder (pref+switches)
+      
   	$ 2.11
   	  % Version 2.11
   	  _ 2015-12-19
