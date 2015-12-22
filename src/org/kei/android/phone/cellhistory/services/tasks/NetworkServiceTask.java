@@ -58,8 +58,8 @@ public class NetworkServiceTask extends TimerTask {
     if (telephonyManager != null)
       telephonyManager.listen(networkPhoneStateListener,
           PhoneStateListener.LISTEN_DATA_ACTIVITY);
-    startRX = TrafficStats.getTotalRxBytes();
-    startTX = TrafficStats.getTotalTxBytes();
+    startRX = TrafficStats.getMobileRxBytes();
+    startTX = TrafficStats.getMobileTxBytes();
   }
 
   public void unregister() {
@@ -76,8 +76,8 @@ public class NetworkServiceTask extends TimerTask {
     try {
       final MobileNetworkInfo mni = app.getGlobalTowerInfo()
           .getMobileNetworkInfo();
-      final long lr = TrafficStats.getTotalRxBytes();
-      final long lt = TrafficStats.getTotalTxBytes();
+      final long lr = TrafficStats.getMobileRxBytes();
+      final long lt = TrafficStats.getMobileTxBytes();
       mni.setBootRX(lr);
       mni.setBootTX(lt);
       mni.setStartRX(lr - startRX);
