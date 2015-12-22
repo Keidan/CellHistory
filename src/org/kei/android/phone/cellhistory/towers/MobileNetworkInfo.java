@@ -289,35 +289,35 @@ public class MobileNetworkInfo {
     if (ni.getType() == ConnectivityManager.TYPE_MOBILE) {
       switch (ni.getSubtype()) {
         case TelephonyManager.NETWORK_TYPE_1xRTT:
-          return "~ 50-100 kbps";
+          return "~50-100 kbps";
         case TelephonyManager.NETWORK_TYPE_CDMA:
-          return "~ 14-64 kbps";
+          return "~14-64 kbps";
         case TelephonyManager.NETWORK_TYPE_EDGE:
-          return "~ 50-100 kbps";
+          return "~50-100 kbps";
         case TelephonyManager.NETWORK_TYPE_EVDO_0:
-          return "~ 400-1000 kbps";
+          return "~400-1000 kbps";
         case TelephonyManager.NETWORK_TYPE_EVDO_A:
-          return "~ 600-1400 kbps";
+          return "~600-1400 kbps";
         case TelephonyManager.NETWORK_TYPE_GPRS:
-          return "~ 100 kbps";
+          return "~100 kbps";
         case TelephonyManager.NETWORK_TYPE_HSDPA:
-          return "~ 2-14 Mbps";
+          return "~2-14 Mbps";
         case TelephonyManager.NETWORK_TYPE_HSPA:
-          return "~ 700-1700 kbps";
+          return "~700-1700 kbps";
         case TelephonyManager.NETWORK_TYPE_HSUPA:
-          return "~ 1-23 Mbps";
+          return "~1-23 Mbps";
         case TelephonyManager.NETWORK_TYPE_UMTS:
-          return "~ 400-7000 kbps";
+          return "~400-7000 kbps";
         case TelephonyManager.NETWORK_TYPE_EHRPD:
-          return "~ 1-2 Mbps";
+          return "~1-2 Mbps";
         case TelephonyManager.NETWORK_TYPE_EVDO_B:
-          return "~ 5 Mbps";
+          return "~5 Mbps";
         case TelephonyManager.NETWORK_TYPE_HSPAP:
-          return "~ 10-20 Mbps";
+          return "~10-20 Mbps";
         case TelephonyManager.NETWORK_TYPE_IDEN:
-          return "~ 25 kbps";
+          return "~25 kbps";
         case TelephonyManager.NETWORK_TYPE_LTE:
-          return "~ 10+ Mbps";
+          return "~10+ Mbps";
       }
     }
     return TowerInfo.UNKNOWN;
