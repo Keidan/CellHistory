@@ -44,9 +44,9 @@ public class MobileNetworkInfo {
   public static final int DATA_ACTIVITY_INOUT   = 3;
   public static final int DATA_ACTIVITY_DORMANT = 4;
   private long            rx                    = 0;
-  private long            tx                   = 0;
-  private long            rxSpeed                    = 0;
-  private long            txSpeed                   = 0;
+  private long            tx                    = 0;
+  private long            rxSpeed               = 0;
+  private long            txSpeed               = 0;
   private int             dataConnectivity      = TYPE_NOT_CONNECTED;
   private String          theoreticalSpeed      = TowerInfo.UNKNOWN;
   private String          type                  = TowerInfo.UNKNOWN;
@@ -215,6 +215,19 @@ public class MobileNetworkInfo {
    */
   public void setDataActivity(final int dataActivity) {
     this.dataActivity = dataActivity;
+  }
+
+  public static String getDataActivityMin(final int activity) {
+    if (activity == DATA_ACTIVITY_DORMANT)
+      return "dormant";
+    else if (activity == DATA_ACTIVITY_IN)
+      return "rx";
+    else if (activity == DATA_ACTIVITY_OUT)
+      return "tx";
+    else if (activity == DATA_ACTIVITY_INOUT)
+      return "rx/tx";
+    else
+      return "none";
   }
 
   public static String getDataActivity(final int activity) {

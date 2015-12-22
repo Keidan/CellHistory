@@ -81,5 +81,30 @@
             android:key="recorderFilterSpeed"
             android:summary="@string/pref_recorder_filter_speed_summary"
             android:title="@string/pref_recorder_filter_speed_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterIPv4"
+            android:summary="@string/pref_recorder_filter_ipv4_summary"
+            android:title="@string/pref_recorder_filter_ipv4_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterIPv6"
+            android:summary="@string/pref_recorder_filter_ipv6_summary"
+            android:title="@string/pref_recorder_filter_ipv6_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterDataTxSpeed"
+            android:summary="@string/pref_recorder_filter_data_speed_tx_summary"
+            android:title="@string/pref_recorder_filter_data_speed_tx_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterDataRxSpeed"
+            android:summary="@string/pref_recorder_filter_data_speed_rx_summary"
+            android:title="@string/pref_recorder_filter_data_speed_rx_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="recorderFilterDataDirection"
+            android:summary="@string/pref_recorder_filter_data_direction_summary"
+            android:title="@string/pref_recorder_filter_data_direction_title" />
     </PreferenceCategory>
 </PreferenceScreen>

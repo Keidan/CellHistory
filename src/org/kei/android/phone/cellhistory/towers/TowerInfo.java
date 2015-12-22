@@ -86,6 +86,11 @@ public class TowerInfo {
   private boolean               allowDistance         = true;
   private boolean               allowSatellites       = true;
   private boolean               allowSpeed            = true;
+  private boolean               allowDataSpeedRx      = true;
+  private boolean               allowDataSpeedTx      = true;
+  private boolean               allowDataDirection    = true;
+  private boolean               allowIPv4             = true;
+  private boolean               allowIPv6             = true;
   
   public TowerInfo() {
     mobileNetworkInfo = new MobileNetworkInfo();
@@ -160,6 +165,11 @@ public class TowerInfo {
       sb.append(indentation ? "      " : "").append("\"ss\":").append(getSignalStrength()).append(",").append(indentation ? "\n" : "");
       sb.append(indentation ? "      " : "").append("\"ssp\":").append(getSignalStrengthPercent()).append(",").append(indentation ? "\n" : "");
     }
+    if(allowDataSpeedRx) sb.append(indentation ? "      " : "").append("\"rx\":").append(getMobileNetworkInfo().getRxSpeed()).append(",").append(indentation ? "\n" : "");
+    if(allowDataSpeedTx) sb.append(indentation ? "      " : "").append("\"tx\":").append(getMobileNetworkInfo().getTxSpeed()).append(",").append(indentation ? "\n" : "");
+    if(allowDataDirection) sb.append(indentation ? "      " : "").append("\"dir\":\"").append(MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())).append("\",").append(indentation ? "\n" : "");
+    if(allowIPv4) sb.append(indentation ? "      " : "").append("\"ipv4\":\"").append(getMobileNetworkInfo().getIp4Address()).append("\",").append(indentation ? "\n" : "");
+    if(allowIPv6) sb.append(indentation ? "      " : "").append("\"ipv6\":\"").append(getMobileNetworkInfo().getIp6Address()).append("\",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"neighborings\": [").append(indentation ? "\n" : "");
     if(allowNeighboring) {
       int size = getNeighboring().size();
@@ -218,6 +228,13 @@ public class TowerInfo {
       sb.append(lineXML(spaces, "ss", getSignalStrength()));
       sb.append(lineXML(spaces, "ssp", getSignalStrengthPercent()));
     }
+
+    if(allowDataSpeedRx) sb.append(lineXML(spaces, "rx", getMobileNetworkInfo().getRxSpeed()));
+    if(allowDataSpeedTx) sb.append(lineXML(spaces, "tx", getMobileNetworkInfo().getTxSpeed()));
+    if(allowDataDirection) sb.append(lineXML(spaces, "dir", MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())));
+    if(allowIPv4) sb.append(lineXML(spaces, "ipv4", getMobileNetworkInfo().getIp4Address()));
+    if(allowIPv6) sb.append(lineXML(spaces, "ipv6", getMobileNetworkInfo().getIp6Address()));
+    
     if(indentation) sb.append("    ");
     sb.append("<neighborings>");
     if(indentation) sb.append("\n");
@@ -282,6 +299,19 @@ public class TowerInfo {
       sb.append(getSignalStrength()).append(sep);
       sb.append(getSignalStrengthPercent()).append(sep);
     } else sb.append(sep).append(sep);
+
+    if(allowDataSpeedRx) sb.append(getMobileNetworkInfo().getRxSpeed()).append(sep);
+    else sb.append(sep);
+    if(allowDataSpeedTx) sb.append(getMobileNetworkInfo().getTxSpeed()).append(sep);
+    else sb.append(sep);
+    if(allowDataDirection) sb.append(MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())).append(sep);
+    else sb.append(sep);
+    if(allowIPv4) sb.append(getMobileNetworkInfo().getIp4Address()).append(sep);
+    else sb.append(sep);
+    if(allowIPv6) sb.append(getMobileNetworkInfo().getIp6Address()).append(sep);
+    else sb.append(sep);
+    
+    
     if(allowNeighboring) {
       int size = getNeighboring().size();
       for(int i = 0; i < size; ++i) {
@@ -298,7 +328,8 @@ public class TowerInfo {
       final boolean allowCellId, final boolean allowLAC, final boolean allowGeolocation, final boolean allowPSC,
       final boolean allowType, final boolean allowNetwork, final boolean allowASU,
       final boolean allowLVL, final boolean allowSS, final boolean allowNeighboring,
-      final boolean allowProvider, final boolean allowDistance, final boolean allowSatellites, final boolean allowSpeed) {
+      final boolean allowProvider, final boolean allowDistance, final boolean allowSatellites, final boolean allowSpeed, 
+      final boolean allowDataSpeedRx, final boolean allowDataSpeedTx, final boolean allowDataDirection, final boolean allowIPv4, final boolean allowIPv6) {
     this.allowOperator = allowOperator;
     this.allowMCC = allowMCC;
     this.allowMNC = allowMNC;
@@ -316,6 +347,11 @@ public class TowerInfo {
     this.allowDistance = allowDistance;
     this.allowSatellites = allowSatellites;
     this.allowSpeed = allowSpeed;
+    this.allowDataSpeedRx = allowDataSpeedRx;
+    this.allowDataSpeedTx = allowDataSpeedTx;
+    this.allowDataDirection = allowDataDirection;
+    this.allowIPv4 = allowIPv4;
+    this.allowIPv6 = allowIPv6;
   }
   
   public static TowerInfo decodeInformations(final TowerInfo owner, final SignalStrength ss) throws Exception {

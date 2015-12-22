@@ -219,6 +219,51 @@
                 android:textColor="?attr/labelTextColor" />
             
             <Switch
+                android:id="@+id/swDataSpeedRx"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textOff="@string/empty"
+	            android:textOn="@string/empty"
+                android:text="@string/lblRxBytesSinceAppStart"
+                android:textColor="?attr/labelTextColor" />
+            
+            <Switch
+                android:id="@+id/swDataSpeedTx"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textOff="@string/empty"
+	            android:textOn="@string/empty"
+                android:text="@string/lblTxBytesSinceAppStart"
+                android:textColor="?attr/labelTextColor" />
+            
+            <Switch
+                android:id="@+id/swDataDirection"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textOff="@string/empty"
+	            android:textOn="@string/empty"
+                android:text="@string/lblDataActivity"
+                android:textColor="?attr/labelTextColor" />
+            
+            <Switch
+                android:id="@+id/swIpv4"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textOff="@string/empty"
+	            android:textOn="@string/empty"
+                android:text="@string/lblIp4Address"
+                android:textColor="?attr/labelTextColor" />
+            
+            <Switch
+                android:id="@+id/swIpv6"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textOff="@string/empty"
+	            android:textOn="@string/empty"
+                android:text="@string/lblIp6Address"
+                android:textColor="?attr/labelTextColor" />
+            
+            <Switch
                 android:id="@+id/swNeighboring"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"

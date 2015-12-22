@@ -193,5 +193,15 @@
      <string name="pref_recorder_filter_satellites_title">GPS Satellites</string>
      <string name="pref_recorder_filter_neighboring_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_neighboring_title">Neighboring</string>
+     <string name="pref_recorder_filter_data_speed_tx_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_data_speed_tx_title">Mobile data TX</string>
+     <string name="pref_recorder_filter_data_speed_rx_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_data_speed_rx_title">Mobile data RX</string>
+     <string name="pref_recorder_filter_data_direction_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_data_direction_title">Mobile data direction</string>
+     <string name="pref_recorder_filter_ipv6_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_ipv6_title">Mobile IPv6</string>
+     <string name="pref_recorder_filter_ipv4_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_ipv4_title">Mobile IPv4</string>
 	
 </resources>

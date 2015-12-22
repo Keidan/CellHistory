@@ -183,7 +183,8 @@ public class RecorderCtx {
           .append(sep).append("SAT").append(sep).append("SPD").append(sep).append("DIST").append(sep).append("PSC").append(sep)
       .append("TYPE").append(sep).append("NET").append(sep).append("LVL")
           .append(sep).append("ASU").append(sep).append("STR").append(sep)
-      .append("PER").append(sep).append("NEIGBORING(").append("OLD").append(sepNb).append("LAC")
+      .append("PER").append(sep).append("RX").append(sep).append("TX").append(sep).append("DIR").append(sep)
+      .append("IPv4").append(sep).append("IPv6").append(sep).append("NEIGBORING(").append("OLD").append(sepNb).append("LAC")
           .append(sepNb).append("CID").append(sepNb).append("ASU").append(sepNb)
       .append("NT").append(sepNb).append("STR").append(")...");
       String s = sb.toString();
@@ -261,6 +262,26 @@ public class RecorderCtx {
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_SATELLITES,
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_SATELLITES)) 
       if(!(backup.getSatellites() == current.getSatellites())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DATA_RX_SPEED,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DATA_RX_SPEED)) 
+      if(!(backup.getMobileNetworkInfo().getRxSpeed() == current.getMobileNetworkInfo().getRxSpeed())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DATA_TX_SPEED,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DATA_TX_SPEED)) 
+      if(!(backup.getMobileNetworkInfo().getTxSpeed() == current.getMobileNetworkInfo().getTxSpeed())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DATA_DIRECTION,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DATA_DIRECTION)) 
+      if(!(backup.getMobileNetworkInfo().getDataActivity() == current.getMobileNetworkInfo().getDataActivity())) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_IPV4,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_IPV4)) 
+      if(!(backup.getMobileNetworkInfo().getIp4Address().equals(current.getMobileNetworkInfo().getIp4Address()))) return false;
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_IPV6,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_IPV6)) 
+      if(!(backup.getMobileNetworkInfo().getIp6Address().equals(current.getMobileNetworkInfo().getIp6Address()))) return false;
     if(prefs.getBoolean(
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_NEIGHBORING,
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_NEIGHBORING)) {

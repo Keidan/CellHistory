@@ -66,6 +66,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   private static final String  SW_DISTANCE        = "swDistance";
   private static final String  SW_SATELLITES      = "swSatellites";
   private static final String  SW_SPEED           = "swSpeed";
+  private static final String  SW_DATA_SPEED_RX   = "swDataSpeedRx";
+  private static final String  SW_DATA_SPEED_TX   = "swDataSpeedTx";
+  private static final String  SW_DATA_DIRECTION  = "swDirection";
+  private static final String  SW_IPV4            = "swIpv4";
+  private static final String  SW_IPV6            = "swIpv6";
   private static final String  SW_DISPLAY         = "chkDisplaySwitch";
   private static final boolean SW_DEFAULT         = true;
   private static final boolean SW_DEFAULT_DISPLAY = false;
@@ -94,6 +99,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   private Switch               swDistance         = null;
   private Switch               swSatellites       = null;
   private Switch               swSpeed            = null;
+  private Switch               swDataSpeedRx      = null;
+  private Switch               swDataSpeedTx      = null;
+  private Switch               swDataDirection    = null;
+  private Switch               swIpv4             = null;
+  private Switch               swIpv6             = null;
   private CheckBox             chkDisplaySwitch   = null;
   private ScrollView           switches           = null;
 
@@ -138,6 +148,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swDistance = (Switch) getView().findViewById(R.id.swDistance);
     swSatellites = (Switch) getView().findViewById(R.id.swSatellites);
     swSpeed = (Switch) getView().findViewById(R.id.swSpeed);
+    swDataSpeedRx = (Switch) getView().findViewById(R.id.swDataSpeedRx);
+    swDataSpeedTx = (Switch) getView().findViewById(R.id.swDataSpeedTx);
+    swDataDirection = (Switch) getView().findViewById(R.id.swDataDirection);
+    swIpv4 = (Switch) getView().findViewById(R.id.swIpv4);
+    swIpv6 = (Switch) getView().findViewById(R.id.swIpv6);
     chkDisplaySwitch = (CheckBox) getView().findViewById(R.id.chkDisplaySwitch);
     switches = (ScrollView) getView().findViewById(R.id.switches);
     swOperator.setOnCheckedChangeListener(this);
@@ -158,6 +173,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swSatellites.setOnCheckedChangeListener(this);
     swSpeed.setOnCheckedChangeListener(this);
     chkDisplaySwitch.setOnCheckedChangeListener(this);
+    swDataSpeedRx.setOnCheckedChangeListener(this);
+    swDataSpeedTx.setOnCheckedChangeListener(this);
+    swDataDirection.setOnCheckedChangeListener(this);
+    swIpv4.setOnCheckedChangeListener(this);
+    swIpv6.setOnCheckedChangeListener(this);
     updateTowerInfo();
     try {
       processUI(app.getGlobalTowerInfo());
@@ -188,6 +208,11 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swDistance.setChecked(prefs.getBoolean(SW_DISTANCE, SW_DEFAULT));
     swSatellites.setChecked(prefs.getBoolean(SW_SATELLITES, SW_DEFAULT));
     swSpeed.setChecked(prefs.getBoolean(SW_SPEED, SW_DEFAULT));
+    swDataSpeedRx.setChecked(prefs.getBoolean(SW_DATA_SPEED_RX, SW_DEFAULT));
+    swDataSpeedTx.setChecked(prefs.getBoolean(SW_DATA_SPEED_TX, SW_DEFAULT));
+    swDataDirection.setChecked(prefs.getBoolean(SW_DATA_DIRECTION, SW_DEFAULT));
+    swIpv4.setChecked(prefs.getBoolean(SW_IPV4, SW_DEFAULT));
+    swIpv6.setChecked(prefs.getBoolean(SW_IPV6, SW_DEFAULT));
     chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT_DISPLAY));
     switches.setAnimation(null);
     if(chkDisplaySwitch.isChecked() && switches.getVisibility() != View.VISIBLE)
@@ -265,6 +290,16 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       ed.putBoolean(SW_SATELLITES, isChecked);
     } else if(buttonView.equals(swSpeed)) {
       ed.putBoolean(SW_SPEED, isChecked);
+    } else if(buttonView.equals(swDataSpeedRx)) {
+      ed.putBoolean(SW_DATA_SPEED_RX, isChecked);
+    } else if(buttonView.equals(swDataSpeedTx)) {
+      ed.putBoolean(SW_DATA_SPEED_TX, isChecked);
+    } else if(buttonView.equals(swDataDirection)) {
+      ed.putBoolean(SW_DATA_DIRECTION, isChecked);
+    } else if(buttonView.equals(swIpv4)) {
+      ed.putBoolean(SW_IPV4, isChecked);
+    } else if(buttonView.equals(swIpv6)) {
+      ed.putBoolean(SW_IPV6, isChecked);
     } else if(buttonView.equals(chkDisplaySwitch)) {
       ed.putBoolean(SW_DISPLAY, isChecked);
       ed.commit();
@@ -290,7 +325,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
           swPSC.isChecked(), swType.isChecked(), swNetwork.isChecked(), 
           swASU.isChecked(), swLVL.isChecked(), swSS.isChecked(), 
           swNeighboring.isChecked(), swProvider.isChecked(), swDistance.isChecked(), 
-          swSatellites.isChecked(), swSpeed.isChecked());
+          swSatellites.isChecked(), swSpeed.isChecked(), swDataSpeedRx.isChecked(), swDataSpeedTx.isChecked(), swDataDirection.isChecked(), swIpv4.isChecked(), swIpv6.isChecked());
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
