@@ -37,12 +37,14 @@ OnSharedPreferenceChangeListener {
   public static final String   PREFS_KEY_TIMERS_TASK_PROVIDER     = "timersTaskProvider";
   public static final String   PREFS_KEY_TIMERS_TASK_RECORDER     = "timersTaskRecorder";
   public static final String   PREFS_KEY_TIMERS_TASK_GPS          = "timersTaskGps";
+  public static final String   PREFS_KEY_TIMERS_TASK_NETWORK      = "timersTaskNetwork";
 
   public static final String   PREFS_DEFAULT_TIMERS_UI            = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_TOWER    = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_PROVIDER = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_GPS      = "1000";
   public static final String   PREFS_DEFAULT_TIMERS_TASK_RECORDER = "1000";
+  public static final String   PREFS_DEFAULT_TIMERS_TASK_NETWORK  = "1000";
   private MyPreferenceFragment prefFrag                           = null;
   private SharedPreferences    prefs                              = null;
   private boolean              exit                               = false;
@@ -130,6 +132,14 @@ OnSharedPreferenceChangeListener {
         + prefs.getString(PREFS_KEY_TIMERS_TASK_RECORDER,
             PREFS_DEFAULT_TIMERS_TASK_RECORDER) + " ms.";
     ep.setSummary(summary);
+    ep = (EditTextPreference) prefFrag
+        .findPreference(PREFS_KEY_TIMERS_TASK_NETWORK);
+    summary = getResources().getString(
+        R.string.pref_timers_task_network_summary);
+    summary += "\nTimer: "
+        + prefs.getString(PREFS_KEY_TIMERS_TASK_NETWORK,
+            PREFS_DEFAULT_TIMERS_TASK_NETWORK) + " ms.";
+    ep.setSummary(summary);
   }
 
   private void checkValues() {
@@ -144,7 +154,8 @@ OnSharedPreferenceChangeListener {
     if (key.equals(PREFS_KEY_TIMERS_UI)
         || key.equals(PREFS_KEY_TIMERS_TASK_TOWER)
         || key.equals(PREFS_KEY_TIMERS_TASK_PROVIDER)
-        || key.equals(PREFS_KEY_TIMERS_TASK_GPS)) {
+        || key.equals(PREFS_KEY_TIMERS_TASK_GPS)
+        || key.equals(PREFS_KEY_TIMERS_TASK_NETWORK)) {
       updateSummaries();
     }
   }

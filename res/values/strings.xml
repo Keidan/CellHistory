@@ -18,11 +18,14 @@
     <string name="changelog_show_full">more&#8230;</string>
     <string name="background_color">black</string>
     
+    <string name="connectivity_mobile">Mobile</string>
+    <string name="connectivity_wifi">Wifi</string>
+    <string name="connectivity_none">Not connected</string>
+    
     <string name="switch_description">Data to save: </string>
 	<string name="lblNeighboring">Neighboring: </string>
 	<string name="lblProvider">Provider name: </string>
  
-	
 	<string name="toggleOn">Record ON</string>
 	<string name="toggleOff">Record OFF</string>
 	
@@ -50,6 +53,16 @@
 	<string name="txtGpsDisabledOption">GPS option disabled.</string>
 	<string name="txtGpsOutOfService">GPS out of service.</string>
 	<string name="txtGpsTemporarilyUnavailable">GPS temporarily unavailable.</string>
+	
+	<string name="lblTxBytesSinceBoot">Boot Tx: </string>
+	<string name="lblRxBytesSinceBoot">Boot Rx: </string>
+	<string name="lblTxBytesSinceAppStart">Start Tx: </string>
+	<string name="lblRxBytesSinceAppStart">Start Rx: </string>
+	<string name="lblConnectivity">Data connectivity: </string>
+	<string name="lblEstimatedSpeed">Estimated speed: </string>
+	<string name="lblIp4Address">IPv4 Address: </string>
+	<string name="lblIp6Address">IPv6 Address: </string>
+	
 	
 	<string name="lblRecords">Record: </string>
 	<string name="lblBuffer">Buffer: </string>
@@ -87,6 +100,8 @@
     <string name="pref_timers_task_gps_summary">Used to retrieve the speed and the distance (restart required).</string>
     <string name="pref_timers_task_tower_title">Tower</string>
     <string name="pref_timers_task_tower_summary">Used to retrieve the cell tower informations (restart required).</string>
+    <string name="pref_timers_task_network_title">Network</string>
+    <string name="pref_timers_task_network_summary">Used to retrieve the mobile network information (restart required).</string>
     <string name="pref_timers_task_recorder_title">Recorder</string>
     <string name="pref_timers_task_recorder_summary">Used to write the data (restart required).</string>
     

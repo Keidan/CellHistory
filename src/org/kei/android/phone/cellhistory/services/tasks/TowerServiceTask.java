@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.services.ProviderService;
+import org.kei.android.phone.cellhistory.towers.MobileNetworkInfo;
 import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 import org.kei.android.phone.cellhistory.towers.TowerPhoneStateListener;
@@ -50,7 +51,7 @@ import android.util.Log;
 public class TowerServiceTask extends TimerTask {
   private CellHistoryApp          app                     = null;
   private Service                 service                 = null;
-  private final SharedPreferences prefs;
+  private SharedPreferences       prefs                   = null;
   private TelephonyManager        telephonyManager        = null;
   private TowerPhoneStateListener towerPhoneStateListener = null;
   
@@ -102,7 +103,7 @@ public class TowerServiceTask extends TimerTask {
         }
         app.getGlobalTowerInfo().setNetwork(tm.getNetworkType());
         app.getGlobalTowerInfo().setNetworkName(
-            TowerInfo.getNetworkType(app.getGlobalTowerInfo().getNetwork(),
+            MobileNetworkInfo.getNetworkType(app.getGlobalTowerInfo().getNetwork(),
                 true));
 
         final CellLocation clocation = tm.getCellLocation();
@@ -152,7 +153,7 @@ public class TowerServiceTask extends TimerTask {
                 rssi = -113 + 2 * rssi;
               app.getGlobalTowerInfo().addNeighboring(
                   new NeighboringInfo(true, ci.getLac(), ci.getCid(), ci
-                      .getPsc(), TowerInfo.getNetworkType(ci.getNetworkType(),
+                      .getPsc(), MobileNetworkInfo.getNetworkType(ci.getNetworkType(),
                       true), rssi));
             }
           }

@@ -14,12 +14,6 @@
             android:title="@string/pref_timers_task_tower_title"   
     		android:inputType="number" />
         <EditTextPreference
-            android:key="timersTaskRecorder"
-            android:defaultValue="1000"
-            android:summary="@string/pref_timers_task_recorder_summary"
-            android:title="@string/pref_timers_task_recorder_title"   
-    		android:inputType="number" />
-        <EditTextPreference
             android:key="timersTaskProvider"
             android:defaultValue="1000"
             android:summary="@string/pref_timers_task_provider_summary"
@@ -30,6 +24,18 @@
             android:defaultValue="1000"
             android:summary="@string/pref_timers_task_gps_summary"
             android:title="@string/pref_timers_task_gps_title"   
+    		android:inputType="number" />
+        <EditTextPreference
+            android:key="timersTaskNetwork"
+            android:defaultValue="1000"
+            android:summary="@string/pref_timers_task_network_summary"
+            android:title="@string/pref_timers_task_network_title"   
+    		android:inputType="number" />
+        <EditTextPreference
+            android:key="timersTaskRecorder"
+            android:defaultValue="1000"
+            android:summary="@string/pref_timers_task_recorder_summary"
+            android:title="@string/pref_timers_task_recorder_title"   
     		android:inputType="number" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -67,6 +67,7 @@
         <service android:name="org.kei.android.phone.cellhistory.services.ProviderService"/>
         <service android:name="org.kei.android.phone.cellhistory.services.RecorderService"/>
         <service android:name="org.kei.android.phone.cellhistory.services.GpsService"/>
+        <service android:name="org.kei.android.phone.cellhistory.services.NetworkService"/>
     </application>
 
 </manifest>

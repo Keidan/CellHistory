@@ -12,7 +12,6 @@ import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.SignalStrength;
-import android.telephony.TelephonyManager;
 
 
 
@@ -69,6 +68,7 @@ public class TowerInfo {
   private double                speed                 = 0.0;
   private double                distance              = 0.0;
   private int                   satellites            = 0;
+  private MobileNetworkInfo     mobileNetworkInfo     = null;
   private boolean               allowOperator         = true;
   private boolean               allowMCC              = true;
   private boolean               allowMNC              = true;
@@ -88,6 +88,7 @@ public class TowerInfo {
   private boolean               allowSpeed            = true;
   
   public TowerInfo() {
+    mobileNetworkInfo = new MobileNetworkInfo();
     neighboring = new ArrayList<NeighboringInfo>();
   }
   
@@ -114,6 +115,7 @@ public class TowerInfo {
     speed = ti.speed;
     distance = ti.distance;
     satellites = ti.satellites;
+    mobileNetworkInfo = new MobileNetworkInfo(ti.getMobileNetworkInfo());
     neighboring.clear();
     neighboring.addAll(ti.getNeighboring());
   }
@@ -314,47 +316,6 @@ public class TowerInfo {
     this.allowDistance = allowDistance;
     this.allowSatellites = allowSatellites;
     this.allowSpeed = allowSpeed;
-  }
-
-  public static String getNetworkType(final int networkType,
-      final boolean nameOnly) {
-    String nt = "";
-    if (!nameOnly)
-      nt = " (" + networkType + ")";
-    switch (networkType) {
-      case TelephonyManager.NETWORK_TYPE_CDMA:
-        return "CDMA" + nt;
-      case TelephonyManager.NETWORK_TYPE_EDGE:
-        return "EDGE" + nt;
-      case TelephonyManager.NETWORK_TYPE_GPRS:
-        return "GPRS" + nt;
-      case TelephonyManager.NETWORK_TYPE_IDEN:
-        return "IDEN" + nt;
-      case TelephonyManager.NETWORK_TYPE_1xRTT:
-        return "1xRTT" + nt;
-      case TelephonyManager.NETWORK_TYPE_EHRPD:
-        return "EHRPD" + nt;
-      case TelephonyManager.NETWORK_TYPE_EVDO_0:
-        return "EVDO_0" + nt;
-      case TelephonyManager.NETWORK_TYPE_EVDO_A:
-        return "EVDO_A" + nt;
-      case TelephonyManager.NETWORK_TYPE_EVDO_B:
-        return "EVDO_B" + nt;
-      case TelephonyManager.NETWORK_TYPE_HSDPA:
-        return "HSDPA" + nt;
-      case TelephonyManager.NETWORK_TYPE_HSPA:
-        return "HSPA" + nt;
-      case TelephonyManager.NETWORK_TYPE_HSPAP:
-        return "HSPAP" + nt;
-      case TelephonyManager.NETWORK_TYPE_HSUPA:
-        return "HSUPA" + nt;
-      case TelephonyManager.NETWORK_TYPE_UMTS:
-        return "UMTS" + nt;
-      case TelephonyManager.NETWORK_TYPE_LTE:
-        return "LTE" + nt;
-      default:
-        return UNKNOWN + nt;
-    }
   }
   
   public static TowerInfo decodeInformations(final TowerInfo owner, final SignalStrength ss) throws Exception {
@@ -725,4 +686,10 @@ public class TowerInfo {
     this.satellites = satellites;
   }
 
+  /**
+   * @return the mobileNetworkInfo
+   */
+  public MobileNetworkInfo getMobileNetworkInfo() {
+    return mobileNetworkInfo;
+  }
 }
