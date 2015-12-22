@@ -22,6 +22,7 @@ import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.prefs.PreferencesUI;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.services.GpsService;
+import org.kei.android.phone.cellhistory.services.NetworkService;
 import org.kei.android.phone.cellhistory.services.ProviderService;
 import org.kei.android.phone.cellhistory.services.RecorderService;
 import org.kei.android.phone.cellhistory.services.TowerService;
@@ -98,9 +99,9 @@ IThemeActivity, OnPageChangeListener {
 
     fragments = new Vector<Fragment>();
     fragments.add(new TowerFragment());
+    fragments.add(new NetworkFragment());
     fragments.add(new ProviderFragment());
     fragments.add(new NeighboringFragment());
-    fragments.add(new NetworkFragment());
     fragments.add(new RecorderFragment());
     
     mPager = (ViewPager) findViewById(R.id.pager);
@@ -126,6 +127,7 @@ IThemeActivity, OnPageChangeListener {
       stopService(new Intent(this, GpsService.class));
     }
 
+    startService(new Intent(this, NetworkService.class));
     startService(new Intent(this, TowerService.class));
   }
 
@@ -193,6 +195,7 @@ IThemeActivity, OnPageChangeListener {
     stopService(new Intent(this, ProviderService.class));
     stopService(new Intent(this, GpsService.class));
     stopService(new Intent(this, RecorderService.class));
+    stopService(new Intent(this, NetworkService.class));
     stopService(new Intent(this, TowerService.class));
   }
   
