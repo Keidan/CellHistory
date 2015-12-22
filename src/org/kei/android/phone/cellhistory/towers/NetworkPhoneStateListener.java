@@ -37,7 +37,6 @@ public class NetworkPhoneStateListener extends PhoneStateListener {
   
   @Override
   public void onDataActivity(int direction) {
-    CellHistoryApp.addLog(context, "Data activity: " + MobileNetworkInfo.getDataActivity(direction));
     app.getGlobalTowerInfo().lock();
     try {
       if(direction == TelephonyManager.DATA_ACTIVITY_DORMANT)

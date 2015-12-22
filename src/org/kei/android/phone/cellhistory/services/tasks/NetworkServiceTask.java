@@ -76,13 +76,16 @@ public class NetworkServiceTask extends TimerTask {
     try {
       final MobileNetworkInfo mni = app.getGlobalTowerInfo()
           .getMobileNetworkInfo();
-      final long lr = TrafficStats.getMobileRxBytes();
-      final long lt = TrafficStats.getMobileTxBytes();
-      mni.setBootRX(lr);
-      mni.setBootTX(lt);
-      mni.setStartRX(lr - startRX);
-      mni.setStartTX(lt - startTX);
+      if(startRX == 0) startRX = TrafficStats.getMobileRxBytes();
+      if(startTX == 0) startTX = TrafficStats.getMobileTxBytes();
+      mni.setRx(TrafficStats.getMobileRxBytes() - startRX);
+      mni.setTx(TrafficStats.getMobileTxBytes() - startTX);
       mni.setDataConnectivity(MobileNetworkInfo.getConnectivityStatus(service));
+      if(mni.getDataActivity() != MobileNetworkInfo.TYPE_MOBILE) {
+        startRX = startTX = 0;
+      }
+      mni.setEstimatedSpeed(TowerInfo.UNKNOWN);
+      mni.setType(TowerInfo.UNKNOWN);
       final ConnectivityManager cm = (ConnectivityManager) service
           .getSystemService(Context.CONNECTIVITY_SERVICE);
       if (cm != null) {
@@ -90,12 +93,7 @@ public class NetworkServiceTask extends TimerTask {
         if (ni != null && ni.getType() == ConnectivityManager.TYPE_MOBILE) {
           mni.setEstimatedSpeed(MobileNetworkInfo.getEstimatedSpeed(ni));
           mni.setType(MobileNetworkInfo.getNetworkType(ni.getSubtype(), true));
-        } else {
-          mni.setEstimatedSpeed(TowerInfo.UNKNOWN);
         }
-      } else {
-        mni.setEstimatedSpeed(TowerInfo.UNKNOWN);
-        mni.setType(TowerInfo.UNKNOWN);
       }
       mni.setIp4Address(MobileNetworkInfo.getMobileIP(true));
       mni.setIp6Address(MobileNetworkInfo.getMobileIP(false));

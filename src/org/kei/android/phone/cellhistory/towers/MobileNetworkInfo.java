@@ -43,10 +43,8 @@ public class MobileNetworkInfo {
   public static final int DATA_ACTIVITY_OUT     = 2;
   public static final int DATA_ACTIVITY_INOUT   = 3;
   public static final int DATA_ACTIVITY_DORMANT = 4;
-  private long            startRX               = 0;
-  private long            startTX               = 0;
-  private long            bootRX                = 0;
-  private long            bootTX                = 0;
+  private long            rx                    = 0;
+  private long            tx                   = 0;
   private int             dataConnectivity      = TYPE_NOT_CONNECTED;
   private String          estimatedSpeed        = TowerInfo.UNKNOWN;
   private String          type                  = TowerInfo.UNKNOWN;
@@ -59,10 +57,8 @@ public class MobileNetworkInfo {
   }
 
   public MobileNetworkInfo(final MobileNetworkInfo ni) {
-    this.startRX = ni.startRX;
-    this.startTX = ni.startTX;
-    this.bootRX = ni.bootRX;
-    this.bootTX = ni.bootTX;
+    this.rx = ni.rx;
+    this.tx = ni.tx;
     this.estimatedSpeed = ni.estimatedSpeed;
     this.type = ni.type;
     this.ip4Address = ni.ip4Address;
@@ -72,63 +68,31 @@ public class MobileNetworkInfo {
   }
 
   /**
-   * @return the startRX
+   * @return the rx
    */
-  public long getStartRX() {
-    return startRX;
+  public long getRx() {
+    return rx;
   }
 
   /**
-   * @param startRX
-   *          the startRX to set
+   * @param rx the rx to set
    */
-  public void setStartRX(final long startRX) {
-    this.startRX = startRX;
+  public void setRx(long rx) {
+    this.rx = rx;
   }
 
   /**
-   * @return the startTX
+   * @return the tx
    */
-  public long getStartTX() {
-    return startTX;
+  public long getTx() {
+    return tx;
   }
 
   /**
-   * @param startTX
-   *          the startTX to set
+   * @param tx the tx to set
    */
-  public void setStartTX(final long startTX) {
-    this.startTX = startTX;
-  }
-
-  /**
-   * @return the bootRX
-   */
-  public long getBootRX() {
-    return bootRX;
-  }
-
-  /**
-   * @param bootRX
-   *          the bootRX to set
-   */
-  public void setBootRX(final long bootRX) {
-    this.bootRX = bootRX;
-  }
-
-  /**
-   * @return the bootTX
-   */
-  public long getBootTX() {
-    return bootTX;
-  }
-
-  /**
-   * @param bootTX
-   *          the bootTX to set
-   */
-  public void setBootTX(final long bootTX) {
-    this.bootTX = bootTX;
+  public void setTx(long tx) {
+    this.tx = tx;
   }
 
   /**

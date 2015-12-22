@@ -5,6 +5,10 @@ import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.towers.MobileNetworkInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,13 +39,17 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
   
   private TextView txtTxBytesSinceAppStart = null;
   private TextView txtRxBytesSinceAppStart = null;
-  private TextView txtTxBytesSinceBoot     = null;
-  private TextView txtRxBytesSinceBoot     = null;
   private TextView txtDataConnectivity         = null;
   private TextView txtDataActivity         = null;
   private TextView txtEstimatedSpeed       = null;
   private TextView txtIp4Address           = null;
   private TextView txtIp6Address           = null;
+  private int defaultColor = 0;
+  private int redColor = 0;
+  private int greenColor = 0;
+  private int orangeColor = 0;
+  private Shader gradientColor = null;
+  
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,8 +62,6 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    txtTxBytesSinceBoot = (TextView) getView().findViewById(R.id.txtTxBytesSinceBoot);
-    txtRxBytesSinceBoot = (TextView) getView().findViewById(R.id.txtRxBytesSinceBoot);
     txtTxBytesSinceAppStart = (TextView) getView().findViewById(R.id.txtTxBytesSinceAppStart);
     txtRxBytesSinceAppStart = (TextView) getView().findViewById(R.id.txtRxBytesSinceAppStart);
     txtDataConnectivity = (TextView) getView().findViewById(R.id.txtDataConnectivity);
@@ -63,16 +69,21 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
     txtEstimatedSpeed = (TextView) getView().findViewById(R.id.txtEstimatedSpeed);
     txtIp4Address = (TextView) getView().findViewById(R.id.txtIp4Address);
     txtIp6Address = (TextView) getView().findViewById(R.id.txtIp6Address);
+    defaultColor = new TextView(getActivity()).getTextColors().getDefaultColor();
+    redColor = getResources().getColor(R.color.red);
+    greenColor = getResources().getColor(R.color.green);
+    orangeColor = getResources().getColor(R.color.orange_dark);
+    gradientColor = new LinearGradient(180, 0, 0, 0,
+        new int[]{Color.RED, Color.GREEN},
+        new float[]{0, 1}, TileMode.CLAMP);
   }
   
   @Override
   public void processUI(TowerInfo ti) throws Throwable {
     if(txtTxBytesSinceAppStart == null) return;
     MobileNetworkInfo mni = ti.getMobileNetworkInfo();
-    txtTxBytesSinceBoot.setText(RecorderCtx.convertToHuman(mni.getBootTX()));
-    txtRxBytesSinceBoot.setText(RecorderCtx.convertToHuman(mni.getBootRX()));
-    txtTxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getStartTX()));
-    txtRxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getStartRX()));
+    txtTxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getTx()));
+    txtRxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getRx()));
     int n = mni.getDataConnectivity();
     if(n == MobileNetworkInfo.TYPE_MOBILE) {
       String s = getResources().getString(R.string.connectivity_mobile);
@@ -86,6 +97,19 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
     txtIp4Address.setText(mni.getIp4Address());
     txtIp6Address.setText(mni.getIp6Address());
     txtDataActivity.setText(MobileNetworkInfo.getDataActivity(mni.getDataActivity()));
+    if(mni.getDataActivity() == MobileNetworkInfo.DATA_ACTIVITY_IN) {
+      txtDataActivity.setTextColor(redColor);
+      txtDataActivity.getPaint().setShader(null);
+    } else if(mni.getDataActivity() == MobileNetworkInfo.DATA_ACTIVITY_OUT) {
+      txtDataActivity.setTextColor(greenColor);
+      txtDataActivity.getPaint().setShader(null);
+    } else if(mni.getDataActivity() == MobileNetworkInfo.DATA_ACTIVITY_INOUT) {
+      txtDataActivity.getPaint().setShader(gradientColor);
+    } else if(mni.getDataActivity() == MobileNetworkInfo.DATA_ACTIVITY_DORMANT) {
+      txtDataActivity.setTextColor(orangeColor);
+    } else {
+      txtDataActivity.setTextColor(defaultColor);
+      txtDataActivity.getPaint().setShader(null);
+    } 
   }
-
 }

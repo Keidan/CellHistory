@@ -122,54 +122,7 @@
             android:layout_gravity="start"
             android:layout_marginTop="5dp"
             android:layout_row="4"
-            android:textColor="@color/orange_dark"
             android:text="@string/empty"/>
-
-        <TextView
-            android:id="@+id/lblTxBytesSinceBoot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_gravity="start"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_row="5"
-            android:text="@string/lblTxBytesSinceBoot"
-            android:textColor="?attr/labelTextColor" />
-
-        <TextView
-            android:id="@+id/txtTxBytesSinceBoot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_gravity="start"
-            android:layout_marginTop="5dp"
-            android:layout_row="5"
-            android:text="@string/empty"
-            android:textColor="@color/green" />
-
-        <TextView
-            android:id="@+id/lblRxBytesSinceBoot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_gravity="start"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_row="6"
-            android:text="@string/lblRxBytesSinceBoot"
-            android:textColor="?attr/labelTextColor" />
-
-        <TextView
-            android:id="@+id/txtRxBytesSinceBoot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_gravity="start"
-            android:layout_marginTop="5dp"
-            android:layout_row="6"
-            android:text="@string/empty"
-            android:textColor="@color/red" />
 
         <TextView
             android:id="@+id/lblTxBytesSinceAppStart"
@@ -179,7 +132,7 @@
             android:layout_gravity="start"
             android:layout_marginEnd="5dp"
             android:layout_marginTop="5dp"
-            android:layout_row="7"
+            android:layout_row="5"
             android:text="@string/lblTxBytesSinceAppStart"
             android:textColor="?attr/labelTextColor" />
 
@@ -190,7 +143,7 @@
             android:layout_column="1"
             android:layout_gravity="start"
             android:layout_marginTop="5dp"
-            android:layout_row="7"
+            android:layout_row="5"
             android:text="@string/empty"
             android:textColor="@color/green" />
 
@@ -202,7 +155,7 @@
             android:layout_gravity="start"
             android:layout_marginEnd="5dp"
             android:layout_marginTop="5dp"
-            android:layout_row="8"
+            android:layout_row="6"
             android:text="@string/lblRxBytesSinceAppStart"
             android:textColor="?attr/labelTextColor" />
 
@@ -213,7 +166,7 @@
             android:layout_column="1"
             android:layout_gravity="start"
             android:layout_marginTop="5dp"
-            android:layout_row="8"
+            android:layout_row="6"
             android:text="@string/empty"
             android:textColor="@color/red" />
     </GridLayout>
