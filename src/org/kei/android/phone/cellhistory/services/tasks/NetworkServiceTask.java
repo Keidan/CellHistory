@@ -90,6 +90,8 @@ public class NetworkServiceTask extends TimerTask {
         if (ni != null && ni.getType() == ConnectivityManager.TYPE_MOBILE) {
           mni.setEstimatedSpeed(MobileNetworkInfo.getEstimatedSpeed(ni));
           mni.setType(MobileNetworkInfo.getNetworkType(ni.getSubtype(), true));
+        } else {
+          mni.setEstimatedSpeed(TowerInfo.UNKNOWN);
         }
       } else {
         mni.setEstimatedSpeed(TowerInfo.UNKNOWN);
