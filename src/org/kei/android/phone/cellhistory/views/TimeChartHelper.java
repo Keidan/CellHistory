@@ -128,12 +128,12 @@ public class TimeChartHelper {
   
   public void addTimePoint(final int color1, final int color2,
       final long timestamp, final double percent, int serie) {
-    renderer.getSeriesRendererAt(0).setColor(color1);
-    if (((XYSeriesRenderer) renderer.getSeriesRendererAt(0))
+    renderer.getSeriesRendererAt(serie).setColor(color1);
+    if (((XYSeriesRenderer) renderer.getSeriesRendererAt(serie))
         .getFillOutsideLine() != null
-        && ((XYSeriesRenderer) renderer.getSeriesRendererAt(0))
+        && ((XYSeriesRenderer) renderer.getSeriesRendererAt(serie))
             .getFillOutsideLine().length != 0)
-      ((XYSeriesRenderer) renderer.getSeriesRendererAt(0)).getFillOutsideLine()[0]
+      ((XYSeriesRenderer) renderer.getSeriesRendererAt(serie)).getFillOutsideLine()[0]
           .setColor(color2);
     if (timeSeries[serie].getItemCount() == 0) {
       long time = new Date().getTime();
@@ -143,8 +143,12 @@ public class TimeChartHelper {
     }
     /* sanity check */
     if (timestamp > ((long) renderer.getXAxisMax())) {
-      timeSeries[serie].remove(0);
-      renderer.setXAxisMin(timeSeries[serie].getX(0));
+      double min = Double.MAX_VALUE;
+      for(int i = 0; i < timeSeries.length; i++)
+        timeSeries[i].remove(0);
+      for(int i = 0; i < timeSeries.length; i++)
+        if(timeSeries[i].getX(0) < min) min = timeSeries[i].getX(0);
+      renderer.setXAxisMin(min);
       renderer.setXAxisMax(timestamp);
     }
     if (timestamp < ((long) renderer.getXAxisMin())) {
@@ -169,6 +173,8 @@ public class TimeChartHelper {
       }
       if (max != 0 && renderer.getYAxisMax() > max)
         renderer.setYAxisMax(max + (max / 2));
+      else if(max == 0)
+        renderer.setYAxisMax(100);
 
     }
   }
