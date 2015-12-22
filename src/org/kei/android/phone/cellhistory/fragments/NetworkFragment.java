@@ -37,7 +37,8 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
   private TextView txtRxBytesSinceAppStart = null;
   private TextView txtTxBytesSinceBoot     = null;
   private TextView txtRxBytesSinceBoot     = null;
-  private TextView txtConnectivity         = null;
+  private TextView txtDataConnectivity         = null;
+  private TextView txtDataActivity         = null;
   private TextView txtEstimatedSpeed       = null;
   private TextView txtIp4Address           = null;
   private TextView txtIp6Address           = null;
@@ -57,7 +58,8 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
     txtRxBytesSinceBoot = (TextView) getView().findViewById(R.id.txtRxBytesSinceBoot);
     txtTxBytesSinceAppStart = (TextView) getView().findViewById(R.id.txtTxBytesSinceAppStart);
     txtRxBytesSinceAppStart = (TextView) getView().findViewById(R.id.txtRxBytesSinceAppStart);
-    txtConnectivity = (TextView) getView().findViewById(R.id.txtConnectivity);
+    txtDataConnectivity = (TextView) getView().findViewById(R.id.txtDataConnectivity);
+    txtDataActivity = (TextView) getView().findViewById(R.id.txtDataActivity);
     txtEstimatedSpeed = (TextView) getView().findViewById(R.id.txtEstimatedSpeed);
     txtIp4Address = (TextView) getView().findViewById(R.id.txtIp4Address);
     txtIp6Address = (TextView) getView().findViewById(R.id.txtIp6Address);
@@ -71,18 +73,19 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
     txtRxBytesSinceBoot.setText(RecorderCtx.convertToHuman(mni.getBootRX()));
     txtTxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getStartTX()));
     txtRxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getStartRX()));
-    int n = mni.getConnectivity();
+    int n = mni.getDataConnectivity();
     if(n == MobileNetworkInfo.TYPE_MOBILE) {
       String s = getResources().getString(R.string.connectivity_mobile);
       s += " (" + mni.getType() + ")";
-      txtConnectivity.setText(s);
+      txtDataConnectivity.setText(s);
     } else if(n == MobileNetworkInfo.TYPE_WIFI)
-      txtConnectivity.setText(getResources().getString(R.string.connectivity_wifi));
+      txtDataConnectivity.setText(getResources().getString(R.string.connectivity_wifi));
     else
-      txtConnectivity.setText(getResources().getString(R.string.connectivity_none));
+      txtDataConnectivity.setText(getResources().getString(R.string.connectivity_none));
     txtEstimatedSpeed.setText(mni.getEstimatedSpeed());
     txtIp4Address.setText(mni.getIp4Address());
     txtIp6Address.setText(mni.getIp6Address());
+    txtDataActivity.setText(MobileNetworkInfo.getDataActivity(mni.getDataActivity()));
   }
 
 }

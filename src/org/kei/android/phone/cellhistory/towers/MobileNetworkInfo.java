@@ -35,18 +35,24 @@ import android.util.Log;
  */
 @SuppressWarnings("deprecation")
 public class MobileNetworkInfo {
-  public static final int TYPE_WIFI          = 1;
-  public static final int TYPE_MOBILE        = 2;
-  public static final int TYPE_NOT_CONNECTED = 0;
-  private long            startRX            = 0;
-  private long            startTX            = 0;
-  private long            bootRX             = 0;
-  private long            bootTX             = 0;
-  private int             connectivity       = TYPE_NOT_CONNECTED;
-  private String          estimatedSpeed     = TowerInfo.UNKNOWN;
-  private String          type               = TowerInfo.UNKNOWN;
-  private String          ip4Address         = TowerInfo.UNKNOWN;
-  private String          ip6Address         = TowerInfo.UNKNOWN;
+  public static final int TYPE_WIFI             = 1;
+  public static final int TYPE_MOBILE           = 2;
+  public static final int TYPE_NOT_CONNECTED    = 0;
+  public static final int DATA_ACTIVITY_NONE    = 0;
+  public static final int DATA_ACTIVITY_IN      = 1;
+  public static final int DATA_ACTIVITY_OUT     = 2;
+  public static final int DATA_ACTIVITY_INOUT   = 3;
+  public static final int DATA_ACTIVITY_DORMANT = 4;
+  private long            startRX               = 0;
+  private long            startTX               = 0;
+  private long            bootRX                = 0;
+  private long            bootTX                = 0;
+  private int             dataConnectivity      = TYPE_NOT_CONNECTED;
+  private String          estimatedSpeed        = TowerInfo.UNKNOWN;
+  private String          type                  = TowerInfo.UNKNOWN;
+  private String          ip4Address            = TowerInfo.UNKNOWN;
+  private String          ip6Address            = TowerInfo.UNKNOWN;
+  private int             dataActivity          = DATA_ACTIVITY_NONE;
 
   public MobileNetworkInfo() {
 
@@ -61,6 +67,8 @@ public class MobileNetworkInfo {
     this.type = ni.type;
     this.ip4Address = ni.ip4Address;
     this.ip6Address = ni.ip6Address;
+    this.dataActivity = ni.dataActivity;
+    this.dataConnectivity = ni.dataConnectivity;
   }
 
   /**
@@ -124,18 +132,18 @@ public class MobileNetworkInfo {
   }
 
   /**
-   * @return the connectivity
+   * @return the dataConnectivity
    */
-  public int getConnectivity() {
-    return connectivity;
+  public int getDataConnectivity() {
+    return dataConnectivity;
   }
 
   /**
-   * @param connectivity
-   *          the connectivity to set
+   * @param dataConnectivity
+   *          the dataConnectivity to set
    */
-  public void setConnectivity(final int connectivity) {
-    this.connectivity = connectivity;
+  public void setDataConnectivity(final int dataConnectivity) {
+    this.dataConnectivity = dataConnectivity;
   }
 
   /**
@@ -167,7 +175,7 @@ public class MobileNetworkInfo {
   public void setType(final String type) {
     this.type = type;
   }
-  
+
   /**
    * @return the ip4Address
    */
@@ -176,12 +184,13 @@ public class MobileNetworkInfo {
   }
 
   /**
-   * @param ip4Address the ip4Address to set
+   * @param ip4Address
+   *          the ip4Address to set
    */
-  public void setIp4Address(String ip4Address) {
+  public void setIp4Address(final String ip4Address) {
     this.ip4Address = ip4Address;
   }
-  
+
   /**
    * @return the ip6Address
    */
@@ -190,37 +199,66 @@ public class MobileNetworkInfo {
   }
 
   /**
-   * @param ip6Address the ip6Address to set
+   * @param ip6Address
+   *          the ip6Address to set
    */
-  public void setIp6Address(String ip6Address) {
+  public void setIp6Address(final String ip6Address) {
     this.ip6Address = ip6Address;
   }
-  
+
+  /**
+   * @return the dataActivity
+   */
+  public int getDataActivity() {
+    return dataActivity;
+  }
+
+  /**
+   * @param dataActivity
+   *          the dataActivity to set
+   */
+  public void setDataActivity(final int dataActivity) {
+    this.dataActivity = dataActivity;
+  }
+
+  public static String getDataActivity(final int activity) {
+    if (activity == DATA_ACTIVITY_DORMANT)
+      return "Dormant";
+    else if (activity == DATA_ACTIVITY_IN)
+      return "Input";
+    else if (activity == DATA_ACTIVITY_OUT)
+      return "Output";
+    else if (activity == DATA_ACTIVITY_INOUT)
+      return "Input / Output";
+    else
+      return "None";
+  }
 
   /** Get IP For mobile */
-  public static String getMobileIP(boolean useIPv4) {
+  public static String getMobileIP(final boolean useIPv4) {
     try {
-      List<NetworkInterface> interfaces = Collections.list(NetworkInterface
-          .getNetworkInterfaces());
-      for (NetworkInterface intf : interfaces) {
-        List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-        for (InetAddress addr : addrs) {
+      final List<NetworkInterface> interfaces = Collections
+          .list(NetworkInterface.getNetworkInterfaces());
+      for (final NetworkInterface intf : interfaces) {
+        final List<InetAddress> addrs = Collections.list(intf
+            .getInetAddresses());
+        for (final InetAddress addr : addrs) {
           if (!addr.isLoopbackAddress()) {
-            String sAddr = addr.getHostAddress().toUpperCase(Locale.US);
-            boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+            final String sAddr = addr.getHostAddress().toUpperCase(Locale.US);
+            final boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
             if (useIPv4) {
               if (isIPv4)
                 return sAddr;
             } else {
               if (!isIPv4) {
-                int delim = sAddr.indexOf('%'); // drop ip6 port suffix
+                final int delim = sAddr.indexOf('%'); // drop ip6 port suffix
                 return delim < 0 ? sAddr : sAddr.substring(0, delim);
               }
             }
           }
         }
       }
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       Log.e(MobileNetworkInfo.class.getSimpleName(),
           "Exception in Get IP Address: " + ex.getMessage(), ex);
     }

@@ -58,10 +58,11 @@
 	<string name="lblRxBytesSinceBoot">Boot Rx: </string>
 	<string name="lblTxBytesSinceAppStart">Start Tx: </string>
 	<string name="lblRxBytesSinceAppStart">Start Rx: </string>
-	<string name="lblConnectivity">Data connectivity: </string>
+	<string name="lblDataConnectivity">Data connectivity: </string>
 	<string name="lblEstimatedSpeed">Estimated speed: </string>
 	<string name="lblIp4Address">IPv4 Address: </string>
 	<string name="lblIp6Address">IPv6 Address: </string>
+	<string name="lblDataActivity">Data activity: </string>
 	
 	
 	<string name="lblRecords">Record: </string>

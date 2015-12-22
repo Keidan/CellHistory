@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  *******************************************************************************
@@ -52,14 +51,7 @@ public class NetworkService extends Service {
     if (networkServiceTask != null)
       networkServiceTask.unregister();
     networkServiceTask = new NetworkServiceTask(this, app, prefs);
-    try {
-      networkServiceTask.register();
-    } catch (final UnsupportedOperationException un) {
-      Log.e(getClass().getSimpleName(), "Exception: " + un.getMessage(), un);
-      CellHistoryApp.addLog(this, "Exception: " + un.getMessage());
-      stopSelf();
-      return;
-    }
+    networkServiceTask.register();
     // schedule task
     timer.scheduleAtFixedRate(networkServiceTask, 0, Integer.parseInt(prefs
         .getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_NETWORK,

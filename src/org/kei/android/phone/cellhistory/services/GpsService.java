@@ -32,7 +32,7 @@ import android.preference.PreferenceManager;
 public class GpsService extends Service {
   private CellHistoryApp    app              = null;
   private SharedPreferences prefs            = null;
-  private GpsServiceTask  gpsServiceTask = null;
+  private GpsServiceTask    gpsServiceTask   = null;
 
   @Override
   public void onCreate() {
