@@ -1,5 +1,6 @@
 package org.kei.android.phone.cellhistory.services.tasks;
 
+import java.util.Date;
 import java.util.TimerTask;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
@@ -43,6 +44,8 @@ public class NetworkServiceTask extends TimerTask {
   private long                      startTX                   = 0;
   private TelephonyManager          telephonyManager          = null;
   private NetworkPhoneStateListener networkPhoneStateListener = null;
+  private long                      startTimeRX               = 0;
+  private long                      startTimeTX               = 0;
 
   public NetworkServiceTask(final Service service, final CellHistoryApp app,
       final SharedPreferences prefs) {
@@ -78,10 +81,28 @@ public class NetworkServiceTask extends TimerTask {
           .getMobileNetworkInfo();
       if(startRX == 0) startRX = TrafficStats.getMobileRxBytes();
       if(startTX == 0) startTX = TrafficStats.getMobileTxBytes();
-      mni.setRx(TrafficStats.getMobileRxBytes() - startRX);
-      mni.setTx(TrafficStats.getMobileTxBytes() - startTX);
+      Date d = new Date();
+      long ld = d.getTime();
+      if(startTimeRX == 0) startTimeRX = ld;
+      if(startTimeTX == 0) startTimeTX = ld;
+      long newRX = TrafficStats.getMobileRxBytes();
+      long newTX = TrafficStats.getMobileTxBytes();
+      long transferedRX = newRX - mni.getRx();
+      long transferedTX = newTX - mni.getTx();
+      long timeRx = 0;
+      long timeTx = 0;
+      if(transferedRX != startRX)
+        timeRx = ld - startTimeRX;
+      if(transferedTX != startTX)
+        timeTx = ld - startTimeTX;
+      if(timeRx != 0) mni.setRxSpeed(transferedRX / timeRx);
+      else mni.setRxSpeed(0);
+      if(timeTx != 0) mni.setTxSpeed(transferedTX / timeTx);
+      else mni.setTxSpeed(0);
+      mni.setRx(newRX - startRX);
+      mni.setTx(newTX - startTX);
       mni.setDataConnectivity(MobileNetworkInfo.getConnectivityStatus(service));
-      if(mni.getDataActivity() != MobileNetworkInfo.TYPE_MOBILE) {
+      if(mni.getDataConnectivity() != MobileNetworkInfo.TYPE_MOBILE) {
         startRX = startTX = 0;
       }
       mni.setEstimatedSpeed(TowerInfo.UNKNOWN);

@@ -45,6 +45,8 @@ public class MobileNetworkInfo {
   public static final int DATA_ACTIVITY_DORMANT = 4;
   private long            rx                    = 0;
   private long            tx                   = 0;
+  private long            rxSpeed                    = 0;
+  private long            txSpeed                   = 0;
   private int             dataConnectivity      = TYPE_NOT_CONNECTED;
   private String          estimatedSpeed        = TowerInfo.UNKNOWN;
   private String          type                  = TowerInfo.UNKNOWN;
@@ -65,6 +67,8 @@ public class MobileNetworkInfo {
     this.ip6Address = ni.ip6Address;
     this.dataActivity = ni.dataActivity;
     this.dataConnectivity = ni.dataConnectivity;
+    this.rxSpeed = ni.rxSpeed;
+    this.txSpeed = ni.txSpeed;
   }
 
   /**
@@ -93,6 +97,34 @@ public class MobileNetworkInfo {
    */
   public void setTx(long tx) {
     this.tx = tx;
+  }
+  
+  /**
+   * @return the rxSpeed
+   */
+  public long getRxSpeed() {
+    return rxSpeed;
+  }
+
+  /**
+   * @param rxSpeed the rxSpeed to set
+   */
+  public void setRxSpeed(long rxSpeed) {
+    this.rxSpeed = rxSpeed;
+  }
+
+  /**
+   * @return the txSpeed
+   */
+  public long getTxSpeed() {
+    return txSpeed;
+  }
+
+  /**
+   * @param txSpeed the txSpeed to set
+   */
+  public void setTxSpeed(long txSpeed) {
+    this.txSpeed = txSpeed;
   }
 
   /**

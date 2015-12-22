@@ -38,13 +38,13 @@ import android.widget.LinearLayout;
  *******************************************************************************
  */
 public class TimeChartHelper {
-  private static final int         MAX       = 60;
-  private GraphicalView            chart;
-  private XYMultipleSeriesDataset  dataset;
-  private XYMultipleSeriesRenderer renderer;
-  private TimeSeries               timeSeries[];
-  private LinearLayout             chartContainer;
-  private long                     frequency = 1000;
+  private static final int         MAX            = 60;
+  private GraphicalView            chart          = null;
+  private XYMultipleSeriesDataset  dataset        = null;
+  private XYMultipleSeriesRenderer renderer       = null;
+  private TimeSeries               timeSeries[]   = null;
+  private LinearLayout             chartContainer = null;
+  private long                     frequency      = 1000;
 
   public void install(final Activity a, final int lblColors,
       final boolean fillLine) {
