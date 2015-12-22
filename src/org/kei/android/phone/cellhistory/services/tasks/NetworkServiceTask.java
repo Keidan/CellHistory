@@ -105,14 +105,14 @@ public class NetworkServiceTask extends TimerTask {
       if(mni.getDataConnectivity() != MobileNetworkInfo.TYPE_MOBILE) {
         startRX = startTX = 0;
       }
-      mni.setEstimatedSpeed(TowerInfo.UNKNOWN);
+      mni.setTheoreticalSpeed(TowerInfo.UNKNOWN);
       mni.setType(TowerInfo.UNKNOWN);
       final ConnectivityManager cm = (ConnectivityManager) service
           .getSystemService(Context.CONNECTIVITY_SERVICE);
       if (cm != null) {
         final NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni != null && ni.getType() == ConnectivityManager.TYPE_MOBILE) {
-          mni.setEstimatedSpeed(MobileNetworkInfo.getEstimatedSpeed(ni));
+          mni.setTheoreticalSpeed(MobileNetworkInfo.getTheoreticalSpeed(ni));
           mni.setType(MobileNetworkInfo.getNetworkType(ni.getSubtype(), true));
         }
       }

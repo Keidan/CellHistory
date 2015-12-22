@@ -59,7 +59,7 @@
                 android:text="@string/empty" />
 
             <TextView
-                android:id="@+id/lblEstimatedSpeed"
+                android:id="@+id/lblTheoreticalSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
@@ -67,11 +67,11 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="1"
-                android:text="@string/lblEstimatedSpeed"
+                android:text="@string/lblTheoreticalSpeed"
                 android:textColor="?attr/labelTextColor" />
 
             <TextView
-                android:id="@+id/txtEstimatedSpeed"
+                android:id="@+id/txtTheoreticalSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="1"

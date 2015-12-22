@@ -50,7 +50,7 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
   private TextView          txtRxBytesSinceAppStart = null;
   private TextView          txtDataConnectivity     = null;
   private TextView          txtDataActivity         = null;
-  private TextView          txtEstimatedSpeed       = null;
+  private TextView          txtTheoreticalSpeed     = null;
   private TextView          txtIp4Address           = null;
   private TextView          txtIp6Address           = null;
   private LinearLayout      chartSeparator          = null;
@@ -80,7 +80,7 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
     txtRxBytesSinceAppStart = (TextView) getView().findViewById(R.id.txtRxBytesSinceAppStart);
     txtDataConnectivity = (TextView) getView().findViewById(R.id.txtDataConnectivity);
     txtDataActivity = (TextView) getView().findViewById(R.id.txtDataActivity);
-    txtEstimatedSpeed = (TextView) getView().findViewById(R.id.txtEstimatedSpeed);
+    txtTheoreticalSpeed = (TextView) getView().findViewById(R.id.txtTheoreticalSpeed);
     txtIp4Address = (TextView) getView().findViewById(R.id.txtIp4Address);
     txtIp6Address = (TextView) getView().findViewById(R.id.txtIp6Address);
     defaultColor = new TextView(getActivity()).getTextColors().getDefaultColor();
@@ -118,7 +118,7 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
       txtDataConnectivity.setText(getResources().getString(R.string.connectivity_wifi));
     else
       txtDataConnectivity.setText(getResources().getString(R.string.connectivity_none));
-    txtEstimatedSpeed.setText(mni.getEstimatedSpeed());
+    txtTheoreticalSpeed.setText(mni.getTheoreticalSpeed());
     txtIp4Address.setText(mni.getIp4Address());
     txtIp6Address.setText(mni.getIp6Address());
     txtDataActivity.setText(MobileNetworkInfo.getDataActivity(mni.getDataActivity()));

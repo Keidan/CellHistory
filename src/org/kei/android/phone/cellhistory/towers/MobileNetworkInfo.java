@@ -48,7 +48,7 @@ public class MobileNetworkInfo {
   private long            rxSpeed                    = 0;
   private long            txSpeed                   = 0;
   private int             dataConnectivity      = TYPE_NOT_CONNECTED;
-  private String          estimatedSpeed        = TowerInfo.UNKNOWN;
+  private String          theoreticalSpeed      = TowerInfo.UNKNOWN;
   private String          type                  = TowerInfo.UNKNOWN;
   private String          ip4Address            = TowerInfo.UNKNOWN;
   private String          ip6Address            = TowerInfo.UNKNOWN;
@@ -61,7 +61,7 @@ public class MobileNetworkInfo {
   public MobileNetworkInfo(final MobileNetworkInfo ni) {
     this.rx = ni.rx;
     this.tx = ni.tx;
-    this.estimatedSpeed = ni.estimatedSpeed;
+    this.theoreticalSpeed = ni.theoreticalSpeed;
     this.type = ni.type;
     this.ip4Address = ni.ip4Address;
     this.ip6Address = ni.ip6Address;
@@ -143,18 +143,18 @@ public class MobileNetworkInfo {
   }
 
   /**
-   * @return the estimatedSpeed
+   * @return the theoreticalSpeed
    */
-  public String getEstimatedSpeed() {
-    return estimatedSpeed;
+  public String getTheoreticalSpeed() {
+    return theoreticalSpeed;
   }
 
   /**
-   * @param estimatedSpeed
-   *          the estimatedSpeed to set
+   * @param theoreticalSpeed
+   *          the theoreticalSpeed to set
    */
-  public void setEstimatedSpeed(final String estimatedSpeed) {
-    this.estimatedSpeed = estimatedSpeed;
+  public void setTheoreticalSpeed(final String theoreticalSpeed) {
+    this.theoreticalSpeed = theoreticalSpeed;
   }
 
   /**
@@ -319,7 +319,7 @@ public class MobileNetworkInfo {
     }
   }
 
-  public static String getEstimatedSpeed(final NetworkInfo ni) {
+  public static String getTheoreticalSpeed(final NetworkInfo ni) {
     if (ni.getType() == ConnectivityManager.TYPE_MOBILE) {
       switch (ni.getSubtype()) {
         case TelephonyManager.NETWORK_TYPE_1xRTT:

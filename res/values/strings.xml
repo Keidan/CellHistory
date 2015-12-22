@@ -57,7 +57,7 @@
 	<string name="lblTxBytesSinceAppStart">Data Tx: </string>
 	<string name="lblRxBytesSinceAppStart">Data Rx: </string>
 	<string name="lblDataConnectivity">Data connectivity: </string>
-	<string name="lblEstimatedSpeed">Estimated speed: </string>
+	<string name="lblTheoreticalSpeed">Theoretical speed: </string>
 	<string name="lblIp4Address">IPv4 Address: </string>
 	<string name="lblIp6Address">IPv6 Address: </string>
 	<string name="lblDataActivity">Data activity: </string>
