@@ -42,33 +42,40 @@ public class TimeChartHelper {
   private GraphicalView            chart;
   private XYMultipleSeriesDataset  dataset;
   private XYMultipleSeriesRenderer renderer;
-  private TimeSeries               timeSeries;
+  private TimeSeries               timeSeries[];
   private LinearLayout             chartContainer;
   private long                     frequency = 1000;
 
   public void install(final Activity a, final int lblColors,
       final boolean fillLine) {
+    install(a, lblColors, fillLine, 1);
+  }
+  public void install(final Activity a, final int lblColors,
+      final boolean fillLine, int nSeries) {
     dataset = new XYMultipleSeriesDataset();
     renderer = new XYMultipleSeriesRenderer();
-    final XYSeriesRenderer r = new XYSeriesRenderer();
-    r.setColor(Color.GREEN);
-    r.setPointStyle(PointStyle.CIRCLE);
-    r.setFillPoints(true);
-    r.setShowLegendItem(false);
-    if (fillLine) {
-      final FillOutsideLine fill = new FillOutsideLine(
-          FillOutsideLine.Type.BOUNDS_ALL);
-      fill.setColor(Color.GREEN);
-      r.addFillOutsideLine(fill);
+    timeSeries = new TimeSeries[nSeries];
+    for(int i = 0; i < nSeries; ++i) {
+      final XYSeriesRenderer r = new XYSeriesRenderer();
+      r.setColor(Color.GREEN);
+      r.setPointStyle(PointStyle.CIRCLE);
+      r.setFillPoints(true);
+      r.setShowLegendItem(false);
+      if (fillLine) {
+        final FillOutsideLine fill = new FillOutsideLine(
+            FillOutsideLine.Type.BOUNDS_ALL);
+        fill.setColor(Color.GREEN);
+        r.addFillOutsideLine(fill);
+      }
+      renderer.addSeriesRenderer(r);
+
+      timeSeries[i] = new TimeSeries("test " + i);
+      dataset.addSeries(timeSeries[i]);
     }
     renderer.setPointSize(1f);
-    renderer.addSeriesRenderer(r);
     renderer.setClickEnabled(true);
     renderer.setSelectableBuffer(20);
     renderer.setPanEnabled(false, false);
-
-    timeSeries = new TimeSeries("test");
-    dataset.addSeries(timeSeries);
 
     renderer.setShowLegend(false);
     renderer.setShowTickMarks(true);
@@ -101,9 +108,26 @@ public class TimeChartHelper {
       final double percent) {
     addTimePoint(color, 0, timestamp, percent);
   }
+  
+  public void addTimePoints(final int color1_1, final int color1_2, final int color2_1, final int color2_2,
+      final long timestamp, final double v1, final double v2) {
+    addTimePoint(color1_1, color1_2, timestamp, v1, 0);
+    addTimePoint(color2_1, color2_2, timestamp, v2, 1);
+  }
+  
+  public void addTimePoints(final int color1, final int color2,
+      final long timestamp, final double v1, final double v2) {
+    addTimePoint(color1, 0, timestamp, v1, 0);
+    addTimePoint(color2, 0, timestamp, v2, 1);
+  }
 
   public void addTimePoint(final int color1, final int color2,
       final long timestamp, final double percent) {
+    addTimePoint(color1, color2, timestamp, percent, 0);
+  }
+  
+  public void addTimePoint(final int color1, final int color2,
+      final long timestamp, final double percent, int serie) {
     renderer.getSeriesRendererAt(0).setColor(color1);
     if (((XYSeriesRenderer) renderer.getSeriesRendererAt(0))
         .getFillOutsideLine() != null
@@ -111,7 +135,7 @@ public class TimeChartHelper {
             .getFillOutsideLine().length != 0)
       ((XYSeriesRenderer) renderer.getSeriesRendererAt(0)).getFillOutsideLine()[0]
           .setColor(color2);
-    if (timeSeries.getItemCount() == 0) {
+    if (timeSeries[serie].getItemCount() == 0) {
       long time = new Date().getTime();
       if (timestamp < time)
         time = timestamp;
@@ -119,15 +143,15 @@ public class TimeChartHelper {
     }
     /* sanity check */
     if (timestamp > ((long) renderer.getXAxisMax())) {
-      timeSeries.remove(0);
-      renderer.setXAxisMin(timeSeries.getX(0));
+      timeSeries[serie].remove(0);
+      renderer.setXAxisMin(timeSeries[serie].getX(0));
       renderer.setXAxisMax(timestamp);
     }
     if (timestamp < ((long) renderer.getXAxisMin())) {
-      timeSeries.clear();
+      timeSeries[serie].clear();
       updateXAxis(timestamp);
     }
-    timeSeries.add(timestamp, percent);
+    timeSeries[serie].add(timestamp, percent);
     chart.invalidate();
   }
 
@@ -138,9 +162,11 @@ public class TimeChartHelper {
       renderer.setYAxisMax(v + (v/2));
     else {
       double max = 0.0;
-      for (int i = 0; i < timeSeries.getItemCount(); ++i)
-        if (timeSeries.getY(i) > max)
-          max = timeSeries.getY(i);
+      for(int i = 0; i < timeSeries.length; ++i) {
+      for (int j = 0; j < timeSeries[i].getItemCount(); ++j)
+        if (timeSeries[i].getY(j) > max)
+          max = timeSeries[i].getY(j);
+      }
       if (max != 0 && renderer.getYAxisMax() > max)
         renderer.setYAxisMax(max + (max / 2));
 
@@ -153,7 +179,8 @@ public class TimeChartHelper {
   }
 
   public void clear() {
-    timeSeries.clear();
+    for(int i = 0; i < timeSeries.length; ++i)
+      timeSeries[i].clear();
     chart.invalidate();
   }
 
