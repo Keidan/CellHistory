@@ -106,8 +106,8 @@ public class TowerFragment extends Fragment implements UITaskFragment {
     
     chart = new TimeChartHelper();
     chart.setChartContainer((LinearLayout)getView().findViewById(R.id.graph));
-    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)));
     chart.install(getActivity(), txtOperator.getTextColors().getDefaultColor(), true);
     try {
       processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
@@ -158,8 +158,8 @@ public class TowerFragment extends Fragment implements UITaskFragment {
   @Override
   public void onResume() {
     super.onResume();
-    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)));
     setChartVisible(prefs.getBoolean(Preferences.PREFS_KEY_CHART_ENABLE,
         Preferences.PREFS_DEFAULT_CHART_ENABLE));
   }

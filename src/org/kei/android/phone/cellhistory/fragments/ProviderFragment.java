@@ -186,8 +186,8 @@ OnItemSelectedListener, OnClickListener {
       spiGeoProvider.setSelection(1);
     chart = new TimeChartHelper();
     chart.setChartContainer((LinearLayout) getView().findViewById(R.id.graph));
-    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)));
     chart.install(getActivity(), default_color, true);
     chart.setYAxisMax(15);
     chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
@@ -284,8 +284,8 @@ OnItemSelectedListener, OnClickListener {
     txtSpeedKMH.setTextColor(color_red);
     txtSpeedMPH.setTextColor(color_red);
     txtDistance.setTextColor(color_red);
-    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_TASK_PROVIDER, 
-              PreferencesTimers.PREFS_DEFAULT_TIMERS_TASK_PROVIDER)));
+    chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, 
+              PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)));
     setChartVisible(prefs.getBoolean(Preferences.PREFS_KEY_CHART_ENABLE,
         Preferences.PREFS_DEFAULT_CHART_ENABLE));
 
