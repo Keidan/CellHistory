@@ -58,7 +58,6 @@ public class NetworkServiceTask extends TimerTask {
 
   @Override
   public void run() {
-    Log.e(getClass().getSimpleName(), "Loop");
     app.getGlobalTowerInfo().lock();
     try {
       MobileNetworkInfo mni = app.getGlobalTowerInfo().getMobileNetworkInfo();
