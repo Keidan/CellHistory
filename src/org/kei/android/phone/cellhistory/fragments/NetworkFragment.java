@@ -121,7 +121,6 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
     txtTheoreticalSpeed.setText(mni.getTheoreticalSpeed());
     txtIp4Address.setText(mni.getIp4Address());
     txtIp6Address.setText(mni.getIp6Address());
-    txtDataActivity.setText(MobileNetworkInfo.getDataActivity(mni.getDataActivity()));
     if(mni.getDataActivity() == MobileNetworkInfo.DATA_ACTIVITY_IN) {
       txtDataActivity.setTextColor(redColor);
       txtDataActivity.getPaint().setShader(null);
@@ -136,6 +135,7 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
       txtDataActivity.setTextColor(defaultColor);
       txtDataActivity.getPaint().setShader(null);
     } 
+    txtDataActivity.setText(MobileNetworkInfo.getDataActivity(mni.getDataActivity()));
     
     if (chart.getVisibility() == View.VISIBLE) {
       chart.checkYAxisMax(Math.max(mni.getTxSpeed(), mni.getRxSpeed()));
