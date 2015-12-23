@@ -1,10 +1,12 @@
 package org.kei.android.phone.cellhistory.views;
 
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Locale;
 
-import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.PointStyle;
+import org.achartengine.chart.TimeChart;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -38,6 +40,9 @@ import android.widget.LinearLayout;
  *******************************************************************************
  */
 public class TimeChartHelper {
+  private static final int        SIZE_1KB    = 0x400;
+  private static final int        SIZE_1MB    = 0x100000;
+  private static final int        SIZE_1GB    = 0x40000000;
   private static final int         MAX            = 60;
   private GraphicalView            chart          = null;
   private XYMultipleSeriesDataset  dataset        = null;
@@ -48,10 +53,11 @@ public class TimeChartHelper {
 
   public void install(final Activity a, final int lblColors,
       final boolean fillLine) {
-    install(a, lblColors, fillLine, 1);
+    install(a, lblColors, fillLine, 1, false);
   }
+  
   public void install(final Activity a, final int lblColors,
-      final boolean fillLine, int nSeries) {
+      final boolean fillLine, int nSeries, final boolean humanYAxis) {
     dataset = new XYMultipleSeriesDataset();
     renderer = new XYMultipleSeriesRenderer();
     timeSeries = new TimeSeries[nSeries];
@@ -94,7 +100,17 @@ public class TimeChartHelper {
     if (chartContainer == null)
       chartContainer = (LinearLayout) a.findViewById(R.id.graph);
 
-    chart = ChartFactory.getTimeChartView(a, dataset, renderer, "H:mm:ss");
+    TimeChart tchart = new TimeChart(dataset, renderer) {
+      private static final long serialVersionUID = -2629784563963398554L;
+      @Override protected String getLabel(NumberFormat format, double label) {
+        if(!humanYAxis)
+          return super.getLabel(format, label);
+        else
+          return convertToHuman((long)label);
+      }
+    };
+    tchart.setDateFormat("H:mm:ss");
+    chart = new GraphicalView(a, tchart);
 
     // Adding the Line Chart to the LinearLayout
     chartContainer.addView(chart);
@@ -127,7 +143,7 @@ public class TimeChartHelper {
   }
   
   public void addTimePoint(final int color1, final int color2,
-      final long timestamp, final double percent, int serie) {
+      final long timestamp, final double value, int serie) {
     renderer.getSeriesRendererAt(serie).setColor(color1);
     if (((XYSeriesRenderer) renderer.getSeriesRendererAt(serie))
         .getFillOutsideLine() != null
@@ -155,7 +171,7 @@ public class TimeChartHelper {
       timeSeries[serie].clear();
       updateXAxis(timestamp);
     }
-    timeSeries[serie].add(timestamp, percent);
+    timeSeries[serie].add(timestamp, value);
     chart.invalidate();
   }
 
@@ -232,4 +248,20 @@ public class TimeChartHelper {
   public void setYAxisMax(final double d) {
     renderer.setYAxisMax(d);
   }
+  
+  public static String convertToHuman(float f) {
+    String sf = "";
+    if(f < 0)
+      sf = "0";
+    else if(f < SIZE_1KB)
+      sf = String.format(Locale.US, "%do", (int)f);
+    else if(f < SIZE_1MB)
+      sf = String.format("%d", (int)(f/SIZE_1KB)) + " Ko";
+    else if(f < SIZE_1GB)
+      sf = String.format("%d", (int)(f/SIZE_1MB)) + " Mo";
+    else
+      sf = String.format("%d", (int)(f/SIZE_1GB)) + " Go";
+    return sf;
+  }
+
 }
