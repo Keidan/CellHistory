@@ -224,7 +224,7 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   
   @Override
   public void processUI(final TowerInfo ti) throws Throwable {
-    if(txtRecords == null) return;
+    if(!isAdded()) return;
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());
     txtRecords.setText(String.valueOf(ti.getRecords()));
     txtSize.setText(RecorderCtx.convertToHuman(app.getRecorderCtx().getSize()));

@@ -119,8 +119,8 @@ public class TowerFragment extends Fragment implements UITaskFragment {
 
   @Override
   public void processUI(final TowerInfo ti) throws Throwable {
+    if(!isAdded()) return;
     int percent = ti.getSignalStrengthPercent();
-    if(txtOperator == null) return;
     txtOperator.setText(ti.getOperator());
     txtMCC.setText(String.valueOf(ti.getMCC()));
     txtMNC.setText(String.format("%02d", ti.getMNC()));

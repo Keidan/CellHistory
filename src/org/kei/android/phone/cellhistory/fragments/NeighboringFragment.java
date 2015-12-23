@@ -68,7 +68,7 @@ public class NeighboringFragment extends Fragment implements UITaskFragment {
   
   @Override
   public void processUI(TowerInfo ti) throws Throwable {
-    if(lvNeighboring == null) return;
+    if(!isAdded()) return;
     NeighboringArrayAdapter adapter = (NeighboringArrayAdapter)lvNeighboring.getAdapter();
     adapter.clear();
     List<NeighboringInfo> nis = ti.getNeighboring();

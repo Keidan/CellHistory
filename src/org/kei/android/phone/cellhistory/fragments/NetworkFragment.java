@@ -95,7 +95,7 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
     chart.setChartContainer((LinearLayout)getView().findViewById(R.id.graph));
     chart.setFrequency(Integer.parseInt(prefs.getString(PreferencesTimers.PREFS_KEY_TIMERS_UI, 
               PreferencesTimers.PREFS_DEFAULT_TIMERS_UI)));
-    chart.install(getActivity(), txtDataConnectivity.getTextColors().getDefaultColor(), false, 2);
+    chart.install(getActivity(), txtDataConnectivity.getTextColors().getDefaultColor(), false, 2, true);
     try {
       processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
     } catch (Throwable e) {
@@ -105,7 +105,7 @@ public class NetworkFragment extends Fragment implements UITaskFragment {
   
   @Override
   public void processUI(TowerInfo ti) throws Throwable {
-    if(txtTxBytesSinceAppStart == null) return;
+    if(!isAdded()) return;
     MobileNetworkInfo mni = ti.getMobileNetworkInfo();
     txtTxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getTx()) + " (" + RecorderCtx.convertToHuman(mni.getTxSpeed()) + "/s)");
     txtRxBytesSinceAppStart.setText(RecorderCtx.convertToHuman(mni.getRx()) + " (" + RecorderCtx.convertToHuman(mni.getRxSpeed()) + "/s)");

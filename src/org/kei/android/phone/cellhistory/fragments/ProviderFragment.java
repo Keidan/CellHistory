@@ -201,8 +201,7 @@ OnItemSelectedListener, OnClickListener {
 
   @Override
   public void processUI(final TowerInfo ti) throws Throwable {
-    if (txtGeoProvider == null)
-      return;
+    if(!isAdded()) return;
     if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       txtGeoProvider.setVisibility(View.GONE);
