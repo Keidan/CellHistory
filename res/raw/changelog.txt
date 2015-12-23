@@ -19,6 +19,14 @@
     </style>
   </head>
   <body>
+  	$ 2.13
+  	  % Version 2.13
+      _ 2015-12-23
+      * Scope: <font color="#fc2929">bug</font>, <font color="#84b6eb">enhancement</font>
+      * Fix shader effect for non rxr+tx activities.
+      * Improve the display of the Y-Axis for the network chart.
+      * Avoid the fragments exception: java.lang.IllegalStateException: Fragment not attached to activity.
+      
   	$ 2.12
   	  % Version 2.12
       _ 2015-12-22
