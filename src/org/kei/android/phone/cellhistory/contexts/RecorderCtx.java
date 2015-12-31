@@ -129,11 +129,11 @@ public class RecorderCtx {
   
   public static String convertToHuman(float f) {
     String sf = "";
-    if(f < SIZE_1KB)
+    if(f < 1000)
       sf = String.format(Locale.US, "%d octet%s", (int)f, f > 1 ? "s" : "");
-    else if(f < SIZE_1MB)
+    else if(f < 1000000)
       sf = String.format("%.02f", (f/SIZE_1KB)) + " Ko";
-    else if(f < SIZE_1GB)
+    else if(f < 1000000000)
       sf = String.format("%.02f", (f/SIZE_1MB)) + " Mo";
     else
       sf = String.format("%.02f", (f/SIZE_1GB)) + " Go";
