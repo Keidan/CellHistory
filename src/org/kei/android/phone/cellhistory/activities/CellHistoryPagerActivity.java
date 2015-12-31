@@ -6,6 +6,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.kei.android.atk.utils.Tools;
+import org.kei.android.atk.utils.changelog.ChangeLog;
+import org.kei.android.atk.utils.changelog.ChangeLogIds;
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.IThemeActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
@@ -129,6 +131,18 @@ IThemeActivity, OnPageChangeListener {
 
     startService(new Intent(this, NetworkService.class));
     startService(new Intent(this, TowerService.class));
+    
+
+    ChangeLog changeLog = new ChangeLog(
+        new ChangeLogIds(
+            R.raw.changelog, 
+            R.string.changelog_ok_button, 
+            R.string.background_color, 
+            R.string.changelog_title, 
+            R.string.changelog_full_title, 
+            R.string.changelog_show_full), this);
+    if(changeLog.firstRun())
+      changeLog.getLogDialog().show();
   }
 
   private void setTransformer() {
