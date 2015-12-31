@@ -128,10 +128,17 @@ public class RecorderCtx {
   }
   
   public static String convertToHuman(float f) {
+    return convertToHuman(f, true);
+  }
+  
+  public static String convertToHuman(float f, boolean fullOctet) {
     String sf = "";
-    if(f < 1000)
-      sf = String.format(Locale.US, "%d octet%s", (int)f, f > 1 ? "s" : "");
-    else if(f < 1000000)
+    if(f < 1000) {
+      if(fullOctet)
+        sf = String.format(Locale.US, "%d octet%s", (int)f, f > 1 ? "s" : "");
+      else 
+        sf = String.format(Locale.US, "%d o", (int)f);
+    }else if(f < 1000000)
       sf = String.format("%.02f", (f/SIZE_1KB)) + " Ko";
     else if(f < 1000000000)
       sf = String.format("%.02f", (f/SIZE_1MB)) + " Mo";

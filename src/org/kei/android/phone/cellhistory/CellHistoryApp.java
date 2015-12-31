@@ -140,12 +140,13 @@ public class CellHistoryApp extends Application {
     contentView.setProgressBar(R.id.pbBuffer, max, buffer, false);
     return contentView;
   }
-  private RemoteViews getRemoteViews(final String type, final String name, final int cellid, final int lac, final int ss, final int ssp) {
+  private RemoteViews getRemoteViews(final String name, final int cellid, final int lac, final int ss, final int ssp, final long rxsp, final long txsp) {
     final RemoteViews contentView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notifications_main);
     contentView.setImageViewResource(R.id.imagenotileft, R.drawable.ic_launcher);
     contentView.setTextViewText(R.id.title, getString(R.string.app_name));
     contentView.setTextViewText(R.id.textInfo, "CellID: " + cellid + ", LAC: " + lac);
-    contentView.setTextViewText(R.id.textNetwork, "Network: " + type + " - " + name);
+    String speeds = "Rx:" + RecorderCtx.convertToHuman(rxsp, false) + "/s, Tx:" + RecorderCtx.convertToHuman(txsp, false) + "/s";
+    contentView.setTextViewText(R.id.textNetwork, "Network: " + name + ", " + speeds);
     contentView.setTextViewText(R.id.textSS, "Signal strength: " + ss + " dBm (" + ssp + "%)");
     return contentView;
   }
@@ -153,13 +154,13 @@ public class CellHistoryApp extends Application {
   public void notificationShow() {
     if(nfyHelper == null)
       nfyHelper = new NotificationHelper(getApplicationContext(), notifyID);
-    final RemoteViews contentView = getRemoteViews(TowerInfo.UNKNOWN, TowerInfo.UNKNOWN, -1, -1, 0, 0);
+    final RemoteViews contentView = getRemoteViews(TowerInfo.UNKNOWN, -1, -1, 0, 0, 0, 0);
     nfyHelper.show(contentView, R.drawable.ic_launcher, "ticker", getPendingIntent());
   }
   
-  public void notificationUpdate(final String type, final String name, final int cellid, final int lac, final int ss, final int ssp) {
+  public void notificationUpdate(final String name, final int cellid, final int lac, final int ss, final int ssp, final long rxsp, final long txsp) {
     if(nfyHelper == null) return;
-    final RemoteViews contentView = getRemoteViews(type, name, cellid, lac, ss, ssp);
+    final RemoteViews contentView = getRemoteViews(name, cellid, lac, ss, ssp, rxsp, txsp);
     nfyHelper.update(contentView);
   }
   

@@ -223,11 +223,13 @@ public class TowerServiceTask extends TimerTask {
         else if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_SIP)
           app.getGlobalTowerInfo().setType("SIP");
       }
-      app.notificationUpdate(app.getGlobalTowerInfo().getType(), app
+      app.notificationUpdate(app
           .getGlobalTowerInfo().getNetworkName(), app.getGlobalTowerInfo()
           .getCellId(), app.getGlobalTowerInfo().getLac(), app
           .getGlobalTowerInfo().getSignalStrength(), app.getGlobalTowerInfo()
-          .getSignalStrengthPercent());
+          .getSignalStrengthPercent(), app.getGlobalTowerInfo()
+          .getMobileNetworkInfo().getRxSpeed(), app.getGlobalTowerInfo()
+          .getMobileNetworkInfo().getTxSpeed());
     } catch (final Throwable t) {
       Log.e(getClass().getSimpleName(), "Exception: " + t.getMessage(), t);
     } finally {
