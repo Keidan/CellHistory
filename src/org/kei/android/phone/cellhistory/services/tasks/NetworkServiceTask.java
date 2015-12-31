@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.TimerTask;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
+import org.kei.android.phone.cellhistory.contexts.NetworkDataCtx;
 import org.kei.android.phone.cellhistory.towers.MobileNetworkInfo;
 import org.kei.android.phone.cellhistory.towers.NetworkPhoneStateListener;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
@@ -40,17 +41,18 @@ import android.util.Log;
 public class NetworkServiceTask extends TimerTask {
   private CellHistoryApp            app                       = null;
   private Service                   service                   = null;
-  private long                      startRX                   = 0;
-  private long                      startTX                   = 0;
+  private NetworkDataCtx            mobile                    = null;
+  private NetworkDataCtx            wifi                      = null;
+  private int                       connectivity              = 0;
   private TelephonyManager          telephonyManager          = null;
   private NetworkPhoneStateListener networkPhoneStateListener = null;
-  private long                      startTimeRX               = 0;
-  private long                      startTimeTX               = 0;
 
   public NetworkServiceTask(final Service service, final CellHistoryApp app,
       final SharedPreferences prefs) {
     this.service = service;
     this.app = app;
+    mobile = new NetworkDataCtx();
+    wifi = new NetworkDataCtx();
   }
 
   public void register() {
@@ -61,8 +63,9 @@ public class NetworkServiceTask extends TimerTask {
     if (telephonyManager != null)
       telephonyManager.listen(networkPhoneStateListener,
           PhoneStateListener.LISTEN_DATA_ACTIVITY);
-    startRX = TrafficStats.getMobileRxBytes();
-    startTX = TrafficStats.getMobileTxBytes();
+    mobile.intialize(TrafficStats.getMobileRxBytes(), TrafficStats.getMobileTxBytes());
+    wifi.intialize(TrafficStats.getTotalRxBytes(), TrafficStats.getTotalTxBytes());
+    connectivity = MobileNetworkInfo.getConnectivityStatus(service);
   }
 
   public void unregister() {
@@ -79,32 +82,33 @@ public class NetworkServiceTask extends TimerTask {
     try {
       final MobileNetworkInfo mni = app.getGlobalTowerInfo()
           .getMobileNetworkInfo();
-      if(startRX == 0) startRX = TrafficStats.getMobileRxBytes();
-      if(startTX == 0) startTX = TrafficStats.getMobileTxBytes();
-      Date d = new Date();
-      long ld = d.getTime();
-      if(startTimeRX == 0) startTimeRX = ld;
-      if(startTimeTX == 0) startTimeTX = ld;
-      long newRX = TrafficStats.getMobileRxBytes();
-      long newTX = TrafficStats.getMobileTxBytes();
-      long transferedRX = newRX - mni.getRx();
-      long transferedTX = newTX - mni.getTx();
-      long timeRx = 0;
-      long timeTx = 0;
-      if(transferedRX != startRX)
-        timeRx = ld - startTimeRX;
-      if(transferedTX != startTX)
-        timeTx = ld - startTimeTX;
-      if(timeRx != 0) mni.setRxSpeed(transferedRX / timeRx);
-      else mni.setRxSpeed(0);
-      if(timeTx != 0) mni.setTxSpeed(transferedTX / timeTx);
-      else mni.setTxSpeed(0);
-      mni.setRx(newRX - startRX);
-      mni.setTx(newTX - startTX);
       mni.setDataConnectivity(MobileNetworkInfo.getConnectivityStatus(service));
-      if(mni.getDataConnectivity() != MobileNetworkInfo.TYPE_MOBILE) {
-        startRX = startTX = 0;
+      if(mni.getDataConnectivity() != connectivity) {
+        connectivity = mni.getDataConnectivity();
+        mobile.intialize(TrafficStats.getMobileRxBytes(), TrafficStats.getMobileTxBytes());
+        wifi.intialize(TrafficStats.getTotalRxBytes(), TrafficStats.getTotalTxBytes());
       }
+      Date d = new Date();
+      long ld = d.getTime() / 1000;
+      if(mni.getDataConnectivity() == MobileNetworkInfo.TYPE_MOBILE) {
+        mobile.update(ld, TrafficStats.getMobileRxBytes(), TrafficStats.getMobileTxBytes());
+        mni.setRxSpeed(mobile.getRxSpeed());
+        mni.setTxSpeed(mobile.getTxSpeed());
+        mni.setRx(mobile.getRx());
+        mni.setTx(mobile.getTx());
+      } else if(mni.getDataConnectivity() == MobileNetworkInfo.TYPE_WIFI) {
+        wifi.update(ld, TrafficStats.getTotalRxBytes(), TrafficStats.getTotalTxBytes());
+        mni.setRxSpeed(wifi.getRxSpeed());
+        mni.setTxSpeed(wifi.getTxSpeed());
+        mni.setRx(wifi.getRx());
+        mni.setTx(wifi.getTx());
+      } else {
+        mni.setRx(0L);
+        mni.setTx(0L);
+        mni.setRxSpeed(0L);
+        mni.setTxSpeed(0L);
+      }
+      
       mni.setTheoreticalSpeed(TowerInfo.UNKNOWN);
       mni.setType(TowerInfo.UNKNOWN);
       final ConnectivityManager cm = (ConnectivityManager) service
@@ -124,5 +128,4 @@ public class NetworkServiceTask extends TimerTask {
       app.getGlobalTowerInfo().unlock();
     }
   }
-
 }
