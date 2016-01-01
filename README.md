@@ -5,6 +5,10 @@ CellHistory
 
 This application allows to keep an history of the linked telephony cells.
 
+The available releases can be found [Here](https://www.dropbox.com/sh/ezukhjceua9nkt5/AAAWQmx1K4bBUkhuEcIhY9zGa?dl=0)
+
+
+
 
 
 Instructions
