@@ -54,6 +54,11 @@
 	<string name="txtGpsOutOfService">GPS out of service.</string>
 	<string name="txtGpsTemporarilyUnavailable">GPS temporarily unavailable.</string>
 	
+	<string name="buttonArea">Add Area</string>
+    <string name="lblCurrentArea">Current area: </string>
+    <string name="lblNextArea">Next area: </string>
+    <string name="lblNextAreaDistance">Next area distance: </string>
+	
 	<string name="lblTxBytesSinceAppStart">Data Tx: </string>
 	<string name="lblRxBytesSinceAppStart">Data Rx: </string>
 	<string name="lblDataConnectivity">Data connectivity: </string>
@@ -81,6 +86,8 @@
     <string name="pref_recorder_summary">Configure the recorder.</string>
     <string name="pref_timers_title">Timers</string>
     <string name="pref_timers_summary">Configure the application timers.</string>
+    <string name="pref_areas_title">Areas</string>
+    <string name="pref_areas_summary">Configure the interested areas.</string>
 	
 	<string name="pref_title_ui">User Interface</string>
 	<string name="pref_title_recorder">Recorder</string>

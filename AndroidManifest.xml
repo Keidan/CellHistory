@@ -40,6 +40,9 @@
             android:name="org.kei.android.phone.cellhistory.activities.LogActivity">
         </activity>
         <activity
+            android:name="org.kei.android.phone.cellhistory.activities.AreasActivity">
+        </activity>
+        <activity
             android:name="org.kei.android.phone.cellhistory.prefs.Preferences">
         </activity>
         <activity

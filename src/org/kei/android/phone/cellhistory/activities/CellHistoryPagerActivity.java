@@ -13,6 +13,7 @@ import org.kei.android.atk.view.IThemeActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.adapters.ScreenSlidePagerAdapter;
+import org.kei.android.phone.cellhistory.fragments.AreaFragment;
 import org.kei.android.phone.cellhistory.fragments.NetworkFragment;
 import org.kei.android.phone.cellhistory.fragments.ProviderFragment;
 import org.kei.android.phone.cellhistory.fragments.NeighboringFragment;
@@ -28,6 +29,7 @@ import org.kei.android.phone.cellhistory.services.NetworkService;
 import org.kei.android.phone.cellhistory.services.ProviderService;
 import org.kei.android.phone.cellhistory.services.RecorderService;
 import org.kei.android.phone.cellhistory.services.TowerService;
+import org.kei.android.phone.cellhistory.sql.SqlFactory;
 import org.kei.android.phone.cellhistory.transformers.DepthPageTransformer;
 import org.kei.android.phone.cellhistory.transformers.ZoomOutPageTransformer;
 
@@ -103,6 +105,7 @@ IThemeActivity, OnPageChangeListener {
     fragments.add(new TowerFragment());
     fragments.add(new NetworkFragment());
     fragments.add(new ProviderFragment());
+    fragments.add(new AreaFragment());
     fragments.add(new NeighboringFragment());
     fragments.add(new RecorderFragment());
     
@@ -143,6 +146,13 @@ IThemeActivity, OnPageChangeListener {
             R.string.changelog_show_full), this);
     if(changeLog.firstRun())
       changeLog.getLogDialog().show();
+    
+    try {
+      app.setSQL(new SqlFactory(this));
+      app.getSQL().open();
+    } catch (final Exception e) {
+      Tools.showAlertDialog(this, "Exception", e.getMessage());
+    }
   }
 
   private void setTransformer() {
@@ -211,6 +221,7 @@ IThemeActivity, OnPageChangeListener {
     stopService(new Intent(this, RecorderService.class));
     stopService(new Intent(this, NetworkService.class));
     stopService(new Intent(this, TowerService.class));
+    app.getSQL().close();
   }
   
   private final Runnable uiTask = new Runnable() {

@@ -7,6 +7,7 @@ import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.atk.view.EffectPreferenceActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
+import org.kei.android.phone.cellhistory.activities.AreasActivity;
 import org.kei.android.phone.cellhistory.activities.LogActivity;
 
 import android.app.Activity;
@@ -57,6 +58,7 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
   public static final String   PREFS_KEY_CAT_LOGS         = "prefCatLogs";
   public static final String   PREFS_KEY_CAT_SETTINGS     = "prefCatSettings";
   public static final String   PREFS_KEY_ADVANCED         = "prefAdvanced";
+  public static final String   PREFS_KEY_AREAS            = "prefAreas";
   public static final boolean  PREFS_DEFAULT_CHART_ENABLE = true;
   public static final boolean  PREFS_DEFAULT_LOG_ENABLE   = false;
   public static final boolean  PREFS_DEFAULT_ADVANCED     = false;
@@ -154,7 +156,11 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_CHANGELOG))) {
       preferences = true;
       changeLog.getFullLogDialog().show();
-    }
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_AREAS))) {
+      preferences = true;
+      Tools.switchTo(Preferences.this, AreasActivity.class);
+      return true;
+    } 
     
     return true;
   }
@@ -174,7 +180,7 @@ public class Preferences extends EffectPreferenceActivity implements Preference.
     p.setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_TIMERS).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_LOG).setOnPreferenceClickListener(this);
-    
+    prefFrag.findPreference(PREFS_KEY_AREAS).setOnPreferenceClickListener(this);
     /* author + versions */
 
     prefFrag.findPreference(PREFS_KEY_VERSION).setTitle(

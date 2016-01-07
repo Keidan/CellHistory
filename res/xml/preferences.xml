@@ -26,6 +26,11 @@
             android:title="@string/pref_recorder_title"
             android:summary="@string/pref_recorder_summary">
         </Preference>
+        <Preference
+            android:key="prefAreas"
+            android:title="@string/pref_areas_title"
+            android:summary="@string/pref_areas_summary">
+        </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_logs" android:key="prefCatLogs">
         <CheckBoxPreference

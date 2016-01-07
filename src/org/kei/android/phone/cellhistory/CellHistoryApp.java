@@ -13,6 +13,7 @@ import org.kei.android.phone.cellhistory.activities.CellHistoryPagerActivity;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
+import org.kei.android.phone.cellhistory.sql.SqlFactory;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
 import android.app.Application;
@@ -56,6 +57,7 @@ public class CellHistoryApp extends Application {
   private final int          notifyID              = 2;
   private final int          notifyRecorderID      = 1;
   private PendingIntent      pendingIntent         = null;
+  private SqlFactory         sql                   = null;
 
   public CellHistoryApp() {
     lock = new ReentrantLock();
@@ -205,6 +207,14 @@ public class CellHistoryApp extends Application {
 
   public void setCurrentSlideIndex(int currentSlideIndex) {
     this.currentSlideIndex = currentSlideIndex;
+  }
+
+  public SqlFactory getSQL() {
+    return sql;
+  }
+
+  public void setSQL(SqlFactory sql) {
+    this.sql = sql;
   }
   
 }
