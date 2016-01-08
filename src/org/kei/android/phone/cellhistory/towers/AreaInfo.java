@@ -1,8 +1,8 @@
-package org.kei.android.phone.cellhistory.contexts;
+package org.kei.android.phone.cellhistory.towers;
 
 /**
  *******************************************************************************
- * @file AreaCtx.java
+ * @file AreaInfo.java
  * @author Keidan
  * @date 07/01/2016
  * @par Project CellHistory
@@ -19,11 +19,12 @@ package org.kei.android.phone.cellhistory.contexts;
  *
  *******************************************************************************
  */
-public class AreaCtx {
+public class AreaInfo {
   private int    id        = 0;
   private String name      = null;
   private double latitude  = 0.0;
   private double longitude = 0.0;
+  private double radius    = 0.0;
   
   /**
    * @return the id
@@ -83,6 +84,20 @@ public class AreaCtx {
    */
   public void setLongitude(final double longitude) {
     this.longitude = longitude;
+  }
+
+  /**
+   * @return the radius
+   */
+  public double getRadius() {
+    return radius;
+  }
+
+  /**
+   * @param radius the radius to set
+   */
+  public void setRadius(double radius) {
+    this.radius = radius;
   }
 
 }
