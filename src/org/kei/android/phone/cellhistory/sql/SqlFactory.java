@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.kei.android.phone.cellhistory.contexts.AreaCtx;
+import org.kei.android.phone.cellhistory.towers.AreaInfo;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -51,55 +51,59 @@ public class SqlFactory implements SqlConstants {
     return bdd;
   }
   
-  public long insertArea(final String name, final double latitude, final double longitude) {
+  public long insertArea(final String name, final double latitude, final double longitude, final double radius) {
     final ContentValues values = new ContentValues();
     values.put(COL_NAME, name);
     values.put(COL_LATITUDE, latitude);
     values.put(COL_LONGITUDE, longitude);
+    values.put(COL_RADIUS, radius);
     return bdd.insert(TABLE_AREAS, null, values);
   }
   
-  public int updateArea(final int id, final String name, final double latitude, final double longitude) {
+  public int updateArea(final int id, final String name, final double latitude, final double longitude, final double radius) {
     final ContentValues values = new ContentValues();
     values.put(COL_NAME, name);
     values.put(COL_LATITUDE, latitude);
     values.put(COL_LONGITUDE, longitude);
+    values.put(COL_RADIUS, radius);
     return bdd.update(TABLE_AREAS, values, COL_ID + " = " + id, null);
   }
   
-  public List<AreaCtx> getAreas() {
-    final List<AreaCtx> list = new ArrayList<AreaCtx>();
+  public List<AreaInfo> getAreas() {
+    final List<AreaInfo> list = new ArrayList<AreaInfo>();
     final Cursor c = bdd.rawQuery("SELECT  * FROM " + TABLE_AREAS, null);
     if (c.moveToFirst()) {
       do {
-        AreaCtx a = new AreaCtx();
+        AreaInfo a = new AreaInfo();
         a.setId(c.getInt(NUM_COL_ID));
         a.setName(c.getString(NUM_COL_NAME));
         a.setLatitude(c.getDouble(NUM_COL_LATITUDE));
         a.setLongitude(c.getDouble(NUM_COL_LONGITUDE));
+        a.setRadius(c.getDouble(NUM_COL_RADIUS));
         list.add(a);
       } while (c.moveToNext());
     }
     c.close();
-    Collections.sort(list, new Comparator<AreaCtx>() {
+    Collections.sort(list, new Comparator<AreaInfo>() {
       @Override
-      public int compare(final AreaCtx lhs, final AreaCtx rhs) {
+      public int compare(final AreaInfo lhs, final AreaInfo rhs) {
         return lhs.getName().compareTo(rhs.getName());
       }
     });
     return list;
   }
   
-  public AreaCtx getArea(final String name) {
+  public AreaInfo getArea(final String name) {
     final Cursor c = bdd.rawQuery("SELECT  * FROM " + TABLE_AREAS + " where "
         + COL_NAME + "= '" + name + "'", null);
     if (c.moveToFirst()) {
       do {
-        AreaCtx a = new AreaCtx();
+        AreaInfo a = new AreaInfo();
         a.setId(c.getInt(NUM_COL_ID));
         a.setName(c.getString(NUM_COL_NAME));
         a.setLatitude(c.getDouble(NUM_COL_LATITUDE));
         a.setLongitude(c.getDouble(NUM_COL_LONGITUDE));
+        a.setRadius(c.getDouble(NUM_COL_RADIUS));
         c.close();
         return a;
       } while (c.moveToNext());
@@ -108,7 +112,7 @@ public class SqlFactory implements SqlConstants {
     return null;
   }
   
-  public int removeAreaWithID(final AreaCtx a) {
+  public int removeAreaWithID(final AreaInfo a) {
     return bdd.delete(TABLE_AREAS, COL_ID + " = " + a.getId(), null);
   }
   

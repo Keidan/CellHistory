@@ -36,6 +36,8 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
                                                      + COL_LATITUDE
                                                      + " REAL, "
                                                      + COL_LONGITUDE
+                                                     + " REAL, "
+                                                     + COL_RADIUS
                                                      + " REAL);";
   
   public SqlHelper(final Context context, final String name,

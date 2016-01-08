@@ -27,8 +27,10 @@ public interface SqlConstants {
   public static final String COL_NAME          = "NAME";
   public static final String COL_LATITUDE      = "LATITUDE";
   public static final String COL_LONGITUDE     = "LONGITUDE";
+  public static final String COL_RADIUS        = "RADIUS";
   public static final int    NUM_COL_ID        = 0;
   public static final int    NUM_COL_NAME      = 1;
   public static final int    NUM_COL_LATITUDE  = 2;
   public static final int    NUM_COL_LONGITUDE = 3;
+  public static final int    NUM_COL_RADIUS    = 4;
 }
