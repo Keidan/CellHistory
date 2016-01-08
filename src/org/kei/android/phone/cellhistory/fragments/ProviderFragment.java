@@ -100,6 +100,7 @@ OnItemSelectedListener, OnClickListener {
   private int               default_color                = android.graphics.Color.TRANSPARENT;
   private boolean           connected                    = false;
   private boolean           enabled                      = false;
+  private boolean           registered                   = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -294,6 +295,8 @@ OnItemSelectedListener, OnClickListener {
       spiGeoProvider.setVisibility(View.VISIBLE);
       if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
           PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
+        registered = true;
+        getActivity().registerReceiver(receiver, new IntentFilter(GpsServiceTask.NOTIFICATION));
         if(connected && enabled)
           setGpsVisibility(true);
         else
@@ -306,13 +309,15 @@ OnItemSelectedListener, OnClickListener {
       spiGeoProvider.setVisibility(View.GONE);
       resetGpsInfo(txtGpsDisabledOption, color_orange);
     }
-    getActivity().registerReceiver(receiver, new IntentFilter(GpsServiceTask.NOTIFICATION));
   }
   
   @Override
   public void onPause() {
     super.onPause();
-    getActivity().unregisterReceiver(receiver);
+    if(registered) {
+      getActivity().unregisterReceiver(receiver);
+      registered = false;
+    }
   }
   
   private void setChartVisible(final boolean visible) {

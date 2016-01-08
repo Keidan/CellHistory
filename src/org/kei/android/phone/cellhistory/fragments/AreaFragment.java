@@ -6,6 +6,7 @@ import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.services.tasks.GpsServiceTask;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -65,6 +66,7 @@ public class AreaFragment extends Fragment implements UITaskFragment {
   private TextView          txtNextAreaDistance          = null;
   private TextView          lblUnitM                     = null;
   private final TextView    lblUnitKM                    = null;
+  private boolean           registered                   = false;
   
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -124,6 +126,9 @@ public class AreaFragment extends Fragment implements UITaskFragment {
         PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
       if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_GPS,
           PreferencesGeolocation.PREFS_DEFAULT_GPS)) {
+        registered = true;
+        getActivity().registerReceiver(receiver,
+            new IntentFilter(GpsServiceTask.NOTIFICATION));
         if (connected && enabled)
           setGpsVisibility(true);
         else
@@ -134,14 +139,15 @@ public class AreaFragment extends Fragment implements UITaskFragment {
     } else {
       resetGpsInfo(txtGpsDisabledOption, color_orange);
     }
-    getActivity().registerReceiver(receiver,
-        new IntentFilter(GpsServiceTask.NOTIFICATION));
   }
   
   @Override
   public void onPause() {
     super.onPause();
-    getActivity().unregisterReceiver(receiver);
+    if(registered) {
+      getActivity().unregisterReceiver(receiver);
+      registered = false;
+    }
   }
 
   private final BroadcastReceiver receiver = new BroadcastReceiver() {
