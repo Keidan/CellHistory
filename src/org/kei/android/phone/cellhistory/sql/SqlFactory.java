@@ -51,6 +51,10 @@ public class SqlFactory implements SqlConstants {
     return bdd;
   }
   
+  public long insertArea(final AreaInfo ai) {
+    return insertArea(ai.getName(), ai.getLatitude(), ai.getLongitude(), ai.getRadius());
+  }
+  
   public long insertArea(final String name, final double latitude, final double longitude, final double radius) {
     final ContentValues values = new ContentValues();
     values.put(COL_NAME, name);
@@ -58,6 +62,10 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_LONGITUDE, longitude);
     values.put(COL_RADIUS, radius);
     return bdd.insert(TABLE_AREAS, null, values);
+  }
+
+  public long updateArea(final AreaInfo ai) {
+    return updateArea(ai.getId(), ai.getName(), ai.getLatitude(), ai.getLongitude(), ai.getRadius());
   }
   
   public int updateArea(final int id, final String name, final double latitude, final double longitude, final double radius) {
@@ -117,6 +125,10 @@ public class SqlFactory implements SqlConstants {
   }
   
   public void removeAll() {
+    bdd.execSQL("delete from " + TABLE_AREAS + ";");
+  }
+  
+  public void removeTable() {
     bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_AREAS + ";");
   }
 }

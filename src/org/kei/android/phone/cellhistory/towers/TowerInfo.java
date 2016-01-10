@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.location.Location;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
@@ -69,6 +70,7 @@ public class TowerInfo {
   private double                distance              = 0.0;
   private int                   satellites            = 0;
   private MobileNetworkInfo     mobileNetworkInfo     = null;
+  private Location              currentLocation       = null;
   private boolean               allowOperator         = true;
   private boolean               allowMCC              = true;
   private boolean               allowMNC              = true;
@@ -123,6 +125,7 @@ public class TowerInfo {
     mobileNetworkInfo = new MobileNetworkInfo(ti.getMobileNetworkInfo());
     neighboring.clear();
     neighboring.addAll(ti.getNeighboring());
+    currentLocation = ti.currentLocation;
   }
   
   public void lock() {
@@ -728,4 +731,21 @@ public class TowerInfo {
   public MobileNetworkInfo getMobileNetworkInfo() {
     return mobileNetworkInfo;
   }
+
+  /**
+   * @return the currentLocation
+   */
+  public Location getCurrentLocation() {
+    if(currentLocation == null)
+      currentLocation = new Location((String)null);
+    return currentLocation;
+  }
+
+  /**
+   * @param currentLocation the currentLocation to set
+   */
+  public void setCurrentLocation(Location currentLocation) {
+    this.currentLocation = currentLocation;
+  }
+  
 }

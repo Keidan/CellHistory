@@ -151,54 +151,46 @@ public class AreaFragment extends Fragment implements UITaskFragment {
   }
 
   private final BroadcastReceiver receiver = new BroadcastReceiver() {
-                                             
-                                             @Override
-                                             public void onReceive(
-                                                 final Context context,
-                                                 final Intent intent) {
-                                               final Bundle bundle = intent
-                                                   .getExtras();
-                                               if (bundle != null) {
-                                                 final int event = bundle
-                                                     .getInt(GpsServiceTask.EVENT);
-                                                 Log.i(getClass()
-                                                     .getSimpleName(),
-                                                     "Event: " + event);
-                                                 if (event == GpsServiceTask.EVENT_CONNECTED) {
-                                                   connected = true;
-                                                 } else if (event == GpsServiceTask.EVENT_DISABLED) {
-                                                   connected = false;
-                                                   enabled = false;
-                                                   resetGpsInfo(txtGpsDisabled,
-                                                       color_red);
-                                                 } else if (event == GpsServiceTask.EVENT_ENABLED) {
-                                                   enabled = true;
-                                                   setGpsVisibility(true);
-                                                 } else if (event == GpsServiceTask.EVENT_OUT_OF_SERVICE) {
-                                                   resetGpsInfo(
-                                                       txtGpsOutOfService,
-                                                       color_red);
-                                                 } else if (event == GpsServiceTask.EVENT_TEMPORARILY_UNAVAILABLE) {
-                                                   resetGpsInfo(
-                                                       txtGpsTemporarilyUnavailable,
-                                                       color_red);
-                                                 } else if (event == GpsServiceTask.EVENT_UPDATE) {
-                                                   setGpsVisibility(true);
-                                                 } else if (event == GpsServiceTask.EVENT_WAIT_FOR_SATELLITES) {
-                                                   resetGpsInfo(
-                                                       txtGpsWaitSatellites,
-                                                       color_red);
-                                                 }
-                                               }
-                                             }
-                                           };
+    @Override
+    public void onReceive(
+        final Context context, final Intent intent) {
+      final Bundle bundle = intent.getExtras();
+      if (bundle != null) {
+        final int event = bundle
+             .getInt(GpsServiceTask.EVENT);
+         Log.i(getClass()
+             .getSimpleName(),
+             "Event: " + event);
+         if (event == GpsServiceTask.EVENT_CONNECTED) {
+           connected = true;
+         } else if (event == GpsServiceTask.EVENT_DISABLED) {
+           connected = false;
+           enabled = false;
+           resetGpsInfo(txtGpsDisabled,
+               color_red);
+         } else if (event == GpsServiceTask.EVENT_ENABLED) {
+           enabled = true;
+           setGpsVisibility(true);
+         } else if (event == GpsServiceTask.EVENT_OUT_OF_SERVICE) {
+           resetGpsInfo(
+               txtGpsOutOfService,
+               color_red);
+         } else if (event == GpsServiceTask.EVENT_TEMPORARILY_UNAVAILABLE) {
+           resetGpsInfo(
+               txtGpsTemporarilyUnavailable,
+               color_red);
+         } else if (event == GpsServiceTask.EVENT_UPDATE) {
+           setGpsVisibility(true);
+         } else if (event == GpsServiceTask.EVENT_WAIT_FOR_SATELLITES) {
+           resetGpsInfo(
+               txtGpsWaitSatellites,
+               color_red);
+         }
+       }
+     }
+   };
 
   private void resetGpsInfo(final String txt, final int color) {
-    app.getGlobalTowerInfo().lock();
-    try {
-    } finally {
-      app.getGlobalTowerInfo().unlock();
-    }
     txtNextAreaError.setText(txt);
     txtCurrentAreaError.setText(txt);
     txtNextAreaError.setTextColor(color);

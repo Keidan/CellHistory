@@ -140,6 +140,7 @@ public class GpsServiceTask implements LocationListener, Listener  {
         CellHistoryApp.addLog(app, "New distance: "
             + app.getGlobalTowerInfo().getDistance() + " m.");
       }
+      app.getGlobalTowerInfo().setCurrentLocation(location);
     } finally {
       app.getGlobalTowerInfo().unlock();
     }

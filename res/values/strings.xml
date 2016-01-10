@@ -3,6 +3,7 @@
 
     <string name="app_name">CellHistory</string>
     <string name="file_name">cellhistory</string>
+    <string name="areas_file_name">cellhistory_areas</string>
 	<string name="empty"></string>
 	<string name="unit_m">m</string>
 	<string name="unit_km">Km</string>
@@ -54,10 +55,17 @@
 	<string name="txtGpsOutOfService">GPS out of service.</string>
 	<string name="txtGpsTemporarilyUnavailable">GPS temporarily unavailable.</string>
 	
+	<string name="titleArea">Area</string>
 	<string name="buttonArea">Add Area</string>
     <string name="lblCurrentArea">Current area: </string>
     <string name="lblNextArea">Next area: </string>
     <string name="lblNextAreaDistance">Next area distance: </string>
+    <string name="buttonOk">OK</string>
+    <string name="buttonCancel">Cancel</string>
+    <string name="lblAreaRadius">Radius (m): </string>
+    <string name="lblAreaLongitude">Longitude: </string>
+    <string name="lblAreaLatitude">Latitude: </string>
+    <string name="lblAreaName">Name: </string>
 	
 	<string name="lblTxBytesSinceAppStart">Data Tx: </string>
 	<string name="lblRxBytesSinceAppStart">Data Rx: </string>
@@ -77,6 +85,8 @@
 	<string name="action_clear">Clear</string>
     <string name="action_sharing">Share</string>
     <string name="action_advanced">Advanced</string>
+    <string name="action_import">Import</string>
+    <string name="action_export">Export</string>
     
     <string name="pref_ui_title">User Interface</string>
     <string name="pref_geolocation_management_title">Geolocation</string>
@@ -86,7 +96,7 @@
     <string name="pref_recorder_summary">Configure the recorder.</string>
     <string name="pref_timers_title">Timers</string>
     <string name="pref_timers_summary">Configure the application timers.</string>
-    <string name="pref_areas_title">Areas</string>
+    <string name="pref_areas_title">Interested areas</string>
     <string name="pref_areas_summary">Configure the interested areas.</string>
 	
 	<string name="pref_title_ui">User Interface</string>
@@ -165,7 +175,6 @@
 	
     <string name="pref_changelog_title">Changelog</string>
 	<string name="pref_changelog_summary">Click to display the application changelog.</string>
-	
 	
      <string name="pref_recorder_filter_title">Filters</string>
      <string name="pref_recorder_filter_provider_summary">Detect a changes if this value is updated.</string>

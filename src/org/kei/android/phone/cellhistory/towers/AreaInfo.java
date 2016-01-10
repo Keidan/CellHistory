@@ -20,12 +20,21 @@ package org.kei.android.phone.cellhistory.towers;
  *******************************************************************************
  */
 public class AreaInfo {
-  private int    id        = 0;
-  private String name      = null;
-  private double latitude  = 0.0;
-  private double longitude = 0.0;
-  private double radius    = 0.0;
+  public static final double DEFAULT_RADIUS = 30.0;
+  private int                id             = 0;
+  private String             name           = null;
+  private double             latitude       = 0.0;
+  private double             longitude      = 0.0;
+  private double             radius         = 0.0;
   
+  public String toString() {
+    return name;
+  }
+  
+  public String toString(final String sep) {
+    return name + sep + latitude + sep + longitude + sep + radius;
+  }
+
   /**
    * @return the id
    */
