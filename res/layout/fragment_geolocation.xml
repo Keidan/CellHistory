@@ -27,7 +27,8 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-        <GridLayout
+
+        <GridLayout
             android:id="@+id/gidLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,11 +53,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
+                android:layout_columnSpan="3"
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="0"
                 android:padding="0dip"
-                android:layout_columnSpan="3"
                 android:textColor="@color/orange_dark" />
 
             <TextView
@@ -64,10 +65,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
+                android:layout_columnSpan="3"
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="0"
-                android:layout_columnSpan="3"
                 android:text="@string/geoloc_disabled"
                 android:textColor="@color/red"
                 android:visibility="gone" />
@@ -89,10 +90,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
+                android:layout_columnSpan="3"
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="1"
-                android:layout_columnSpan="3"
                 android:text="@string/empty" />
 
             <TextView
@@ -112,10 +113,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
+                android:layout_columnSpan="3"
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="2"
-                android:layout_columnSpan="3"
                 android:text="@string/empty" />
 
             <TextView
@@ -138,33 +139,33 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="3"
-                android:visibility="gone"
-                android:text="@string/zero" />
+                android:text="@string/zero"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/lblUnitM"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="start"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_row="3"
                 android:layout_columnSpan="2"
-                android:visibility="gone"
-                android:text="@string/unit_m" />
+                android:layout_gravity="start"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_row="3"
+                android:text="@string/unit_m"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txtDistanceError"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
+                android:layout_columnSpan="3"
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="3"
-                android:visibility="gone"
-                android:layout_columnSpan="3"
-                android:text="@string/empty" />
+                android:text="@string/empty"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/lblSpeed"
@@ -183,12 +184,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
+                android:layout_columnSpan="3"
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="4"
-                android:visibility="gone"
-                android:layout_columnSpan="3"
-                android:text="@string/empty" />
+                android:text="@string/empty"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txtSpeedMS"
@@ -198,8 +199,8 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="4"
-                android:visibility="gone"
-                android:text="@string/zero_real" />
+                android:text="@string/zero_real"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/lblUnitMS"
@@ -207,12 +208,11 @@
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_gravity="start"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="4"
-                android:layout_marginStart="5dp"
-                android:visibility="gone"
-                android:text="@string/unit_ms" />
-            
+                android:text="@string/unit_ms"
+                android:visibility="gone" />
 
             <RadioButton
                 android:id="@+id/rbSpeedMS"
@@ -220,11 +220,11 @@
                 android:layout_height="wrap_content"
                 android:layout_column="3"
                 android:layout_gravity="start"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="4"
-                android:layout_marginStart="5dp"
-                android:visibility="gone"
-                android:text="@string/empty" />
+                android:text="@string/empty"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txtSpeedKMH"
@@ -234,8 +234,8 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="5"
-                android:visibility="gone"
-                android:text="@string/zero_real" />
+                android:text="@string/zero_real"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/lblUnitKMH"
@@ -243,12 +243,11 @@
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_gravity="start"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="5"
-                android:layout_marginStart="5dp"
-                android:visibility="gone"
-                android:text="@string/unit_kmh" />
-            
+                android:text="@string/unit_kmh"
+                android:visibility="gone" />
 
             <RadioButton
                 android:id="@+id/rbSpeedKMH"
@@ -256,11 +255,11 @@
                 android:layout_height="wrap_content"
                 android:layout_column="3"
                 android:layout_gravity="start"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="5"
-                android:layout_marginStart="5dp"
-                android:visibility="gone"
-                android:text="@string/empty" />
+                android:text="@string/empty"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txtSpeedMPH"
@@ -270,8 +269,8 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="5dp"
                 android:layout_row="6"
-                android:visibility="gone"
-                android:text="@string/zero_real" />
+                android:text="@string/zero_real"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/lblUnitMPH"
@@ -279,11 +278,11 @@
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_gravity="start"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="6"
-                android:layout_marginStart="5dp"
-                android:visibility="gone"
-                android:text="@string/unit_mph" />
+                android:text="@string/unit_mph"
+                android:visibility="gone" />
 
             <RadioButton
                 android:id="@+id/rbSpeedMPH"
@@ -291,11 +290,80 @@
                 android:layout_height="wrap_content"
                 android:layout_column="3"
                 android:layout_gravity="start"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="6"
+                android:text="@string/empty"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/lblArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="start"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_row="7"
+                android:text="@string/lblArea"
+                android:textColor="?attr/labelTextColor" />
+
+            <TextView
+                android:id="@+id/txtArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_columnSpan="2"
+                android:layout_gravity="start"
+                android:layout_marginTop="5dp"
+                android:layout_row="7"
+                android:text="@string/empty"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txtAreaError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_columnSpan="2"
+                android:layout_gravity="start"
+                android:layout_marginTop="5dp"
+                android:layout_row="7"
+                android:text="@string/empty"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/lblAreaDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="start"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_row="8"
+                android:text="@string/lblAreaDistance"
+                android:textColor="?attr/labelTextColor" />
+
+            <TextView
+                android:id="@+id/txtAreaDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="start"
+                android:layout_marginTop="5dp"
+                android:layout_row="8"
+                android:text="@string/zero" />
+
+            <TextView
+                android:id="@+id/lblUnit2M"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="start"
                 android:layout_marginStart="5dp"
-                android:visibility="gone"
-                android:text="@string/empty" />
+                android:layout_marginTop="5dp"
+                android:layout_row="8"
+                android:text="@string/unit_m" />
         </GridLayout>
     </ScrollView>
 

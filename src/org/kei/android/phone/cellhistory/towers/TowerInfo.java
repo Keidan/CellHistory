@@ -71,6 +71,7 @@ public class TowerInfo {
   private int                   satellites            = 0;
   private MobileNetworkInfo     mobileNetworkInfo     = null;
   private Location              currentLocation       = null;
+  private AreaInfo              currentArea           = null;
   private boolean               allowOperator         = true;
   private boolean               allowMCC              = true;
   private boolean               allowMNC              = true;
@@ -746,6 +747,20 @@ public class TowerInfo {
    */
   public void setCurrentLocation(Location currentLocation) {
     this.currentLocation = currentLocation;
+  }
+
+  /**
+   * @return the currentArea
+   */
+  public AreaInfo getCurrentArea() {
+    return currentArea;
+  }
+
+  /**
+   * @param currentArea the currentArea to set
+   */
+  public void setCurrentArea(AreaInfo currentArea) {
+    this.currentArea = currentArea;
   }
   
 }

@@ -13,6 +13,7 @@ import org.kei.android.phone.cellhistory.prefs.PreferencesGeolocation;
 import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
 import org.kei.android.phone.cellhistory.services.ProviderService;
 import org.kei.android.phone.cellhistory.services.tasks.GpsServiceTask;
+import org.kei.android.phone.cellhistory.towers.AreaInfo;
 import org.kei.android.phone.cellhistory.towers.CellIdHelper;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 import org.kei.android.phone.cellhistory.views.TimeChartHelper;
@@ -43,7 +44,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
  *******************************************************************************
- * @file ProviderFragment.java
+ * @file GeolocationFragment.java
  * @author Keidan
  * @date 11/12/2015
  * @par Project CellHistory
@@ -60,13 +61,16 @@ import android.widget.AdapterView.OnItemSelectedListener;
  *
  *******************************************************************************
  */
-public class ProviderFragment extends Fragment implements UITaskFragment,
+public class GeolocationFragment extends Fragment implements UITaskFragment,
 OnItemSelectedListener, OnClickListener {
   /* UI */
   private Spinner           spiGeoProvider               = null;
   private TextView          txtGeoProvider               = null;
   private TextView          txtGeolocation               = null;
   private TextView          txtSatellites                = null;
+  private TextView          txtArea                      = null;
+  private TextView          txtAreaError                 = null;
+  private TextView          txtAreaDistance              = null;
   private TextView          txtSpeedMS                   = null;
   private TextView          txtSpeedKMH                  = null;
   private TextView          txtSpeedMPH                  = null;
@@ -77,6 +81,7 @@ OnItemSelectedListener, OnClickListener {
   private TextView          txtSpeedError                = null;
   private TextView          txtDistanceError             = null;
   private TextView          lblUnitM                     = null;
+  private TextView          lblUnit2M                    = null;
   private TextView          lblUnitMS                    = null;
   private TextView          lblUnitKMH                   = null;
   private TextView          lblUnitMPH                   = null;
@@ -150,10 +155,16 @@ OnItemSelectedListener, OnClickListener {
     rbSpeedKMH = (RadioButton) getView().findViewById(R.id.rbSpeedKMH);
     rbSpeedMPH = (RadioButton) getView().findViewById(R.id.rbSpeedMPH);
     lblUnitM = (TextView) getView().findViewById(R.id.lblUnitM);
+    lblUnit2M = (TextView) getView().findViewById(R.id.lblUnit2M);
     lblUnitMS = (TextView) getView().findViewById(R.id.lblUnitMS);
     lblUnitKMH = (TextView) getView().findViewById(R.id.lblUnitKMH);
     lblUnitMPH = (TextView) getView().findViewById(R.id.lblUnitMPH);
-    
+    txtArea = (TextView) getView().findViewById(R.id.txtArea);
+    txtAreaError = (TextView) getView().findViewById(
+        R.id.txtAreaError);
+    txtAreaDistance = (TextView) getView().findViewById(
+        R.id.txtAreaDistance);
+
     txtDistance = (TextView) getView().findViewById(R.id.txtDistance);
     txtSpeedError = (TextView) getView().findViewById(R.id.txtSpeedError);
     txtDistanceError = (TextView) getView().findViewById(R.id.txtDistanceError);
@@ -163,6 +174,7 @@ OnItemSelectedListener, OnClickListener {
     txtDistanceError.setTextColor(color_red);
     
     txtGeolocation.setOnClickListener(this);
+    txtArea.setOnClickListener(this);
     rbSpeedMS.setOnClickListener(this);
     rbSpeedKMH.setOnClickListener(this);
     rbSpeedMPH.setOnClickListener(this);
@@ -231,7 +243,7 @@ OnItemSelectedListener, OnClickListener {
     txtSpeedKMH.setText(String.format("%.02f", s_kmh));
     txtSpeedMPH.setText(String.format("%.02f", speed * 2.2369362920544));
       
-    final double dist = app.getGlobalTowerInfo().getDistance();
+    double dist = app.getGlobalTowerInfo().getDistance();
     if (dist > 1000) {
       lblUnitM.setText(unit_km);
       txtDistance.setText(String.format("%.02f", dist / 1000));
@@ -254,6 +266,24 @@ OnItemSelectedListener, OnClickListener {
       }
     }
     txtSatellites.setText("" + app.getGlobalTowerInfo().getSatellites());
+    /* areas */
+    dist = 0.0;
+    if(app.getGlobalTowerInfo().getCurrentLocation() != null && app.getGlobalTowerInfo().getCurrentArea() != null) {
+      txtArea.setText(app.getGlobalTowerInfo().getCurrentArea().getName());
+      if(txtArea.getText().toString().compareTo(AreaInfo.UNKNOWN) != 0)
+        txtArea.setTextColor(color_blue_dark);
+      else
+        txtArea.setTextColor(default_color);
+      dist = app.getGlobalTowerInfo().getCurrentLocation().distanceTo(app.getGlobalTowerInfo().getCurrentArea().getLocation());
+    }
+    if (dist > 1000) {
+      lblUnit2M.setText(unit_km);
+      txtAreaDistance.setText(String.format("%.02f", dist / 1000));
+    }
+    else {
+      lblUnit2M.setText(unit_m);
+      txtAreaDistance.setText(String.format("%.02f", dist));
+    }
   }
   
   @Override
@@ -392,6 +422,23 @@ OnItemSelectedListener, OnClickListener {
         final Intent mapViewIntent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(mapViewIntent);
       }
+    } else if (v.equals(txtArea)) {
+      final String name = txtArea.getText().toString();
+      if (name != null && !name.equals(AreaInfo.UNKNOWN) && !name.isEmpty()) {
+        String currentAreaPosition = "";
+
+        app.getGlobalTowerInfo().lock();
+        try {
+          currentAreaPosition = app.getGlobalTowerInfo().getCurrentArea().getLatitude() 
+              + "," + app.getGlobalTowerInfo().getCurrentArea().getLongitude();
+        } finally {
+          app.getGlobalTowerInfo().unlock();
+        }
+        final String encodedQuery = Uri.encode(currentAreaPosition + "(" + name + ")");
+        final Uri uri = Uri.parse("geo:" + currentAreaPosition + "?q=" + encodedQuery + "&z=16&iwloc=A");
+        final Intent mapViewIntent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(mapViewIntent);
+      }
     }
   }
   
@@ -402,7 +449,6 @@ OnItemSelectedListener, OnClickListener {
       Bundle bundle = intent.getExtras();
       if (bundle != null) {
         int event = bundle.getInt(GpsServiceTask.EVENT);
-        Log.i(getClass().getSimpleName(), "Event: " + event);
         if (event == GpsServiceTask.EVENT_CONNECTED) {
           connected = true;
         } else if (event == GpsServiceTask.EVENT_DISABLED) {
@@ -441,6 +487,8 @@ OnItemSelectedListener, OnClickListener {
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
+    txtAreaError.setText(txt);
+    txtAreaError.setTextColor(color);
     txtDistanceError.setText(txt);
     txtDistanceError.setTextColor(color);
     txtSpeedError.setText(txt);
@@ -455,6 +503,8 @@ OnItemSelectedListener, OnClickListener {
   private void setGpsVisibility(boolean visible) {
     int v = visible ? View.VISIBLE : View.GONE;
     int v2 = visible ? View.GONE : View.VISIBLE;
+    if (txtArea.getVisibility() != v) txtArea.setVisibility(v);
+    if (txtAreaError.getVisibility() != v2) txtAreaError.setVisibility(v2);
     if (txtDistance.getVisibility() != v) txtDistance.setVisibility(v);
     if (txtSpeedMS.getVisibility() != v) txtSpeedMS.setVisibility(v);
     if (txtSpeedKMH.getVisibility() != v) txtSpeedKMH.setVisibility(v);

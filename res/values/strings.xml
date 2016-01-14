@@ -57,9 +57,8 @@
 	
 	<string name="titleArea">Area</string>
 	<string name="buttonArea">Add Area</string>
-    <string name="lblCurrentArea">Current area: </string>
-    <string name="lblNextArea">Next area: </string>
-    <string name="lblNextAreaDistance">Next area distance: </string>
+    <string name="lblArea">Area name: </string>
+    <string name="lblAreaDistance">Area distance: </string>
     <string name="buttonOk">OK</string>
     <string name="buttonCancel">Cancel</string>
     <string name="lblAreaRadius">Radius (m): </string>

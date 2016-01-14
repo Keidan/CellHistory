@@ -53,10 +53,8 @@ public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
       case 2:
         return "Geolocation";
       case 3:
-        return "Areas";
-      case 4:
         return "Neighboring";
-      case 5:
+      case 4:
         return "Recorder";
       default:
         return null;

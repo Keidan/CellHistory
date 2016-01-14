@@ -1,5 +1,7 @@
 package org.kei.android.phone.cellhistory.towers;
 
+import android.location.Location;
+
 /**
  *******************************************************************************
  * @file AreaInfo.java
@@ -20,19 +22,23 @@ package org.kei.android.phone.cellhistory.towers;
  *******************************************************************************
  */
 public class AreaInfo {
+  public static final String UNKNOWN        = "Unknown";
   public static final double DEFAULT_RADIUS = 30.0;
   private int                id             = 0;
-  private String             name           = null;
-  private double             latitude       = 0.0;
-  private double             longitude      = 0.0;
-  private double             radius         = 0.0;
+  private String             name           = UNKNOWN;
+  private double             radius         = DEFAULT_RADIUS;
+  private Location           location       = new Location("");
   
   public String toString() {
     return name;
   }
   
   public String toString(final String sep) {
-    return name + sep + latitude + sep + longitude + sep + radius;
+    return name + sep + location.getLatitude() + sep + location.getLongitude() + sep + radius;
+  }
+  
+  public Location getLocation() {
+    return location;
   }
 
   /**
@@ -69,7 +75,7 @@ public class AreaInfo {
    * @return the latitude
    */
   public double getLatitude() {
-    return latitude;
+    return location.getLatitude();
   }
 
   /**
@@ -77,14 +83,14 @@ public class AreaInfo {
    *          the latitude to set
    */
   public void setLatitude(final double latitude) {
-    this.latitude = latitude;
+    location.setLatitude(latitude);
   }
 
   /**
    * @return the longitude
    */
   public double getLongitude() {
-    return longitude;
+    return location.getLongitude();
   }
 
   /**
@@ -92,7 +98,7 @@ public class AreaInfo {
    *          the longitude to set
    */
   public void setLongitude(final double longitude) {
-    this.longitude = longitude;
+    location.setLongitude(longitude);
   }
 
   /**

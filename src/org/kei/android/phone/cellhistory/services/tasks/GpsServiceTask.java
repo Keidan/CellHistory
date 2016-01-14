@@ -1,9 +1,11 @@
 package org.kei.android.phone.cellhistory.services.tasks;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.prefs.PreferencesTimers;
+import org.kei.android.phone.cellhistory.towers.AreaInfo;
 
 import android.content.Context;
 import android.content.Intent;
@@ -141,6 +143,18 @@ public class GpsServiceTask implements LocationListener, Listener  {
             + app.getGlobalTowerInfo().getDistance() + " m.");
       }
       app.getGlobalTowerInfo().setCurrentLocation(location);
+      
+      /* areas */
+      if(app.getGlobalTowerInfo().getCurrentLocation() != null) {
+        List<AreaInfo> areas = app.getSQL().getAreas();
+        for(AreaInfo ai : areas) {
+          double d = ai.getLocation().distanceTo(app.getGlobalTowerInfo().getCurrentLocation());
+          if(d <= ai.getRadius()) {
+            app.getGlobalTowerInfo().setCurrentArea(ai);
+            break;
+          }
+        }
+      }
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
