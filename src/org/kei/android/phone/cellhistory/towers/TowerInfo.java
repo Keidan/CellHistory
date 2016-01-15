@@ -334,7 +334,7 @@ public class TowerInfo {
     else sb.append(sep);
 
     if(allowAreas && getCurrentArea() != null) {
-      sb.append(getCurrentArea().toString(neighboringSep));
+      sb.append(getCurrentArea().toString(sep));
     }
     else sb.append(sep);
     
