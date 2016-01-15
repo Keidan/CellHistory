@@ -489,6 +489,8 @@ OnItemSelectedListener, OnClickListener {
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
       app.getGlobalTowerInfo().setSpeed(0.0);
+      if(app.getGlobalTowerInfo().getCurrentArea() != null)
+        app.getGlobalTowerInfo().getCurrentArea().setDistance(0.0);
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
