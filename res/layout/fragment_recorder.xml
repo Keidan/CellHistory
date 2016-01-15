@@ -307,6 +307,15 @@
 	            android:textOn="@string/empty"
                 android:text="@string/lblSpeed"
                 android:textColor="?attr/labelTextColor" />
+            
+            <Switch
+                android:id="@+id/swAreas"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textOff="@string/empty"
+	            android:textOn="@string/empty"
+                android:text="@string/lblInterestedAreas"
+                android:textColor="?attr/labelTextColor" />
         </LinearLayout>
     </ScrollView>
 

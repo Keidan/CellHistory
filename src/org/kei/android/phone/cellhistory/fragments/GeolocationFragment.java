@@ -207,6 +207,7 @@ OnItemSelectedListener, OnClickListener {
     chart.setYAxisMax(15);
     chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
         new Date().getTime(), 0);
+    txtArea.setText(AreaInfo.UNKNOWN);
     try {
       processUI(app.getGlobalTowerInfo());
     } catch (Throwable e) {

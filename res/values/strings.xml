@@ -65,6 +65,7 @@
     <string name="lblAreaLongitude">Longitude: </string>
     <string name="lblAreaLatitude">Latitude: </string>
     <string name="lblAreaName">Name: </string>
+    <string name="lblInterestedAreas">Interested areas: </string>
 	
 	<string name="lblTxBytesSinceAppStart">Data Tx: </string>
 	<string name="lblRxBytesSinceAppStart">Data Rx: </string>
@@ -218,5 +219,7 @@
      <string name="pref_recorder_filter_ipv6_title">Mobile IPv6</string>
      <string name="pref_recorder_filter_ipv4_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_ipv4_title">Mobile IPv4</string>
+     <string name="pref_recorder_filter_areas_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_areas_title">Interested areas</string>
 	
 </resources>

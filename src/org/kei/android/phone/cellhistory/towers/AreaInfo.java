@@ -28,13 +28,55 @@ public class AreaInfo {
   private String             name           = UNKNOWN;
   private double             radius         = DEFAULT_RADIUS;
   private Location           location       = new Location("");
+
+  public AreaInfo() {
+  }
+  
+  public AreaInfo(final AreaInfo ai) {
+    id = ai.id;
+    name = ai.name;
+    radius = ai.radius;
+    location = new Location(ai.location);
+  }
   
   public String toString() {
     return name;
   }
   
   public String toString(final String sep) {
-    return name + sep + location.getLatitude() + sep + location.getLongitude() + sep + radius;
+    final StringBuilder sb = new StringBuilder();
+    sb.append(name).append(sep);
+    sb.append(location.getLatitude()).append(sep);
+    sb.append(location.getLongitude()).append(sep);
+    sb.append(radius).append(sep);
+    return sb.toString();
+  }
+  
+  public String toJSON(final boolean indentation) {
+    final StringBuilder sb = new StringBuilder();
+    sb.append(indentation ? "        " : "").append("{").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"name\":\"").append(name).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"latitude\":").append(location.getLatitude()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"longitude\":").append(location.getLongitude()).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"radius\":").append(radius).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "        " : "").append("}").append(indentation ? "\n" : "");
+    return sb.toString();
+  }
+  
+  public String toXML(final boolean indentation) {
+    final StringBuilder sb = new StringBuilder();
+    if(indentation) sb.append("      ");
+    sb.append("<areas>");
+    if(indentation) sb.append("\n");
+    String spaces = indentation ? "        " : null;
+    sb.append(TowerInfo.lineXML(spaces, "name", name));
+    sb.append(TowerInfo.lineXML(spaces, "latitude", location.getLatitude()));
+    sb.append(TowerInfo.lineXML(spaces, "longitude", location.getLongitude()));
+    sb.append(TowerInfo.lineXML(spaces, "radius", radius));
+    if(indentation) sb.append("      ");
+    sb.append("</areas>");
+    if(indentation) sb.append("\n");
+    return sb.toString();
   }
   
   public Location getLocation() {

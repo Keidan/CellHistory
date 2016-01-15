@@ -83,6 +83,11 @@
             android:title="@string/pref_recorder_filter_speed_title" />
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="recorderFilterAreas"
+            android:summary="@string/pref_recorder_filter_areas_summary"
+            android:title="@string/pref_recorder_filter_areas_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="recorderFilterIPv4"
             android:summary="@string/pref_recorder_filter_ipv4_summary"
             android:title="@string/pref_recorder_filter_ipv4_title" />

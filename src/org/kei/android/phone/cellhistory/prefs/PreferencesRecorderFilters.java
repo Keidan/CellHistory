@@ -48,6 +48,7 @@ public class PreferencesRecorderFilters extends EffectPreferenceActivity {
   public static final String   PREFS_RECORDER_FILTERS_KEY_DATA_DIRECTION      = "recorderFilterDataDirection";
   public static final String   PREFS_RECORDER_FILTERS_KEY_IPV4                = "recorderFilterIPv4";
   public static final String   PREFS_RECORDER_FILTERS_KEY_IPV6                = "recorderFilterIPv6";
+  public static final String   PREFS_RECORDER_FILTERS_KEY_AREAS               = "recorderFilterAreas";
   public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_OPERATOR        = true;
   public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_MCC             = true;
   public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_MNC             = true;
@@ -69,6 +70,7 @@ public class PreferencesRecorderFilters extends EffectPreferenceActivity {
   public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_DATA_DIRECTION  = true;
   public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_IPV4            = true;
   public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_IPV6            = true;
+  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_AREAS           = true;
   private MyPreferenceFragment prefFrag                                       = null;
   private boolean              exit                                           = false;
   private boolean              preferences                                    = false;

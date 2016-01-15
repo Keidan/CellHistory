@@ -191,7 +191,9 @@ public class RecorderCtx {
       .append("TYPE").append(sep).append("NET").append(sep).append("LVL")
           .append(sep).append("ASU").append(sep).append("STR").append(sep)
       .append("PER").append(sep).append("RX").append(sep).append("TX").append(sep).append("DIR").append(sep)
-      .append("IPv4").append(sep).append("IPv6").append(sep).append("NEIGBORING(").append("OLD").append(sepNb).append("LAC")
+      .append("IPv4").append(sep).append("IPv6")
+      .append(sep).append("AREAS_NAME").append(sep).append("AREAS_LATITUDE").append(sep).append("AREAS_LONGITUDE").append(sep).append("AREAS_RADIUS")
+      .append(sep).append("NEIGBORING(").append("OLD").append(sepNb).append("LAC")
           .append(sepNb).append("CID").append(sepNb).append("ASU").append(sepNb)
       .append("NT").append(sepNb).append("STR").append(")...");
       String s = sb.toString();
@@ -289,6 +291,18 @@ public class RecorderCtx {
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_IPV6,
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_IPV6)) 
       if(!(backup.getMobileNetworkInfo().getIp6Address().equals(current.getMobileNetworkInfo().getIp6Address()))) return false;
+
+    if(prefs.getBoolean(
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_AREAS,
+        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_AREAS)) {
+      if(current.getCurrentArea() != null && backup.getCurrentArea() != null) {
+        if(!backup.getCurrentArea().getName().equals(current.getCurrentArea().getName())) return false;
+        if(!(backup.getCurrentArea().getLatitude() == current.getCurrentArea().getLatitude())) return false;
+        if(!(backup.getCurrentArea().getLongitude() == current.getCurrentArea().getLongitude())) return false;
+        if(!(backup.getCurrentArea().getRadius() == current.getCurrentArea().getRadius())) return false;
+      }
+    }
+    
     if(prefs.getBoolean(
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_NEIGHBORING,
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_NEIGHBORING)) {

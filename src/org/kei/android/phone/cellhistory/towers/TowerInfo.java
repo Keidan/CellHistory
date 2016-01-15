@@ -94,6 +94,7 @@ public class TowerInfo {
   private boolean               allowDataDirection    = true;
   private boolean               allowIPv4             = true;
   private boolean               allowIPv6             = true;
+  private boolean               allowAreas             = true;
   
   public TowerInfo() {
     mobileNetworkInfo = new MobileNetworkInfo();
@@ -126,7 +127,12 @@ public class TowerInfo {
     mobileNetworkInfo = new MobileNetworkInfo(ti.getMobileNetworkInfo());
     neighboring.clear();
     neighboring.addAll(ti.getNeighboring());
-    currentLocation = ti.currentLocation;
+    if(ti.currentLocation != null) {
+      currentLocation = new Location(ti.currentLocation);
+    } else currentLocation = null;
+    if(ti.currentArea != null) {
+      currentArea = new AreaInfo(ti.currentArea);
+    } else currentArea = null;
   }
   
   public void lock() {
@@ -174,6 +180,11 @@ public class TowerInfo {
     if(allowDataDirection) sb.append(indentation ? "      " : "").append("\"dir\":\"").append(MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())).append("\",").append(indentation ? "\n" : "");
     if(allowIPv4) sb.append(indentation ? "      " : "").append("\"ipv4\":\"").append(getMobileNetworkInfo().getIp4Address()).append("\",").append(indentation ? "\n" : "");
     if(allowIPv6) sb.append(indentation ? "      " : "").append("\"ipv6\":\"").append(getMobileNetworkInfo().getIp6Address()).append("\",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "      " : "").append("\"areas\": [").append(indentation ? "\n" : "");
+    if(allowAreas && getCurrentArea() != null) {
+      sb.append(getCurrentArea().toJSON(indentation));
+    }
+    sb.append(indentation ? "      " : "").append("],").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"neighborings\": [").append(indentation ? "\n" : "");
     if(allowNeighboring) {
       int size = getNeighboring().size();
@@ -238,7 +249,14 @@ public class TowerInfo {
     if(allowDataDirection) sb.append(lineXML(spaces, "dir", MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())));
     if(allowIPv4) sb.append(lineXML(spaces, "ipv4", getMobileNetworkInfo().getIp4Address()));
     if(allowIPv6) sb.append(lineXML(spaces, "ipv6", getMobileNetworkInfo().getIp6Address()));
-    
+    if(indentation) sb.append("    ");
+    sb.append("<areas>");
+    if(indentation) sb.append("\n");
+    if(allowAreas && getCurrentArea() != null) 
+      sb.append(getCurrentArea().toXML(indentation));
+    if(indentation) sb.append("    ");
+    sb.append("</areas>");
+    if(indentation) sb.append("\n");
     if(indentation) sb.append("    ");
     sb.append("<neighborings>");
     if(indentation) sb.append("\n");
@@ -314,7 +332,11 @@ public class TowerInfo {
     else sb.append(sep);
     if(allowIPv6) sb.append(getMobileNetworkInfo().getIp6Address()).append(sep);
     else sb.append(sep);
-    
+
+    if(allowAreas && getCurrentArea() != null) {
+      sb.append(getCurrentArea().toString(neighboringSep));
+    }
+    else sb.append(sep);
     
     if(allowNeighboring) {
       int size = getNeighboring().size();
@@ -333,7 +355,8 @@ public class TowerInfo {
       final boolean allowType, final boolean allowNetwork, final boolean allowASU,
       final boolean allowLVL, final boolean allowSS, final boolean allowNeighboring,
       final boolean allowProvider, final boolean allowDistance, final boolean allowSatellites, final boolean allowSpeed, 
-      final boolean allowDataSpeedRx, final boolean allowDataSpeedTx, final boolean allowDataDirection, final boolean allowIPv4, final boolean allowIPv6) {
+      final boolean allowDataSpeedRx, final boolean allowDataSpeedTx, final boolean allowDataDirection, 
+      final boolean allowIPv4, final boolean allowIPv6, final boolean allowAreas) {
     this.allowOperator = allowOperator;
     this.allowMCC = allowMCC;
     this.allowMNC = allowMNC;
@@ -356,6 +379,7 @@ public class TowerInfo {
     this.allowDataDirection = allowDataDirection;
     this.allowIPv4 = allowIPv4;
     this.allowIPv6 = allowIPv6;
+    this.allowAreas = allowAreas;
   }
   
   public static TowerInfo decodeInformations(final TowerInfo owner, final SignalStrength ss) throws Exception {
