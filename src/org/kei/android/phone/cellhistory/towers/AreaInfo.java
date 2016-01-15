@@ -28,6 +28,7 @@ public class AreaInfo {
   private String             name           = UNKNOWN;
   private double             radius         = DEFAULT_RADIUS;
   private Location           location       = new Location("");
+  private double             distance       = 0.0;
 
   public AreaInfo() {
   }
@@ -36,6 +37,7 @@ public class AreaInfo {
     id = ai.id;
     name = ai.name;
     radius = ai.radius;
+    distance = ai.distance;
     location = new Location(ai.location);
   }
   
@@ -49,6 +51,7 @@ public class AreaInfo {
     sb.append(location.getLatitude()).append(sep);
     sb.append(location.getLongitude()).append(sep);
     sb.append(radius).append(sep);
+    sb.append(distance).append(sep);
     return sb.toString();
   }
   
@@ -59,6 +62,7 @@ public class AreaInfo {
     sb.append(indentation ? "          " : "").append("\"latitude\":").append(location.getLatitude()).append(",").append(indentation ? "\n" : "");
     sb.append(indentation ? "          " : "").append("\"longitude\":").append(location.getLongitude()).append(",").append(indentation ? "\n" : "");
     sb.append(indentation ? "          " : "").append("\"radius\":").append(radius).append(",").append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"distance\":").append(distance).append(indentation ? "\n" : "");
     sb.append(indentation ? "        " : "").append("}").append(indentation ? "\n" : "");
     return sb.toString();
   }
@@ -66,15 +70,16 @@ public class AreaInfo {
   public String toXML(final boolean indentation) {
     final StringBuilder sb = new StringBuilder();
     if(indentation) sb.append("      ");
-    sb.append("<areas>");
+    sb.append("<area>");
     if(indentation) sb.append("\n");
     String spaces = indentation ? "        " : null;
     sb.append(TowerInfo.lineXML(spaces, "name", name));
     sb.append(TowerInfo.lineXML(spaces, "latitude", location.getLatitude()));
     sb.append(TowerInfo.lineXML(spaces, "longitude", location.getLongitude()));
     sb.append(TowerInfo.lineXML(spaces, "radius", radius));
+    sb.append(TowerInfo.lineXML(spaces, "distance", distance));
     if(indentation) sb.append("      ");
-    sb.append("</areas>");
+    sb.append("</area>");
     if(indentation) sb.append("\n");
     return sb.toString();
   }
@@ -155,6 +160,20 @@ public class AreaInfo {
    */
   public void setRadius(double radius) {
     this.radius = radius;
+  }
+
+  /**
+   * @return the distance
+   */
+  public double getDistance() {
+    return distance;
+  }
+
+  /**
+   * @param distance the distance to set
+   */
+  public void setDistance(double distance) {
+    this.distance = distance;
   }
 
 }

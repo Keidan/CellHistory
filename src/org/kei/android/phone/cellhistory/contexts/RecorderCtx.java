@@ -192,7 +192,7 @@ public class RecorderCtx {
           .append(sep).append("ASU").append(sep).append("STR").append(sep)
       .append("PER").append(sep).append("RX").append(sep).append("TX").append(sep).append("DIR").append(sep)
       .append("IPv4").append(sep).append("IPv6")
-      .append(sep).append("AREAS_NAME").append(sep).append("AREAS_LATITUDE").append(sep).append("AREAS_LONGITUDE").append(sep).append("AREAS_RADIUS")
+      .append(sep).append("AREAS_NAME").append(sep).append("AREAS_LATITUDE").append(sep).append("AREAS_LONGITUDE").append(sep).append("AREAS_RADIUS").append(sep).append("AREAS_DISTANCE")
       .append(sep).append("NEIGBORING(").append("OLD").append(sepNb).append("LAC")
           .append(sepNb).append("CID").append(sepNb).append("ASU").append(sepNb)
       .append("NT").append(sepNb).append("STR").append(")...");

@@ -154,6 +154,7 @@ public class GpsServiceTask implements LocationListener, Listener  {
           if(d <= dist) {
             area = ai;
             dist = d;
+            ai.setDistance(dist);
           }
         }
         app.getGlobalTowerInfo().setCurrentArea(area);

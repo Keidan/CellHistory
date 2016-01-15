@@ -276,7 +276,7 @@ OnItemSelectedListener, OnClickListener {
       txtArea.setText(app.getGlobalTowerInfo().getCurrentArea().getName());
       if(txtArea.getText().toString().compareTo(AreaInfo.UNKNOWN) != 0)
         color = color_blue_dark;
-      dist = app.getGlobalTowerInfo().getCurrentLocation().distanceTo(app.getGlobalTowerInfo().getCurrentArea().getLocation());
+      dist = app.getGlobalTowerInfo().getCurrentArea().getDistance();
       if(dist <= app.getGlobalTowerInfo().getCurrentArea().getRadius())
         color = color_green_dark;
     }
