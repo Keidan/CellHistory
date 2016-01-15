@@ -95,6 +95,7 @@ OnItemSelectedListener, OnClickListener {
   private int               color_orange                 = Color.BLACK;
   private int               color_blue_dark              = Color.BLACK;
   private int               color_blue_dark_transparent  = Color.BLACK;
+  private int               color_green_dark             = Color.BLACK;
   private String            unit_m                       = "";
   private String            unit_km                      = "";
   private String            txtGpsDisabled               = "";
@@ -128,6 +129,7 @@ OnItemSelectedListener, OnClickListener {
     color_orange = resources.getColor(Color.ORANGE);
     color_blue_dark = resources.getColor(Color.BLUE_DARK);
     color_blue_dark_transparent = resources.getColor(Color.BLUE_DARK_TRANSPARENT);
+    color_green_dark = resources.getColor(Color.GREEN_DARK);
     default_color = new TextView(getActivity()).getTextColors().getDefaultColor();
     /* texts */
     txtGpsDisabled = resources.getString(R.string.txtGpsDisabled);
@@ -268,14 +270,16 @@ OnItemSelectedListener, OnClickListener {
     txtSatellites.setText("" + app.getGlobalTowerInfo().getSatellites());
     /* areas */
     dist = 0.0;
+    int color = default_color;
     if(app.getGlobalTowerInfo().getCurrentLocation() != null && app.getGlobalTowerInfo().getCurrentArea() != null) {
       txtArea.setText(app.getGlobalTowerInfo().getCurrentArea().getName());
       if(txtArea.getText().toString().compareTo(AreaInfo.UNKNOWN) != 0)
-        txtArea.setTextColor(color_blue_dark);
-      else
-        txtArea.setTextColor(default_color);
+        color = color_blue_dark;
       dist = app.getGlobalTowerInfo().getCurrentLocation().distanceTo(app.getGlobalTowerInfo().getCurrentArea().getLocation());
+      if(dist <= app.getGlobalTowerInfo().getCurrentArea().getRadius())
+        color = color_green_dark;
     }
+    txtArea.setTextColor(color);
     if (dist > 1000) {
       lblUnit2M.setText(unit_km);
       txtAreaDistance.setText(String.format("%.02f", dist / 1000));
