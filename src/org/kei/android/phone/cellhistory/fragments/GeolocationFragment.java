@@ -68,9 +68,6 @@ OnItemSelectedListener, OnClickListener {
   private TextView          txtGeoProvider               = null;
   private TextView          txtGeolocation               = null;
   private TextView          txtSatellites                = null;
-  private TextView          txtArea                      = null;
-  private TextView          txtAreaError                 = null;
-  private TextView          txtAreaDistance              = null;
   private TextView          txtSpeedMS                   = null;
   private TextView          txtSpeedKMH                  = null;
   private TextView          txtSpeedMPH                  = null;
@@ -81,7 +78,6 @@ OnItemSelectedListener, OnClickListener {
   private TextView          txtSpeedError                = null;
   private TextView          txtDistanceError             = null;
   private TextView          lblUnitM                     = null;
-  private TextView          lblUnit2M                    = null;
   private TextView          lblUnitMS                    = null;
   private TextView          lblUnitKMH                   = null;
   private TextView          lblUnitMPH                   = null;
@@ -95,7 +91,6 @@ OnItemSelectedListener, OnClickListener {
   private int               color_orange                 = Color.BLACK;
   private int               color_blue_dark              = Color.BLACK;
   private int               color_blue_dark_transparent  = Color.BLACK;
-  private int               color_green_dark             = Color.BLACK;
   private String            unit_m                       = "";
   private String            unit_km                      = "";
   private String            txtGpsDisabled               = "";
@@ -129,7 +124,6 @@ OnItemSelectedListener, OnClickListener {
     color_orange = resources.getColor(Color.ORANGE);
     color_blue_dark = resources.getColor(Color.BLUE_DARK);
     color_blue_dark_transparent = resources.getColor(Color.BLUE_DARK_TRANSPARENT);
-    color_green_dark = resources.getColor(Color.GREEN_DARK);
     default_color = new TextView(getActivity()).getTextColors().getDefaultColor();
     /* texts */
     txtGpsDisabled = resources.getString(R.string.txtGpsDisabled);
@@ -157,16 +151,9 @@ OnItemSelectedListener, OnClickListener {
     rbSpeedKMH = (RadioButton) getView().findViewById(R.id.rbSpeedKMH);
     rbSpeedMPH = (RadioButton) getView().findViewById(R.id.rbSpeedMPH);
     lblUnitM = (TextView) getView().findViewById(R.id.lblUnitM);
-    lblUnit2M = (TextView) getView().findViewById(R.id.lblUnit2M);
     lblUnitMS = (TextView) getView().findViewById(R.id.lblUnitMS);
     lblUnitKMH = (TextView) getView().findViewById(R.id.lblUnitKMH);
     lblUnitMPH = (TextView) getView().findViewById(R.id.lblUnitMPH);
-    txtArea = (TextView) getView().findViewById(R.id.txtArea);
-    txtAreaError = (TextView) getView().findViewById(
-        R.id.txtAreaError);
-    txtAreaDistance = (TextView) getView().findViewById(
-        R.id.txtAreaDistance);
-
     txtDistance = (TextView) getView().findViewById(R.id.txtDistance);
     txtSpeedError = (TextView) getView().findViewById(R.id.txtSpeedError);
     txtDistanceError = (TextView) getView().findViewById(R.id.txtDistanceError);
@@ -176,7 +163,6 @@ OnItemSelectedListener, OnClickListener {
     txtDistanceError.setTextColor(color_red);
     
     txtGeolocation.setOnClickListener(this);
-    txtArea.setOnClickListener(this);
     rbSpeedMS.setOnClickListener(this);
     rbSpeedKMH.setOnClickListener(this);
     rbSpeedMPH.setOnClickListener(this);
@@ -207,7 +193,6 @@ OnItemSelectedListener, OnClickListener {
     chart.setYAxisMax(15);
     chart.addTimePoint(color_blue_dark, color_blue_dark_transparent,
         new Date().getTime(), 0);
-    txtArea.setText(AreaInfo.UNKNOWN);
     try {
       processUI(app.getGlobalTowerInfo());
     } catch (Throwable e) {
@@ -269,26 +254,6 @@ OnItemSelectedListener, OnClickListener {
       }
     }
     txtSatellites.setText("" + app.getGlobalTowerInfo().getSatellites());
-    /* areas */
-    dist = 0.0;
-    int color = default_color;
-    if(app.getGlobalTowerInfo().getCurrentLocation() != null && app.getGlobalTowerInfo().getCurrentArea() != null) {
-      txtArea.setText(app.getGlobalTowerInfo().getCurrentArea().getName());
-      if(txtArea.getText().toString().compareTo(AreaInfo.UNKNOWN) != 0)
-        color = color_blue_dark;
-      dist = app.getGlobalTowerInfo().getCurrentArea().getDistance();
-      if(dist <= app.getGlobalTowerInfo().getCurrentArea().getRadius())
-        color = color_green_dark;
-    }
-    txtArea.setTextColor(color);
-    if (dist > 1000) {
-      lblUnit2M.setText(unit_km);
-      txtAreaDistance.setText(String.format("%.02f", dist / 1000));
-    }
-    else {
-      lblUnit2M.setText(unit_m);
-      txtAreaDistance.setText(String.format("%.02f", dist));
-    }
   }
   
   @Override
@@ -427,23 +392,6 @@ OnItemSelectedListener, OnClickListener {
         final Intent mapViewIntent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(mapViewIntent);
       }
-    } else if (v.equals(txtArea)) {
-      final String name = txtArea.getText().toString();
-      if (name != null && !name.equals(AreaInfo.UNKNOWN) && !name.isEmpty()) {
-        String currentAreaPosition = "";
-
-        app.getGlobalTowerInfo().lock();
-        try {
-          currentAreaPosition = app.getGlobalTowerInfo().getCurrentArea().getLatitude() 
-              + "," + app.getGlobalTowerInfo().getCurrentArea().getLongitude();
-        } finally {
-          app.getGlobalTowerInfo().unlock();
-        }
-        final String encodedQuery = Uri.encode(currentAreaPosition + "(" + name + ")");
-        final Uri uri = Uri.parse("geo:" + currentAreaPosition + "?q=" + encodedQuery + "&z=16&iwloc=A");
-        final Intent mapViewIntent = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(mapViewIntent);
-      }
     }
   }
   
@@ -489,13 +437,11 @@ OnItemSelectedListener, OnClickListener {
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
       app.getGlobalTowerInfo().setSpeed(0.0);
-      if(app.getGlobalTowerInfo().getCurrentArea() != null)
-        app.getGlobalTowerInfo().getCurrentArea().setDistance(0.0);
+      for(AreaInfo ai : app.getGlobalTowerInfo().getAreas())
+        ai.setDistance(0.0);
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
-    txtAreaError.setText(txt);
-    txtAreaError.setTextColor(color);
     txtDistanceError.setText(txt);
     txtDistanceError.setTextColor(color);
     txtSpeedError.setText(txt);
@@ -510,8 +456,6 @@ OnItemSelectedListener, OnClickListener {
   private void setGpsVisibility(boolean visible) {
     int v = visible ? View.VISIBLE : View.GONE;
     int v2 = visible ? View.GONE : View.VISIBLE;
-    if (txtArea.getVisibility() != v) txtArea.setVisibility(v);
-    if (txtAreaError.getVisibility() != v2) txtAreaError.setVisibility(v2);
     if (txtDistance.getVisibility() != v) txtDistance.setVisibility(v);
     if (txtSpeedMS.getVisibility() != v) txtSpeedMS.setVisibility(v);
     if (txtSpeedKMH.getVisibility() != v) txtSpeedKMH.setVisibility(v);

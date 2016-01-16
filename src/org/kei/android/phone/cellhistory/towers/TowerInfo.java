@@ -71,7 +71,7 @@ public class TowerInfo {
   private int                   satellites            = 0;
   private MobileNetworkInfo     mobileNetworkInfo     = null;
   private Location              currentLocation       = null;
-  private AreaInfo              currentArea           = null;
+  private List<AreaInfo>        areas                 = null;
   private boolean               allowOperator         = true;
   private boolean               allowMCC              = true;
   private boolean               allowMNC              = true;
@@ -99,6 +99,7 @@ public class TowerInfo {
   public TowerInfo() {
     mobileNetworkInfo = new MobileNetworkInfo();
     neighboring = new ArrayList<NeighboringInfo>();
+    areas = new ArrayList<AreaInfo>();
   }
   
   public TowerInfo(final TowerInfo ti) {
@@ -130,9 +131,8 @@ public class TowerInfo {
     if(ti.currentLocation != null) {
       currentLocation = new Location(ti.currentLocation);
     } else currentLocation = null;
-    if(ti.currentArea != null) {
-      currentArea = new AreaInfo(ti.currentArea);
-    } else currentArea = null;
+    areas.clear();
+    areas.addAll(ti.getAreas());
   }
   
   public void lock() {
@@ -181,8 +181,13 @@ public class TowerInfo {
     if(allowIPv4) sb.append(indentation ? "      " : "").append("\"ipv4\":\"").append(getMobileNetworkInfo().getIp4Address()).append("\",").append(indentation ? "\n" : "");
     if(allowIPv6) sb.append(indentation ? "      " : "").append("\"ipv6\":\"").append(getMobileNetworkInfo().getIp6Address()).append("\",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"areas\": [").append(indentation ? "\n" : "");
-    if(allowAreas && getCurrentArea() != null) {
-      sb.append(getCurrentArea().toJSON(indentation));
+    if(allowAreas) {
+      int size = getNeighboring().size();
+      for(int i = 0; i < size; ++i) {
+        AreaInfo ai = getAreas().get(i);
+        sb.append(ai.toJSON(indentation));
+        if(i < size - 1) sb.append(indentation ? "      " : "").append(",").append(indentation ? "\n" : "");
+      }
     }
     sb.append(indentation ? "      " : "").append("],").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"neighborings\": [").append(indentation ? "\n" : "");
@@ -252,8 +257,10 @@ public class TowerInfo {
     if(indentation) sb.append("    ");
     sb.append("<areas>");
     if(indentation) sb.append("\n");
-    if(allowAreas && getCurrentArea() != null) 
-      sb.append(getCurrentArea().toXML(indentation));
+    if(allowAreas) 
+      for(AreaInfo ai : getAreas()) {
+        sb.append(ai.toXML(indentation));
+      }
     if(indentation) sb.append("    ");
     sb.append("</areas>");
     if(indentation) sb.append("\n");
@@ -282,7 +289,7 @@ public class TowerInfo {
     return sb.toString();
   }
   
-  public String toString(final String sep, final String neighboringSep) {
+  public String toString(final String sep, final String neighboringSep, final String areaSep) {
     StringBuilder sb = new StringBuilder();
     sb.append(getTimestamp()).append(sep);
     if(allowOperator) sb.append(getOperator()).append(sep);
@@ -333,8 +340,13 @@ public class TowerInfo {
     if(allowIPv6) sb.append(getMobileNetworkInfo().getIp6Address()).append(sep);
     else sb.append(sep);
 
-    if(allowAreas && getCurrentArea() != null) {
-      sb.append(getCurrentArea().toString(sep));
+    if(allowAreas) {
+      int size = getAreas().size();
+      for(int i = 0; i < size; ++i) {
+        AreaInfo ai = getAreas().get(i);
+        sb.append(ai.toString(areaSep));
+        if(i < size - 1) sb.append(areaSep);
+      }
     }
     else sb.append(sep);
     
@@ -762,7 +774,7 @@ public class TowerInfo {
    */
   public Location getCurrentLocation() {
     if(currentLocation == null)
-      currentLocation = new Location((String)null);
+      currentLocation = new Location("");
     return currentLocation;
   }
 
@@ -774,17 +786,17 @@ public class TowerInfo {
   }
 
   /**
-   * @return the currentArea
+   * @return the areas list
    */
-  public AreaInfo getCurrentArea() {
-    return currentArea;
+  public List<AreaInfo> getAreas() {
+    return areas;
   }
 
   /**
-   * @param currentArea the currentArea to set
+   * @param areas
+   *          the areas to add
    */
-  public void setCurrentArea(AreaInfo currentArea) {
-    this.currentArea = currentArea;
+  public void addArea(final AreaInfo area) {
+    this.areas.add(area);
   }
-  
 }

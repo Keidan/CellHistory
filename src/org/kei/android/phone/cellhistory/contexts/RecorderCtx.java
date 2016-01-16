@@ -10,6 +10,7 @@ import java.util.Locale;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.prefs.PreferencesRecorderFilters;
+import org.kei.android.phone.cellhistory.towers.AreaInfo;
 import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
@@ -57,20 +58,20 @@ public class RecorderCtx {
     this.prefs = prefs;
   }
 
-  public void writeData(final String sep, final String sepNb, final int limit,
+  public void writeData(final String sep, final String sepNb, final String sepArea, final int limit,
       final CellHistoryApp ctx, final boolean detectChange, long records) {
     if (pw != null) {
       if (detectChange) {
         if (ctx.getBackupTowerInfo() == null
             || !sameTowerInfo(ctx.getBackupTowerInfo(), ctx.getGlobalTowerInfo())) {
           ctx.setBackupTowerInfo(new TowerInfo(ctx.getGlobalTowerInfo()));
-          if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+          if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb, sepArea));
           else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON(indentation));
           else frames.add(ctx.getGlobalTowerInfo().toXML(indentation));
           counter++;
         }
       } else {
-        if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb));
+        if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb, sepArea));
         else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON(indentation));
         else frames.add(ctx.getGlobalTowerInfo().toXML(indentation));
         counter++;
@@ -162,7 +163,7 @@ public class RecorderCtx {
   }
 
   public void writeHeader(final String root, final String name, final String sep,
-      final String sepNb, final boolean deletePrev, final String format, final boolean indentation) throws Exception {
+      final String sepNb, final String sepArea, final boolean deletePrev, final String format, final boolean indentation) throws Exception {
     this.format = format;
     this.indentation = indentation;
     if (pw != null) {
@@ -192,7 +193,8 @@ public class RecorderCtx {
           .append(sep).append("ASU").append(sep).append("STR").append(sep)
       .append("PER").append(sep).append("RX").append(sep).append("TX").append(sep).append("DIR").append(sep)
       .append("IPv4").append(sep).append("IPv6")
-      .append(sep).append("AREAS_NAME").append(sep).append("AREAS_LATITUDE").append(sep).append("AREAS_LONGITUDE").append(sep).append("AREAS_RADIUS").append(sep).append("AREAS_DISTANCE")
+      .append(sep).append("AREAS(NAME").append(sepArea).append("LATITUDE").append(sepArea).append("LONGITUDE").append(sepArea).append("RADIUS")
+      .append(sepArea).append("DISTANCE").append(sepArea).append("USED").append(")...")
       .append(sep).append("NEIGBORING(").append("OLD").append(sepNb).append("LAC")
           .append(sepNb).append("CID").append(sepNb).append("ASU").append(sepNb)
       .append("NT").append(sepNb).append("STR").append(")...");
@@ -295,11 +297,20 @@ public class RecorderCtx {
     if(prefs.getBoolean(
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_AREAS,
         PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_AREAS)) {
-      if(current.getCurrentArea() != null && backup.getCurrentArea() != null) {
-        if(!backup.getCurrentArea().getName().equals(current.getCurrentArea().getName())) return false;
-        if(!(backup.getCurrentArea().getLatitude() == current.getCurrentArea().getLatitude())) return false;
-        if(!(backup.getCurrentArea().getLongitude() == current.getCurrentArea().getLongitude())) return false;
-        if(!(backup.getCurrentArea().getRadius() == current.getCurrentArea().getRadius())) return false;
+      int size1 = backup.getAreas().size();
+      int size2 = current.getAreas().size();
+      if(size1 != size2) return false;
+      boolean found = false;
+      for(int i = 0; i < size1; ++i) {
+        AreaInfo ni1 = backup.getAreas().get(i);
+        for(int j = 0; j < size2; ++j) {
+          AreaInfo ni2 = current.getAreas().get(j);
+          if(ni1.toString(",").equals(ni2.toString(","))) {
+            found = true;
+            break;
+          }
+        }
+        if(!found) return false;
       }
     }
     

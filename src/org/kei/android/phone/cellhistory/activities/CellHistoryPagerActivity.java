@@ -13,6 +13,7 @@ import org.kei.android.atk.view.IThemeActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.adapters.ScreenSlidePagerAdapter;
+import org.kei.android.phone.cellhistory.fragments.AreasFragment;
 import org.kei.android.phone.cellhistory.fragments.NetworkFragment;
 import org.kei.android.phone.cellhistory.fragments.GeolocationFragment;
 import org.kei.android.phone.cellhistory.fragments.NeighboringFragment;
@@ -104,6 +105,7 @@ IThemeActivity, OnPageChangeListener {
     fragments.add(new TowerFragment());
     fragments.add(new NetworkFragment());
     fragments.add(new GeolocationFragment());
+    fragments.add(new AreasFragment());
     fragments.add(new NeighboringFragment());
     fragments.add(new RecorderFragment());
     

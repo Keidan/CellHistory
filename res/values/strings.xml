@@ -146,6 +146,8 @@
     <string name="pref_sep_summary">The separator to use to separate each words into the CSV file.</string>
 	<string name="pref_neighboring_sep_title">Neighboring separator</string>
     <string name="pref_neighboring_sep_summary">The separator to use to separate each "neighboring entries" into the current CSV line.</string>
+	<string name="pref_areas_sep_title">Areas separator</string>
+    <string name="pref_areas_sep_summary">The separator to use to separate each "area entries" into the current CSV line.</string>
 	<string name="pref_detect_change_title">Change only</string>
     <string name="pref_detect_change_summary">Writes the entry only if a data change is detected.</string>
 	<string name="pref_detect_change_filter_title">Filters</string>

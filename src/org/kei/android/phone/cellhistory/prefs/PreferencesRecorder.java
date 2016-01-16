@@ -10,6 +10,7 @@ import org.kei.android.atk.view.chooser.FileChooserActivity;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
+import org.kei.android.phone.cellhistory.towers.AreaInfo;
 import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
 
@@ -53,12 +54,14 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   public static final String   PREFS_KEY_FLUSH               = "recorderFlush";
   public static final String   PREFS_KEY_SEP                 = "recorderSep";
   public static final String   PREFS_KEY_NEIGHBORING_SEP     = "recorderNeighboringSep";
+  public static final String   PREFS_KEY_AREAS_SEP           = "recorderAreasSep";
   public static final String   PREFS_KEY_DEL_PREV_FILE       = "recorderDeletePrevFile";
   public static final String   PREFS_KEY_DETECT_CHANGE       = "recorderDetectChange";
   public static final String   PREFS_KEY_DETECT_CHANGE_FILTER= "recorderDetectChangeFilter";
   public static final String   PREFS_DEFAULT_FLUSH           = "25";
   public static final String   PREFS_DEFAULT_SEP             = TowerInfo.DEFAULT_TOSTRING_SEP;
   public static final String   PREFS_DEFAULT_NEIGHBORING_SEP = NeighboringInfo.DEFAULT_TOSTRING_SEP;
+  public static final String   PREFS_DEFAULT_AREAS_SEP       = AreaInfo.DEFAULT_TOSTRING_SEP;
   public static final String   PREFS_DEFAULT_SAVE_PATH       = Environment
                                                                  .getExternalStorageDirectory()
                                                                  .getAbsolutePath();
@@ -129,10 +132,15 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
     summary = getResources().getString(R.string.pref_neighboring_sep_summary);
     summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_NEIGHBORING_SEP, PREFS_DEFAULT_NEIGHBORING_SEP) + "'";
     sep2.setSummary(summary);
+    EditTextPreference sep3 = (EditTextPreference)prefFrag.findPreference(PREFS_KEY_AREAS_SEP);
+    summary = getResources().getString(R.string.pref_areas_sep_summary);
+    summary += "\nSeparator: '" + prefs.getString(PREFS_KEY_AREAS_SEP, PREFS_DEFAULT_AREAS_SEP) + "'";
+    sep3.setSummary(summary);
     pref = (Preference)prefFrag.findPreference(PREFS_KEY_INDENTATION);
     boolean en = prefs.getString(PREFS_KEY_FORMATS, PREFS_DEFAULT_FORMATS).equals(RecorderCtx.FORMAT_CSV);
     sep1.setEnabled(en);
     sep2.setEnabled(en);
+    sep3.setEnabled(en);
     pref.setEnabled(!en);
     
     pref = (Preference)prefFrag.findPreference(PREFS_KEY_FORMATS);
@@ -179,7 +187,7 @@ public class PreferencesRecorder extends EffectPreferenceActivity implements OnS
   }
   @Override
   public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP) 
+    if (key.equals(PREFS_KEY_FLUSH) || key.equals(PREFS_KEY_SEP) || key.equals(PREFS_KEY_NEIGHBORING_SEP) || key.equals(PREFS_KEY_AREAS_SEP) 
         || key.equals(PREFS_KEY_FORMATS) || key.equals(PREFS_KEY_DETECT_CHANGE)) {
       updateSummaries();
     }

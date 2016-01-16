@@ -146,18 +146,12 @@ public class GpsServiceTask implements LocationListener, Listener  {
       
       /* areas */
       if(app.getGlobalTowerInfo().getCurrentLocation() != null) {
-        AreaInfo area = null;
-        double dist = Double.MAX_VALUE;
         List<AreaInfo> areas = app.getSQL().getAreas();
         for(AreaInfo ai : areas) {
-          double d = ai.getLocation().distanceTo(app.getGlobalTowerInfo().getCurrentLocation());
-          if(d <= dist) {
-            area = ai;
-            dist = d;
-            ai.setDistance(dist);
-          }
+          ai.setDistance(ai.getLocation().distanceTo(app.getGlobalTowerInfo().getCurrentLocation()));
         }
-        app.getGlobalTowerInfo().setCurrentArea(area);
+        app.getGlobalTowerInfo().getAreas().clear();
+        app.getGlobalTowerInfo().getAreas().addAll(areas);
       }
     } finally {
       app.getGlobalTowerInfo().unlock();

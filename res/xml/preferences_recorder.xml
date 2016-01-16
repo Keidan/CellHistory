@@ -21,6 +21,13 @@
             android:title="@string/pref_sep_title"   
     		android:inputType="text" />
         <EditTextPreference
+            android:key="recorderAreasSep"
+            android:maxLength="1"
+            android:defaultValue=","
+            android:summary="@string/pref_areas_sep_summary"
+            android:title="@string/pref_areas_sep_title"   
+    		android:inputType="text" />
+        <EditTextPreference
             android:key="recorderNeighboringSep"
             android:maxLength="1"
             android:defaultValue=","

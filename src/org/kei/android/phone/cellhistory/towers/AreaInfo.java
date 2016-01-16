@@ -22,15 +22,22 @@ import android.location.Location;
  *******************************************************************************
  */
 public class AreaInfo {
-  public static final String UNKNOWN        = "Unknown";
-  public static final double DEFAULT_RADIUS = 30.0;
-  private int                id             = 0;
-  private String             name           = UNKNOWN;
-  private double             radius         = DEFAULT_RADIUS;
-  private Location           location       = new Location("");
-  private double             distance       = 0.0;
-
+  public static final String DEFAULT_TOSTRING_SEP = ",";
+  public static final String UNKNOWN              = "Unknown";
+  public static final double DEFAULT_RADIUS       = 30.0;
+  private int                id                   = 0;
+  private String             name                 = UNKNOWN;
+  private double             radius               = DEFAULT_RADIUS;
+  private Location           location             = new Location("");
+  private double             distance             = 0.0;
+  private boolean            used                 = false;
+  private boolean            title                = false;
+  
   public AreaInfo() {
+  }  
+
+  public AreaInfo(final boolean title) {
+    this.title = title;
   }
   
   public AreaInfo(final AreaInfo ai) {
@@ -52,6 +59,7 @@ public class AreaInfo {
     sb.append(location.getLongitude()).append(sep);
     sb.append(radius).append(sep);
     sb.append(distance).append(sep);
+    sb.append(used).append(sep);
     return sb.toString();
   }
   
@@ -63,6 +71,7 @@ public class AreaInfo {
     sb.append(indentation ? "          " : "").append("\"longitude\":").append(location.getLongitude()).append(",").append(indentation ? "\n" : "");
     sb.append(indentation ? "          " : "").append("\"radius\":").append(radius).append(",").append(indentation ? "\n" : "");
     sb.append(indentation ? "          " : "").append("\"distance\":").append(distance).append(indentation ? "\n" : "");
+    sb.append(indentation ? "          " : "").append("\"used\":").append(used).append(indentation ? "\n" : "");
     sb.append(indentation ? "        " : "").append("}").append(indentation ? "\n" : "");
     return sb.toString();
   }
@@ -78,6 +87,7 @@ public class AreaInfo {
     sb.append(TowerInfo.lineXML(spaces, "longitude", location.getLongitude()));
     sb.append(TowerInfo.lineXML(spaces, "radius", radius));
     sb.append(TowerInfo.lineXML(spaces, "distance", distance));
+    sb.append(TowerInfo.lineXML(spaces, "used", used));
     if(indentation) sb.append("      ");
     sb.append("</area>");
     if(indentation) sb.append("\n");
@@ -174,6 +184,30 @@ public class AreaInfo {
    */
   public void setDistance(double distance) {
     this.distance = distance;
+    if(distance <= radius)
+      used = true;
+  }
+
+  /**
+   * @return the used
+   */
+  public boolean isUsed() {
+    return used;
+  }
+  
+  /**
+   * @return the title
+   */
+  public boolean isTitle() {
+    return title;
+  }
+  
+  /**
+   * @param title
+   *          the title to set
+   */
+  public void setTitle(final boolean title) {
+    this.title = title;
   }
 
 }
