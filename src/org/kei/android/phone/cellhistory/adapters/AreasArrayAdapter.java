@@ -83,11 +83,15 @@ public class AreasArrayAdapter extends ArrayAdapter<AreaInfo> implements
           color = color_green_dark;
         updateTextViewColor(name, o.getName(), color);
         distance.setTextColor(color);
-        if (o.getDistance() > 1000) {
-          distance.setText(String.format("%.02f", o.getDistance() / 1000) + " " + unit_km);
-        }
+        if(o.getDistance() == -1)
+          distance.setText("??? " + unit_m);
         else {
-          distance.setText(String.format("%.02f", o.getDistance()) + " " + unit_m);
+          if (o.getDistance() > 1000) {
+            distance.setText(String.format("%.02f", o.getDistance() / 1000) + " " + unit_km);
+          }
+          else {
+            distance.setText(String.format("%.02f", o.getDistance()) + " " + unit_m);
+          }
         }
         name.setOnClickListener(this);
       }

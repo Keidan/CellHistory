@@ -59,6 +59,15 @@ public class AreasFragment extends Fragment implements UITaskFragment {
     TextView dummy = new TextView(getActivity());
     lvAreas = (ListView)getView().findViewById(R.id.lvAreas);
     lvAreas.setAdapter(new AreasArrayAdapter(dummy.getTextColors().getDefaultColor(), context, R.layout.view_area, new ArrayList<AreaInfo>()));
+    CellHistoryApp app = CellHistoryApp.getApp(getActivity());
+    List<AreaInfo> areas = app.getSQL().getAreas();
+    app.getGlobalTowerInfo().lock();
+    try {
+      app.getGlobalTowerInfo().getAreas().clear();
+      app.getGlobalTowerInfo().getAreas().addAll(areas);
+    } finally {
+      app.getGlobalTowerInfo().unlock();
+    }
     try {
       processUI(CellHistoryApp.getApp(getActivity()).getGlobalTowerInfo());
     } catch (Throwable e) {

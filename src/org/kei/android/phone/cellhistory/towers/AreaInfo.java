@@ -29,7 +29,7 @@ public class AreaInfo {
   private String             name                 = UNKNOWN;
   private double             radius               = DEFAULT_RADIUS;
   private Location           location             = new Location("");
-  private double             distance             = 0.0;
+  private double             distance             = -1;
   private boolean            used                 = false;
   private boolean            title                = false;
   
@@ -180,7 +180,7 @@ public class AreaInfo {
   }
   
   public void reset() {
-    distance = 0.0;
+    distance = -1;
     used = false;
   }
 
