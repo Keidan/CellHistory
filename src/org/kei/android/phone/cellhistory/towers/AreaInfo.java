@@ -178,6 +178,11 @@ public class AreaInfo {
   public double getDistance() {
     return distance;
   }
+  
+  public void reset() {
+    distance = 0.0;
+    used = false;
+  }
 
   /**
    * @param distance the distance to set

@@ -437,8 +437,9 @@ OnItemSelectedListener, OnClickListener {
     try {
       app.getGlobalTowerInfo().setDistance(0.0);
       app.getGlobalTowerInfo().setSpeed(0.0);
-      for(AreaInfo ai : app.getGlobalTowerInfo().getAreas())
-        ai.setDistance(0.0);
+      for(AreaInfo ai : app.getGlobalTowerInfo().getAreas()) {
+        ai.reset();
+      }
     } finally {
       app.getGlobalTowerInfo().unlock();
     }
