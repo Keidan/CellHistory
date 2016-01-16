@@ -184,7 +184,7 @@ public class AreaInfo {
    */
   public void setDistance(double distance) {
     this.distance = distance;
-    if(distance <= radius)
+    if(distance <= radius && getLatitude() != 0 && getLongitude() != 0)
       used = true;
   }
 
