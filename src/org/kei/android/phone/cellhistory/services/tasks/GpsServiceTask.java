@@ -18,6 +18,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.location.GpsStatus.Listener;
 import android.os.Bundle;
+import android.util.Log;
 /**
  *******************************************************************************
  * @file GpsServiceTask.java
@@ -146,12 +147,16 @@ public class GpsServiceTask implements LocationListener, Listener  {
       
       /* areas */
       if(app.getGlobalTowerInfo().getCurrentLocation() != null) {
-        List<AreaInfo> areas = app.getSQL().getAreas();
-        for(AreaInfo ai : areas) {
-          ai.setDistance(ai.getLocation().distanceTo(app.getGlobalTowerInfo().getCurrentLocation()));
+        try {
+          List<AreaInfo> areas = app.getSQL().getAreas();
+          for(AreaInfo ai : areas) {
+            ai.setDistance(ai.getLocation().distanceTo(app.getGlobalTowerInfo().getCurrentLocation()));
+          }
+          app.getGlobalTowerInfo().getAreas().clear();
+          app.getGlobalTowerInfo().getAreas().addAll(areas);
+        } catch(Exception e) {
+          Log.e(getClass().getSimpleName(), "Exception: " + e, e);
         }
-        app.getGlobalTowerInfo().getAreas().clear();
-        app.getGlobalTowerInfo().getAreas().addAll(areas);
       }
     } finally {
       app.getGlobalTowerInfo().unlock();
