@@ -59,7 +59,7 @@ public class AreaInfo {
     sb.append(location.getLongitude()).append(sep);
     sb.append(radius).append(sep);
     sb.append(distance).append(sep);
-    sb.append(used).append(sep);
+    sb.append(used);
     return sb.toString();
   }
   

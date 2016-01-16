@@ -182,7 +182,7 @@ public class TowerInfo {
     if(allowIPv6) sb.append(indentation ? "      " : "").append("\"ipv6\":\"").append(getMobileNetworkInfo().getIp6Address()).append("\",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"areas\": [").append(indentation ? "\n" : "");
     if(allowAreas) {
-      int size = getNeighboring().size();
+      int size = getAreas().size();
       for(int i = 0; i < size; ++i) {
         AreaInfo ai = getAreas().get(i);
         sb.append(ai.toJSON(indentation));
@@ -347,6 +347,7 @@ public class TowerInfo {
         sb.append(ai.toString(areaSep));
         if(i < size - 1) sb.append(areaSep);
       }
+      sb.append(sep);
     }
     else sb.append(sep);
     
