@@ -205,6 +205,8 @@
      <string name="pref_recorder_filter_networkid_title">Mobile network</string>
      <string name="pref_recorder_filter_speed_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_speed_title">GPS Speed</string>
+     <string name="pref_recorder_filter_geolocation_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_geolocation_title">Cell location</string>
      <string name="pref_recorder_filter_distance_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_distance_title">Cell distance</string>
      <string name="pref_recorder_filter_satellites_summary">Detect a changes if this value is updated.</string>

@@ -63,6 +63,11 @@
             android:title="@string/pref_recorder_filter_neighboring_title" />
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="recorderFilterGeolocation"
+            android:summary="@string/pref_recorder_filter_geolocation_summary"
+            android:title="@string/pref_recorder_filter_geolocation_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="recorderFilterProvider"
             android:summary="@string/pref_recorder_filter_provider_summary"
             android:title="@string/pref_recorder_filter_provider_title" />
