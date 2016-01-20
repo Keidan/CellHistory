@@ -110,9 +110,11 @@ public class TowerServiceTask extends TimerTask {
         if (CdmaCellLocation.class.isInstance(clocation)) {
           CellHistoryApp.addLog(service, "CdmaCellLocation: " + clocation);
           final CdmaCellLocation cl = (CdmaCellLocation) clocation;
-          app.getGlobalTowerInfo().setCellId(cl.getBaseStationId());
-          app.getProviderCtx().update(app.getGlobalTowerInfo().getCellId(),
-              cl.getBaseStationLatitude() + "," + cl.getBaseStationLatitude());
+          if(cl != null) {
+            app.getGlobalTowerInfo().setCellId(cl.getBaseStationId());
+            app.getProviderCtx().update(app.getGlobalTowerInfo().getCellId(),
+                cl.getBaseStationLatitude() + "," + cl.getBaseStationLatitude());
+          }
           if (prefs.getBoolean(PreferencesGeolocation.PREFS_KEY_LOCATE,
               PreferencesGeolocation.PREFS_DEFAULT_LOCATE)) {
             final Editor editor = prefs.edit();
@@ -123,9 +125,11 @@ public class TowerServiceTask extends TimerTask {
         } else {
           CellHistoryApp.addLog(service, "GsmCellLocation: " + clocation);
           final GsmCellLocation cl = (GsmCellLocation) clocation;
-          app.getGlobalTowerInfo().setCellId(cl.getCid());
-          app.getGlobalTowerInfo().setLac(cl.getLac());
-          app.getGlobalTowerInfo().setPsc(cl.getPsc());
+          if(cl != null) {
+            app.getGlobalTowerInfo().setCellId(cl.getCid());
+            app.getGlobalTowerInfo().setLac(cl.getLac());
+            app.getGlobalTowerInfo().setPsc(cl.getPsc());
+          }
         }
         final List<CellInfo> cinfos = tm.getAllCellInfo();
         if (cinfos != null && cinfos.size() != 0) {
