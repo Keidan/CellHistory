@@ -49,7 +49,7 @@ public class ProviderServiceTask extends TimerTask {
     TowerInfo ti = null;
     app.getGlobalTowerInfo().lock();
     try {
-      ti = new TowerInfo(app.getGlobalTowerInfo());
+      ti = new TowerInfo(app.getFilterCtx(), app.getGlobalTowerInfo());
     } finally {
       app.getGlobalTowerInfo().unlock();
     }

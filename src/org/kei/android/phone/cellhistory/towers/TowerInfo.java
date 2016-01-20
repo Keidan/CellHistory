@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.kei.android.phone.cellhistory.contexts.FilterCtx;
+
 import android.location.Location;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
@@ -72,38 +74,17 @@ public class TowerInfo {
   private MobileNetworkInfo     mobileNetworkInfo     = null;
   private Location              currentLocation       = null;
   private List<AreaInfo>        areas                 = null;
-  private boolean               allowOperator         = true;
-  private boolean               allowMCC              = true;
-  private boolean               allowMNC              = true;
-  private boolean               allowCellId           = true;
-  private boolean               allowLAC              = true;
-  private boolean               allowGeolocation      = true;
-  private boolean               allowPSC              = true;
-  private boolean               allowType             = true;
-  private boolean               allowNetwork          = true;
-  private boolean               allowASU              = true;
-  private boolean               allowLVL              = true;
-  private boolean               allowSS               = true;
-  private boolean               allowNeighboring      = true;
-  private boolean               allowProvider         = true;
-  private boolean               allowDistance         = true;
-  private boolean               allowSatellites       = true;
-  private boolean               allowSpeed            = true;
-  private boolean               allowDataSpeedRx      = true;
-  private boolean               allowDataSpeedTx      = true;
-  private boolean               allowDataDirection    = true;
-  private boolean               allowIPv4             = true;
-  private boolean               allowIPv6             = true;
-  private boolean               allowAreas             = true;
+  private FilterCtx             filterCtx             = null;
   
-  public TowerInfo() {
+  public TowerInfo(final FilterCtx filterCtx) {
+    this.filterCtx = filterCtx;
     mobileNetworkInfo = new MobileNetworkInfo();
     neighboring = new ArrayList<NeighboringInfo>();
     areas = new ArrayList<AreaInfo>();
   }
   
-  public TowerInfo(final TowerInfo ti) {
-    this();
+  public TowerInfo(final FilterCtx filterCtx, final TowerInfo ti) {
+    this(filterCtx);
     provider = ti.provider;
     operator = ti.operator;
     mcc = ti.mcc;
@@ -153,35 +134,35 @@ public class TowerInfo {
     
     sb.append(indentation ? "    " : "").append("{").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"timestamp\":").append(getTimestamp()).append(",").append(indentation ? "\n" : "");
-    if(allowOperator) sb.append(indentation ? "      " : "").append("\"ope\":\"").append(getOperator()).append("\",").append(indentation ? "\n" : "");
-    if(allowProvider) sb.append(indentation ? "      " : "").append("\"provider\":\"").append(getProvider()).append("\",").append(indentation ? "\n" : "");
-    if(allowMCC) sb.append(indentation ? "      " : "").append("\"mcc\":").append(getMCC()).append(",").append(indentation ? "\n" : "");
-    if(allowMNC) sb.append(indentation ? "      " : "").append("\"mnc\":").append(getMNC()).append(",").append(indentation ? "\n" : "");
-    if(allowCellId) sb.append(indentation ? "      " : "").append("\"cid\":").append(getCellId()).append(",").append(indentation ? "\n" : "");
-    if(allowLAC) sb.append(indentation ? "      " : "").append("\"lac\":").append(getLac()).append(",").append(indentation ? "\n" : "");
-    if(allowGeolocation) {
+    if(filterCtx.getOperator().allowSave) sb.append(indentation ? "      " : "").append("\"ope\":\"").append(getOperator()).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getProvider().allowSave) sb.append(indentation ? "      " : "").append("\"provider\":\"").append(getProvider()).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getMCC().allowSave) sb.append(indentation ? "      " : "").append("\"mcc\":").append(getMCC()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getMNC().allowSave) sb.append(indentation ? "      " : "").append("\"mnc\":").append(getMNC()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getCellID().allowSave) sb.append(indentation ? "      " : "").append("\"cid\":").append(getCellId()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getLAC().allowSave) sb.append(indentation ? "      " : "").append("\"lac\":").append(getLac()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getGeolocation().allowSave) {
       sb.append(indentation ? "      " : "").append("\"lat\":\"").append(getLatitude()).append("\",").append(indentation ? "\n" : "");
       sb.append(indentation ? "      " : "").append("\"lon\":\"").append(getLongitude()).append("\",").append(indentation ? "\n" : "");
     }
-    if(allowSatellites) sb.append(indentation ? "      " : "").append("\"satellites\":").append(getSatellites()).append(",").append(indentation ? "\n" : "");
-    if(allowSpeed) sb.append(indentation ? "      " : "").append("\"spd\":").append(getSpeed()).append(",").append(indentation ? "\n" : "");
-    if(allowDistance) sb.append(indentation ? "      " : "").append("\"dist\":").append(getDistance()).append(",").append(indentation ? "\n" : "");
-    if(allowPSC) sb.append(indentation ? "      " : "").append("\"psc\":").append(getPsc()).append(",").append(indentation ? "\n" : "");
-    if(allowType) sb.append(indentation ? "      " : "").append("\"type\":\"").append(getType()).append("\",").append(indentation ? "\n" : "");
-    if(allowNetwork) sb.append(indentation ? "      " : "").append("\"net\":\"").append(getNetworkName()).append("\",").append(indentation ? "\n" : "");
-    if(allowLVL) sb.append(indentation ? "      " : "").append("\"lvl\":").append(getLvl()).append(",").append(indentation ? "\n" : "");
-    if(allowASU) sb.append(indentation ? "      " : "").append("\"asu\":").append(getAsu()).append(",").append(indentation ? "\n" : "");
-    if(allowSS) {
+    if(filterCtx.getSatellites().allowSave) sb.append(indentation ? "      " : "").append("\"satellites\":").append(getSatellites()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getSpeed().allowSave) sb.append(indentation ? "      " : "").append("\"spd\":").append(getSpeed()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getDistance().allowSave) sb.append(indentation ? "      " : "").append("\"dist\":").append(getDistance()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getPSC().allowSave) sb.append(indentation ? "      " : "").append("\"psc\":").append(getPsc()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getType().allowSave) sb.append(indentation ? "      " : "").append("\"type\":\"").append(getType()).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getNetworkId().allowSave) sb.append(indentation ? "      " : "").append("\"net\":\"").append(getNetworkName()).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getLevel().allowSave) sb.append(indentation ? "      " : "").append("\"lvl\":").append(getLvl()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getASU().allowSave) sb.append(indentation ? "      " : "").append("\"asu\":").append(getAsu()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getSignalStrength().allowSave) {
       sb.append(indentation ? "      " : "").append("\"ss\":").append(getSignalStrength()).append(",").append(indentation ? "\n" : "");
       sb.append(indentation ? "      " : "").append("\"ssp\":").append(getSignalStrengthPercent()).append(",").append(indentation ? "\n" : "");
     }
-    if(allowDataSpeedRx) sb.append(indentation ? "      " : "").append("\"rx\":").append(getMobileNetworkInfo().getRxSpeed()).append(",").append(indentation ? "\n" : "");
-    if(allowDataSpeedTx) sb.append(indentation ? "      " : "").append("\"tx\":").append(getMobileNetworkInfo().getTxSpeed()).append(",").append(indentation ? "\n" : "");
-    if(allowDataDirection) sb.append(indentation ? "      " : "").append("\"dir\":\"").append(MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())).append("\",").append(indentation ? "\n" : "");
-    if(allowIPv4) sb.append(indentation ? "      " : "").append("\"ipv4\":\"").append(getMobileNetworkInfo().getIp4Address()).append("\",").append(indentation ? "\n" : "");
-    if(allowIPv6) sb.append(indentation ? "      " : "").append("\"ipv6\":\"").append(getMobileNetworkInfo().getIp6Address()).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getDataRxSpeed().allowSave) sb.append(indentation ? "      " : "").append("\"rx\":").append(getMobileNetworkInfo().getRxSpeed()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getDataTxSpeed().allowSave) sb.append(indentation ? "      " : "").append("\"tx\":").append(getMobileNetworkInfo().getTxSpeed()).append(",").append(indentation ? "\n" : "");
+    if(filterCtx.getDataDirection().allowSave) sb.append(indentation ? "      " : "").append("\"dir\":\"").append(MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getIPv4().allowSave) sb.append(indentation ? "      " : "").append("\"ipv4\":\"").append(getMobileNetworkInfo().getIp4Address()).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getIPv6().allowSave) sb.append(indentation ? "      " : "").append("\"ipv6\":\"").append(getMobileNetworkInfo().getIp6Address()).append("\",").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"areas\": [").append(indentation ? "\n" : "");
-    if(allowAreas) {
+    if(filterCtx.getAreas().allowSave) {
       int size = getAreas().size();
       for(int i = 0; i < size; ++i) {
         AreaInfo ai = getAreas().get(i);
@@ -191,7 +172,7 @@ public class TowerInfo {
     }
     sb.append(indentation ? "      " : "").append("],").append(indentation ? "\n" : "");
     sb.append(indentation ? "      " : "").append("\"neighborings\": [").append(indentation ? "\n" : "");
-    if(allowNeighboring) {
+    if(filterCtx.getNeighboring().allowSave) {
       int size = getNeighboring().size();
       for(int i = 0; i < size; ++i) {
         NeighboringInfo ni = getNeighboring().get(i);
@@ -226,38 +207,38 @@ public class TowerInfo {
     if(indentation) sb.append("\n");
     String spaces = indentation ? "    " : null;
     sb.append(lineXML(spaces, "timestamp", getTimestamp()));
-    if(allowOperator) sb.append(lineXML(spaces, "ope", getOperator()));
-    if(allowProvider) sb.append(lineXML(spaces, "provider", getProvider()));
-    if(allowMCC) sb.append(lineXML(spaces, "mcc", getMCC()));
-    if(allowMNC) sb.append(lineXML(spaces, "mnc", String.format("%02d", getMNC())));
-    if(allowCellId) sb.append(lineXML(spaces, "cid", getCellId()));
-    if(allowLAC) sb.append(lineXML(spaces, "lac", getLac()));
-    if(allowGeolocation) {
+    if(filterCtx.getOperator().allowSave) sb.append(lineXML(spaces, "ope", getOperator()));
+    if(filterCtx.getProvider().allowSave) sb.append(lineXML(spaces, "provider", getProvider()));
+    if(filterCtx.getMCC().allowSave) sb.append(lineXML(spaces, "mcc", getMCC()));
+    if(filterCtx.getMNC().allowSave) sb.append(lineXML(spaces, "mnc", String.format("%02d", getMNC())));
+    if(filterCtx.getCellID().allowSave) sb.append(lineXML(spaces, "cid", getCellId()));
+    if(filterCtx.getLAC().allowSave) sb.append(lineXML(spaces, "lac", getLac()));
+    if(filterCtx.getGeolocation().allowSave) {
       sb.append(lineXML(spaces, "lat", getLatitude()));
       sb.append(lineXML(spaces, "lon", getLongitude()));
     }
-    if(allowSatellites) sb.append(lineXML(spaces, "satellites", getSatellites()));
-    if(allowSpeed) sb.append(lineXML(spaces, "spd", getSpeed()));
-    if(allowDistance) sb.append(lineXML(spaces, "dist", getDistance()));
-    if(allowPSC) sb.append(lineXML(spaces, "psc", getPsc()));
-    if(allowType) sb.append(lineXML(spaces, "type", getType()));
-    if(allowNetwork) sb.append(lineXML(spaces, "net", getNetworkName()));
-    if(allowLVL) sb.append(lineXML(spaces, "lvl", getLvl()));
-    if(allowASU) sb.append(lineXML(spaces, "asu", getAsu()));
-    if(allowSS) {
+    if(filterCtx.getSatellites().allowSave) sb.append(lineXML(spaces, "satellites", getSatellites()));
+    if(filterCtx.getSpeed().allowSave) sb.append(lineXML(spaces, "spd", getSpeed()));
+    if(filterCtx.getDistance().allowSave) sb.append(lineXML(spaces, "dist", getDistance()));
+    if(filterCtx.getPSC().allowSave) sb.append(lineXML(spaces, "psc", getPsc()));
+    if(filterCtx.getType().allowSave) sb.append(lineXML(spaces, "type", getType()));
+    if(filterCtx.getNetworkId().allowSave) sb.append(lineXML(spaces, "net", getNetworkName()));
+    if(filterCtx.getLevel().allowSave) sb.append(lineXML(spaces, "lvl", getLvl()));
+    if(filterCtx.getASU().allowSave) sb.append(lineXML(spaces, "asu", getAsu()));
+    if(filterCtx.getSignalStrength().allowSave) {
       sb.append(lineXML(spaces, "ss", getSignalStrength()));
       sb.append(lineXML(spaces, "ssp", getSignalStrengthPercent()));
     }
 
-    if(allowDataSpeedRx) sb.append(lineXML(spaces, "rx", getMobileNetworkInfo().getRxSpeed()));
-    if(allowDataSpeedTx) sb.append(lineXML(spaces, "tx", getMobileNetworkInfo().getTxSpeed()));
-    if(allowDataDirection) sb.append(lineXML(spaces, "dir", MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())));
-    if(allowIPv4) sb.append(lineXML(spaces, "ipv4", getMobileNetworkInfo().getIp4Address()));
-    if(allowIPv6) sb.append(lineXML(spaces, "ipv6", getMobileNetworkInfo().getIp6Address()));
+    if(filterCtx.getDataRxSpeed().allowSave) sb.append(lineXML(spaces, "rx", getMobileNetworkInfo().getRxSpeed()));
+    if(filterCtx.getDataTxSpeed().allowSave) sb.append(lineXML(spaces, "tx", getMobileNetworkInfo().getTxSpeed()));
+    if(filterCtx.getDataDirection().allowSave) sb.append(lineXML(spaces, "dir", MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())));
+    if(filterCtx.getIPv4().allowSave) sb.append(lineXML(spaces, "ipv4", getMobileNetworkInfo().getIp4Address()));
+    if(filterCtx.getIPv6().allowSave) sb.append(lineXML(spaces, "ipv6", getMobileNetworkInfo().getIp6Address()));
     if(indentation) sb.append("    ");
     sb.append("<areas>");
     if(indentation) sb.append("\n");
-    if(allowAreas) 
+    if(filterCtx.getAreas().allowSave) 
       for(AreaInfo ai : getAreas()) {
         sb.append(ai.toXML(indentation));
       }
@@ -267,7 +248,7 @@ public class TowerInfo {
     if(indentation) sb.append("    ");
     sb.append("<neighborings>");
     if(indentation) sb.append("\n");
-    if(allowNeighboring) 
+    if(filterCtx.getNeighboring().allowSave) 
       for(NeighboringInfo ni : getNeighboring()) {
         sb.append(ni.toXML(indentation));
       }
@@ -292,55 +273,55 @@ public class TowerInfo {
   public String toString(final String sep, final String neighboringSep, final String areaSep) {
     StringBuilder sb = new StringBuilder();
     sb.append(getTimestamp()).append(sep);
-    if(allowOperator) sb.append(getOperator()).append(sep);
+    if(filterCtx.getOperator().allowSave) sb.append(getOperator()).append(sep);
     else sb.append(sep);
-    if(allowProvider) sb.append(getProvider()).append(sep);
+    if(filterCtx.getProvider().allowSave) sb.append(getProvider()).append(sep);
     else sb.append(sep);
-    if(allowMCC) sb.append(getMCC()).append(sep);
+    if(filterCtx.getMCC().allowSave) sb.append(getMCC()).append(sep);
     else sb.append(sep);
-    if(allowMNC) sb.append(String.format("%02d", getMNC())).append(sep);
+    if(filterCtx.getMNC().allowSave) sb.append(String.format("%02d", getMNC())).append(sep);
     else sb.append(sep);
-    if(allowCellId) sb.append(getCellId()).append(sep);
+    if(filterCtx.getCellID().allowSave) sb.append(getCellId()).append(sep);
     else sb.append(sep);
-    if(allowLAC) sb.append(getLac()).append(sep);
+    if(filterCtx.getLAC().allowSave) sb.append(getLac()).append(sep);
     else sb.append(sep);
-    if(allowGeolocation) {
+    if(filterCtx.getGeolocation().allowSave) {
       sb.append(getLatitude()).append(sep);
       sb.append(getLongitude()).append(sep);
     } else sb.append(sep).append(sep);
-    if(allowSatellites) sb.append(getSatellites()).append(sep);
+    if(filterCtx.getSatellites().allowSave) sb.append(getSatellites()).append(sep);
     else sb.append(sep);
-    if(allowSpeed) sb.append(getSpeed()).append(sep);
+    if(filterCtx.getSpeed().allowSave) sb.append(getSpeed()).append(sep);
     else sb.append(sep);
-    if(allowDistance) sb.append(getDistance()).append(sep);
+    if(filterCtx.getDistance().allowSave) sb.append(getDistance()).append(sep);
     else sb.append(sep);
-    if(allowPSC) sb.append(getPsc()).append(sep);
+    if(filterCtx.getPSC().allowSave) sb.append(getPsc()).append(sep);
     else sb.append(sep);
-    if(allowType) sb.append(getType()).append(sep);
+    if(filterCtx.getType().allowSave) sb.append(getType()).append(sep);
     else sb.append(sep);
-    if(allowNetwork) sb.append(getNetworkName()).append(sep);
+    if(filterCtx.getNetworkId().allowSave) sb.append(getNetworkName()).append(sep);
     else sb.append(sep);
-    if(allowLVL) sb.append(getLvl()).append(sep);
+    if(filterCtx.getLevel().allowSave) sb.append(getLvl()).append(sep);
     else sb.append(sep);
-    if(allowASU) sb.append(getAsu()).append(sep);
+    if(filterCtx.getASU().allowSave) sb.append(getAsu()).append(sep);
     else sb.append(sep);
-    if(allowSS) {
+    if(filterCtx.getSignalStrength().allowSave) {
       sb.append(getSignalStrength()).append(sep);
       sb.append(getSignalStrengthPercent()).append(sep);
     } else sb.append(sep).append(sep);
 
-    if(allowDataSpeedRx) sb.append(getMobileNetworkInfo().getRxSpeed()).append(sep);
+    if(filterCtx.getDataRxSpeed().allowSave) sb.append(getMobileNetworkInfo().getRxSpeed()).append(sep);
     else sb.append(sep);
-    if(allowDataSpeedTx) sb.append(getMobileNetworkInfo().getTxSpeed()).append(sep);
+    if(filterCtx.getDataTxSpeed().allowSave) sb.append(getMobileNetworkInfo().getTxSpeed()).append(sep);
     else sb.append(sep);
-    if(allowDataDirection) sb.append(MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())).append(sep);
+    if(filterCtx.getDataDirection().allowSave) sb.append(MobileNetworkInfo.getDataActivityMin(getMobileNetworkInfo().getDataActivity())).append(sep);
     else sb.append(sep);
-    if(allowIPv4) sb.append(getMobileNetworkInfo().getIp4Address()).append(sep);
+    if(filterCtx.getIPv4().allowSave) sb.append(getMobileNetworkInfo().getIp4Address()).append(sep);
     else sb.append(sep);
-    if(allowIPv6) sb.append(getMobileNetworkInfo().getIp6Address()).append(sep);
+    if(filterCtx.getIPv6().allowSave) sb.append(getMobileNetworkInfo().getIp6Address()).append(sep);
     else sb.append(sep);
 
-    if(allowAreas) {
+    if(filterCtx.getAreas().allowSave) {
       int size = getAreas().size();
       for(int i = 0; i < size; ++i) {
         AreaInfo ai = getAreas().get(i);
@@ -351,7 +332,7 @@ public class TowerInfo {
     }
     else sb.append(sep);
     
-    if(allowNeighboring) {
+    if(filterCtx.getNeighboring().allowSave) {
       int size = getNeighboring().size();
       for(int i = 0; i < size; ++i) {
         NeighboringInfo ni = getNeighboring().get(i);
@@ -362,42 +343,9 @@ public class TowerInfo {
     return sb.toString();
   }
   
-  public void allow(
-      final boolean allowOperator, final boolean allowMCC, final boolean allowMNC,
-      final boolean allowCellId, final boolean allowLAC, final boolean allowGeolocation, final boolean allowPSC,
-      final boolean allowType, final boolean allowNetwork, final boolean allowASU,
-      final boolean allowLVL, final boolean allowSS, final boolean allowNeighboring,
-      final boolean allowProvider, final boolean allowDistance, final boolean allowSatellites, final boolean allowSpeed, 
-      final boolean allowDataSpeedRx, final boolean allowDataSpeedTx, final boolean allowDataDirection, 
-      final boolean allowIPv4, final boolean allowIPv6, final boolean allowAreas) {
-    this.allowOperator = allowOperator;
-    this.allowMCC = allowMCC;
-    this.allowMNC = allowMNC;
-    this.allowCellId = allowCellId;
-    this.allowLAC = allowLAC;
-    this.allowGeolocation = allowGeolocation;
-    this.allowPSC = allowPSC;
-    this.allowType = allowType;
-    this.allowNetwork = allowNetwork;
-    this.allowASU = allowASU;
-    this.allowLVL = allowLVL;
-    this.allowSS = allowSS;
-    this.allowNeighboring = allowNeighboring;
-    this.allowProvider = allowProvider;
-    this.allowDistance = allowDistance;
-    this.allowSatellites = allowSatellites;
-    this.allowSpeed = allowSpeed;
-    this.allowDataSpeedRx = allowDataSpeedRx;
-    this.allowDataSpeedTx = allowDataSpeedTx;
-    this.allowDataDirection = allowDataDirection;
-    this.allowIPv4 = allowIPv4;
-    this.allowIPv6 = allowIPv6;
-    this.allowAreas = allowAreas;
-  }
-  
-  public static TowerInfo decodeInformations(final TowerInfo owner, final SignalStrength ss) throws Exception {
+  public static TowerInfo decodeInformations(final FilterCtx filterCtx, final TowerInfo owner, final SignalStrength ss) throws Exception {
     TowerInfo ti = owner;
-    if(ti == null) ti = new TowerInfo();
+    if(ti == null) ti = new TowerInfo(filterCtx);
     SignalStrengthReflect ssr = new SignalStrengthReflect(ss);
     int n = ssr.getAsuLevel();
     ti.setAsu(n);

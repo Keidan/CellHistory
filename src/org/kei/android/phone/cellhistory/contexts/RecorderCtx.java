@@ -9,12 +9,9 @@ import java.util.List;
 import java.util.Locale;
 
 import org.kei.android.phone.cellhistory.CellHistoryApp;
-import org.kei.android.phone.cellhistory.prefs.PreferencesRecorderFilters;
 import org.kei.android.phone.cellhistory.towers.AreaInfo;
 import org.kei.android.phone.cellhistory.towers.NeighboringInfo;
 import org.kei.android.phone.cellhistory.towers.TowerInfo;
-
-import android.content.SharedPreferences;
 
 /**
  *******************************************************************************
@@ -49,22 +46,19 @@ public class RecorderCtx {
   private PrintWriter             pw          = null;
   private String                  format      = FORMAT_JSON;
   private boolean                 indentation = true;
-  private SharedPreferences       prefs;
   
   public RecorderCtx() {
   }
 
-  public void initialize(final SharedPreferences prefs) {
-    this.prefs = prefs;
-  }
-
   public void writeData(final String sep, final String sepNb, final String sepArea, final int limit,
       final CellHistoryApp ctx, final boolean detectChange, long records) {
+    FilterCtx f = ctx.getFilterCtx();
+    f.read(ctx.getApplicationContext());
     if (pw != null) {
       if (detectChange) {
         if (ctx.getBackupTowerInfo() == null
-            || !sameTowerInfo(ctx.getBackupTowerInfo(), ctx.getGlobalTowerInfo())) {
-          ctx.setBackupTowerInfo(new TowerInfo(ctx.getGlobalTowerInfo()));
+            || !sameTowerInfo(ctx.getBackupTowerInfo(), ctx.getGlobalTowerInfo(), f)) {
+          ctx.setBackupTowerInfo(new TowerInfo(f, ctx.getGlobalTowerInfo()));
           if(format.equals(FORMAT_CSV)) frames.add(ctx.getGlobalTowerInfo().toString(sep, sepNb, sepArea));
           else if(format.equals(FORMAT_JSON)) frames.add(ctx.getGlobalTowerInfo().toJSON(indentation));
           else frames.add(ctx.getGlobalTowerInfo().toXML(indentation));
@@ -208,95 +202,55 @@ public class RecorderCtx {
     }
   }
   
-  public boolean sameTowerInfo(final TowerInfo backup, final TowerInfo current) {
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_PROVIDER,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_PROVIDER)) 
+  public boolean sameTowerInfo(final TowerInfo backup, final TowerInfo current, final FilterCtx f) {
+    if(f.getProvider().allowChange && f.getProvider().allowSave) 
       if(!backup.getProvider().equals(current.getProvider())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_OPERATOR,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_OPERATOR)) 
+    if(f.getOperator().allowChange && f.getOperator().allowSave) 
       if(!backup.getOperator().equals(current.getOperator())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_MCC,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_MNC)) 
+    if(f.getMCC().allowChange && f.getMCC().allowSave) 
       if(!(backup.getMCC() == current.getMCC())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_MNC,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_MNC)) 
+    if(f.getMNC().allowChange && f.getMNC().allowSave) 
       if(!(backup.getMNC() == current.getMNC())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_CELL_ID,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_CELL_ID)) 
+    if(f.getCellID().allowChange && f.getCellID().allowSave) 
       if(!(backup.getCellId() == current.getCellId())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_LAC,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_LAC)) 
+    if(f.getLAC().allowChange && f.getLAC().allowSave) 
       if(!(backup.getLac() == current.getLac())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_PSC,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_PSC)) 
+    if(f.getPSC().allowChange && f.getPSC().allowSave) 
       if(!(backup.getPsc() == current.getPsc())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_SIGNAL_STRENGTH,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_SIGNAL_STRENGTH)) {
+    if(f.getSignalStrength().allowChange && f.getSignalStrength().allowSave) {
       if(!(backup.getSignalStrength() == current.getSignalStrength())) return false;
       if(!(backup.getSignalStrengthPercent() == current.getSignalStrengthPercent())) return false;
     }
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_TYPE,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_TYPE)) 
+    if(f.getType().allowChange && f.getType().allowSave) 
       if(!backup.getType().equals(current.getType())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_ASU,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_ASU)) 
+    if(f.getASU().allowChange && f.getASU().allowSave) 
       if(!(backup.getAsu() == current.getAsu())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_LEVEL,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_LEVEL)) 
+    if(f.getLevel().allowChange && f.getLevel().allowSave) 
       if(!(backup.getLvl() == current.getLvl())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_NETOWRK_ID,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_NETWORK_ID)) {
+    if(f.getNetworkId().allowChange && f.getNetworkId().allowSave) {
       if(!(backup.getNetwork() == current.getNetwork())) return false;
       if(!backup.getNetworkName().equals(current.getNetworkName())) return false;
     }
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_SPEED,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_SPEED)) 
+    if(f.getSpeed().allowChange && f.getSpeed().allowSave) 
       if(!(backup.getSpeed() == current.getSpeed())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DISTANCE,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DISTANCE)) 
+    if(f.getGeolocation().allowChange && f.getGeolocation().allowSave) 
+      if(!(backup.getLatitude() == current.getLatitude()) || !(backup.getLongitude() == current.getLongitude())) return false;
+    if(f.getDistance().allowChange && f.getDistance().allowSave) 
       if(!(backup.getDistance() == current.getDistance())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_SATELLITES,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_SATELLITES)) 
+    if(f.getSatellites().allowChange && f.getSatellites().allowSave) 
       if(!(backup.getSatellites() == current.getSatellites())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DATA_RX_SPEED,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DATA_RX_SPEED)) 
+    if(f.getDataRxSpeed().allowChange && f.getDataRxSpeed().allowSave) 
       if(!(backup.getMobileNetworkInfo().getRxSpeed() == current.getMobileNetworkInfo().getRxSpeed())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DATA_TX_SPEED,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DATA_TX_SPEED)) 
+    if(f.getDataTxSpeed().allowChange && f.getDataTxSpeed().allowSave)
       if(!(backup.getMobileNetworkInfo().getTxSpeed() == current.getMobileNetworkInfo().getTxSpeed())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_DATA_DIRECTION,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_DATA_DIRECTION)) 
+    if(f.getDataDirection().allowChange && f.getDataDirection().allowSave) 
       if(!(backup.getMobileNetworkInfo().getDataActivity() == current.getMobileNetworkInfo().getDataActivity())) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_IPV4,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_IPV4)) 
+    if(f.getIPv4().allowChange && f.getIPv4().allowSave) 
       if(!(backup.getMobileNetworkInfo().getIp4Address().equals(current.getMobileNetworkInfo().getIp4Address()))) return false;
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_IPV6,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_IPV6)) 
+    if(f.getIPv6().allowChange && f.getIPv6().allowSave) 
       if(!(backup.getMobileNetworkInfo().getIp6Address().equals(current.getMobileNetworkInfo().getIp6Address()))) return false;
 
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_AREAS,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_AREAS)) {
+    if(f.getAreas().allowChange && f.getAreas().allowSave) {
       int size1 = backup.getAreas().size();
       int size2 = current.getAreas().size();
       if(size1 != size2) return false;
@@ -314,9 +268,7 @@ public class RecorderCtx {
       }
     }
     
-    if(prefs.getBoolean(
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_KEY_NEIGHBORING,
-        PreferencesRecorderFilters.PREFS_RECORDER_FILTERS_DEFAULT_NEIGHBORING)) {
+    if(f.getNeighboring().allowChange && f.getNeighboring().allowSave) {
       int size1 = backup.getNeighboring().size();
       int size2 = current.getNeighboring().size();
       if(size1 != size2) return false;

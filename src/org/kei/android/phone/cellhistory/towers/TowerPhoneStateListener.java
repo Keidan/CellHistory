@@ -40,7 +40,7 @@ public class TowerPhoneStateListener extends PhoneStateListener {
     CellHistoryApp.addLog(context, signalStrength);
     app.getGlobalTowerInfo().lock();
     try {
-      TowerInfo.decodeInformations(app.getGlobalTowerInfo(), signalStrength);
+      TowerInfo.decodeInformations(app.getFilterCtx(), app.getGlobalTowerInfo(), signalStrength);
     } catch (final Exception e) {
       Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
       CellHistoryApp.addLog(context, "Exception: " + e.getMessage());

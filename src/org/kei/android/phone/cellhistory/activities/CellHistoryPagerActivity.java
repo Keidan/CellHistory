@@ -99,7 +99,6 @@ IThemeActivity, OnPageChangeListener {
     /* context */
     app = CellHistoryApp.getApp(this);
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    app.getRecorderCtx().initialize(prefs);
 
     fragments = new Vector<Fragment>();
     fragments.add(new TowerFragment());

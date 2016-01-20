@@ -10,6 +10,7 @@ import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.kei.android.atk.utils.NotificationHelper;
 import org.kei.android.phone.cellhistory.activities.CellHistoryPagerActivity;
+import org.kei.android.phone.cellhistory.contexts.FilterCtx;
 import org.kei.android.phone.cellhistory.contexts.ProviderCtx;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.Preferences;
@@ -58,8 +59,10 @@ public class CellHistoryApp extends Application {
   private final int          notifyRecorderID      = 1;
   private PendingIntent      pendingIntent         = null;
   private SqlFactory         sql                   = null;
+  private FilterCtx          filterCtx             = null;
 
   public CellHistoryApp() {
+    filterCtx = new FilterCtx();
     lock = new ReentrantLock();
     providerCtx = new ProviderCtx();
     recorderCtx = new RecorderCtx();
@@ -180,7 +183,7 @@ public class CellHistoryApp extends Application {
   
   public TowerInfo getGlobalTowerInfo() {
     if(globalTi == null) {
-      globalTi = new TowerInfo();
+      globalTi = new TowerInfo(filterCtx);
     }
     return globalTi;
   }
@@ -215,6 +218,10 @@ public class CellHistoryApp extends Application {
 
   public void setSQL(SqlFactory sql) {
     this.sql = sql;
+  }
+
+  public FilterCtx getFilterCtx() {
+    return filterCtx;
   }
   
 }

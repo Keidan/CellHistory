@@ -3,6 +3,7 @@ package org.kei.android.phone.cellhistory.fragments;
 import org.kei.android.atk.utils.fx.Fx;
 import org.kei.android.phone.cellhistory.CellHistoryApp;
 import org.kei.android.phone.cellhistory.R;
+import org.kei.android.phone.cellhistory.contexts.FilterCtx;
 import org.kei.android.phone.cellhistory.contexts.RecorderCtx;
 import org.kei.android.phone.cellhistory.prefs.PreferencesRecorder;
 import org.kei.android.phone.cellhistory.services.RecorderService;
@@ -49,31 +50,7 @@ import android.widget.ToggleButton;
  */
 public class RecorderFragment extends Fragment implements UITaskFragment,
     OnClickListener, OnCheckedChangeListener {
-  private static final String  SW_OPERATOR        = "swOperator";
-  private static final String  SW_MCC             = "swMCC";
-  private static final String  SW_MNC             = "swMNC";
-  private static final String  SW_CELLID          = "swCellId";
-  private static final String  SW_LAC             = "swLAC";
-  private static final String  SW_GEOLOCATION     = "swGeolocation";
-  private static final String  SW_PSC             = "swPSC";
-  private static final String  SW_TYPE            = "swType";
-  private static final String  SW_NETWORK         = "swNetwork";
-  private static final String  SW_ASU             = "swASU";
-  private static final String  SW_LVL             = "swLVL";
-  private static final String  SW_SS              = "swSS";
-  private static final String  SW_NEIGHBORING     = "swNeighboring";
-  private static final String  SW_PROVIDER        = "swProvider";
-  private static final String  SW_DISTANCE        = "swDistance";
-  private static final String  SW_SATELLITES      = "swSatellites";
-  private static final String  SW_SPEED           = "swSpeed";
-  private static final String  SW_DATA_SPEED_RX   = "swDataSpeedRx";
-  private static final String  SW_DATA_SPEED_TX   = "swDataSpeedTx";
-  private static final String  SW_DATA_DIRECTION  = "swDirection";
-  private static final String  SW_IPV4            = "swIpv4";
-  private static final String  SW_IPV6            = "swIpv6";
-  private static final String  SW_AREAS           = "swAreas";
   private static final String  SW_DISPLAY         = "chkDisplaySwitch";
-  private static final boolean SW_DEFAULT         = true;
   private static final boolean SW_DEFAULT_DISPLAY = false;
   /* UI */
   private TextView             txtRecords         = null;
@@ -108,7 +85,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   private Switch               swAreas            = null;
   private CheckBox             chkDisplaySwitch   = null;
   private ScrollView           switches           = null;
-
+  private boolean              fromResume         = false;
+  
   @Override
   public View onCreateView(final LayoutInflater inflater,
       final ViewGroup container, final Bundle savedInstanceState) {
@@ -182,7 +160,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swIpv4.setOnCheckedChangeListener(this);
     swIpv6.setOnCheckedChangeListener(this);
     swAreas.setOnCheckedChangeListener(this);
-    updateTowerInfo();
     try {
       processUI(app.getGlobalTowerInfo());
     } catch (Throwable e) {
@@ -195,36 +172,39 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     pbBuffer.setProgress(app.getRecorderCtx().getFrames().size());
     pbBuffer.setMax(Integer.parseInt(prefs.getString(PreferencesRecorder.PREFS_KEY_FLUSH,
             PreferencesRecorder.PREFS_DEFAULT_FLUSH)));
-    swOperator.setChecked(prefs.getBoolean(SW_OPERATOR, SW_DEFAULT));
-    swMCC.setChecked(prefs.getBoolean(SW_MCC, SW_DEFAULT));
-    swMNC.setChecked(prefs.getBoolean(SW_MNC, SW_DEFAULT));
-    swCellId.setChecked(prefs.getBoolean(SW_CELLID, SW_DEFAULT));
-    swLAC.setChecked(prefs.getBoolean(SW_LAC, SW_DEFAULT));
-    swGeolocation.setChecked(prefs.getBoolean(SW_GEOLOCATION, SW_DEFAULT));
-    swPSC.setChecked(prefs.getBoolean(SW_PSC, SW_DEFAULT));
-    swType.setChecked(prefs.getBoolean(SW_TYPE, SW_DEFAULT));
-    swNetwork.setChecked(prefs.getBoolean(SW_NETWORK, SW_DEFAULT));
-    swASU.setChecked(prefs.getBoolean(SW_ASU, SW_DEFAULT));
-    swLVL.setChecked(prefs.getBoolean(SW_LVL, SW_DEFAULT));
-    swSS.setChecked(prefs.getBoolean(SW_SS, SW_DEFAULT));
-    swNeighboring.setChecked(prefs.getBoolean(SW_NEIGHBORING, SW_DEFAULT));
-    swProvider.setChecked(prefs.getBoolean(SW_PROVIDER, SW_DEFAULT));
-    swDistance.setChecked(prefs.getBoolean(SW_DISTANCE, SW_DEFAULT));
-    swSatellites.setChecked(prefs.getBoolean(SW_SATELLITES, SW_DEFAULT));
-    swSpeed.setChecked(prefs.getBoolean(SW_SPEED, SW_DEFAULT));
-    swDataSpeedRx.setChecked(prefs.getBoolean(SW_DATA_SPEED_RX, SW_DEFAULT));
-    swDataSpeedTx.setChecked(prefs.getBoolean(SW_DATA_SPEED_TX, SW_DEFAULT));
-    swDataDirection.setChecked(prefs.getBoolean(SW_DATA_DIRECTION, SW_DEFAULT));
-    swIpv4.setChecked(prefs.getBoolean(SW_IPV4, SW_DEFAULT));
-    swIpv6.setChecked(prefs.getBoolean(SW_IPV6, SW_DEFAULT));
-    swAreas.setChecked(prefs.getBoolean(SW_AREAS, SW_DEFAULT));
+    fromResume = true;
+    FilterCtx f = app.getFilterCtx();
+    f.read(getActivity());
+    swOperator.setChecked(f.getOperator().allowSave);
+    swMCC.setChecked(f.getMCC().allowSave);
+    swMNC.setChecked(f.getMNC().allowSave);
+    swCellId.setChecked(f.getCellID().allowSave);
+    swLAC.setChecked(f.getLAC().allowSave);
+    swGeolocation.setChecked(f.getGeolocation().allowSave);
+    swPSC.setChecked(f.getPSC().allowSave);
+    swType.setChecked(f.getType().allowSave);
+    swNetwork.setChecked(f.getNetworkId().allowSave);
+    swASU.setChecked(f.getASU().allowSave);
+    swLVL.setChecked(f.getLevel().allowSave);
+    swSS.setChecked(f.getSignalStrength().allowSave);
+    swNeighboring.setChecked(f.getNeighboring().allowSave);
+    swProvider.setChecked(f.getProvider().allowSave);
+    swDistance.setChecked(f.getDistance().allowSave);
+    swSatellites.setChecked(f.getSatellites().allowSave);
+    swSpeed.setChecked(f.getSpeed().allowSave);
+    swDataSpeedRx.setChecked(f.getDataRxSpeed().allowSave);
+    swDataSpeedTx.setChecked(f.getDataTxSpeed().allowSave);
+    swDataDirection.setChecked(f.getDataDirection().allowSave);
+    swIpv4.setChecked(f.getIPv4().allowSave);
+    swIpv6.setChecked(f.getIPv6().allowSave);
+    swAreas.setChecked(f.getAreas().allowSave);
+    fromResume = false;
     chkDisplaySwitch.setChecked(prefs.getBoolean(SW_DISPLAY, SW_DEFAULT_DISPLAY));
     switches.setAnimation(null);
     if(chkDisplaySwitch.isChecked() && switches.getVisibility() != View.VISIBLE)
       switches.setVisibility(View.VISIBLE);
     else if(!chkDisplaySwitch.isChecked() && switches.getVisibility() != View.GONE)
       switches.setVisibility(View.GONE);
-    updateTowerInfo();
   }
   
   @Override
@@ -260,54 +240,57 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
   @Override
   public void onCheckedChanged(CompoundButton buttonView,
     boolean isChecked) {
-    Editor ed = prefs.edit();
-    if(buttonView.equals(swOperator)) {
-      ed.putBoolean(SW_OPERATOR, isChecked);
-    } else if(buttonView.equals(swMCC)) {
-      ed.putBoolean(SW_MCC, isChecked);
-    } else if(buttonView.equals(swMNC)) {
-      ed.putBoolean(SW_MNC, isChecked);
-    } else if(buttonView.equals(swCellId)) {
-      ed.putBoolean(SW_CELLID, isChecked);
-    } else if(buttonView.equals(swLAC)) {
-      ed.putBoolean(SW_LAC, isChecked);
-    } else if(buttonView.equals(swGeolocation)) {
-      ed.putBoolean(SW_GEOLOCATION, isChecked);
-    } else if(buttonView.equals(swPSC)) {
-      ed.putBoolean(SW_PSC, isChecked);
-    } else if(buttonView.equals(swType)) {
-      ed.putBoolean(SW_TYPE, isChecked);
-    } else if(buttonView.equals(swNetwork)) {
-      ed.putBoolean(SW_NETWORK, isChecked);
-    } else if(buttonView.equals(swASU)) {
-      ed.putBoolean(SW_ASU, isChecked);
-    } else if(buttonView.equals(swLVL)) {
-      ed.putBoolean(SW_LVL, isChecked);
-    } else if(buttonView.equals(swSS)) {
-      ed.putBoolean(SW_SS, isChecked);
-    } else if(buttonView.equals(swNeighboring)) {
-      ed.putBoolean(SW_NEIGHBORING, isChecked);
-    } else if(buttonView.equals(swProvider)) {
-      ed.putBoolean(SW_PROVIDER, isChecked);
-    } else if(buttonView.equals(swDistance)) {
-      ed.putBoolean(SW_DISTANCE, isChecked);
-    } else if(buttonView.equals(swSatellites)) {
-      ed.putBoolean(SW_SATELLITES, isChecked);
-    } else if(buttonView.equals(swSpeed)) {
-      ed.putBoolean(SW_SPEED, isChecked);
-    } else if(buttonView.equals(swDataSpeedRx)) {
-      ed.putBoolean(SW_DATA_SPEED_RX, isChecked);
-    } else if(buttonView.equals(swDataSpeedTx)) {
-      ed.putBoolean(SW_DATA_SPEED_TX, isChecked);
-    } else if(buttonView.equals(swDataDirection)) {
-      ed.putBoolean(SW_DATA_DIRECTION, isChecked);
-    } else if(buttonView.equals(swIpv4)) {
-      ed.putBoolean(SW_IPV4, isChecked);
-    } else if(buttonView.equals(swIpv6)) {
-      ed.putBoolean(SW_IPV6, isChecked);
-    } else if(buttonView.equals(swAreas)) {
-      ed.putBoolean(SW_AREAS, isChecked);
+    if(buttonView.equals(swOperator) ||
+            buttonView.equals(swMCC) ||
+            buttonView.equals(swMNC) ||
+            buttonView.equals(swCellId) ||
+            buttonView.equals(swLAC) ||
+            buttonView.equals(swGeolocation) ||
+            buttonView.equals(swPSC) ||
+            buttonView.equals(swType) ||
+            buttonView.equals(swNetwork) ||
+            buttonView.equals(swASU) ||
+            buttonView.equals(swLVL) ||
+            buttonView.equals(swSS) ||
+            buttonView.equals(swNeighboring) ||
+            buttonView.equals(swProvider) ||
+            buttonView.equals(swDistance) ||
+            buttonView.equals(swSatellites) ||
+            buttonView.equals(swSpeed) ||
+            buttonView.equals(swDataSpeedRx) ||
+            buttonView.equals(swDataSpeedTx) ||
+            buttonView.equals(swDataDirection) ||
+            buttonView.equals(swIpv4) ||
+            buttonView.equals(swIpv6) ||
+            buttonView.equals(swAreas)) {
+      if(fromResume) return;
+      FilterCtx f = app.getFilterCtx();
+      f.getOperator().allowSave = swOperator.isChecked();
+      f.getMCC().allowSave = swMCC.isChecked();
+      f.getMNC().allowSave = swMNC.isChecked();
+      f.getCellID().allowSave = swCellId.isChecked();
+      f.getLAC().allowSave = swLAC.isChecked();
+      f.getPSC().allowSave = swPSC.isChecked();
+      f.getType().allowSave = swType.isChecked();
+      f.getNetworkId().allowSave = swNetwork.isChecked();
+      f.getGeolocation().allowSave = swGeolocation.isChecked();
+      f.getASU().allowSave = swASU.isChecked();
+      f.getLevel().allowSave = swLVL.isChecked();
+      f.getSignalStrength().allowSave = swSS.isChecked();
+      f.getNeighboring().allowSave = swNeighboring.isChecked();
+      f.getProvider().allowSave = swProvider.isChecked();
+      f.getDistance().allowSave = swDistance.isChecked();
+      f.getSatellites().allowSave = swSatellites.isChecked();
+      f.getSpeed().allowSave = swSpeed.isChecked();
+      f.getDataTxSpeed().allowSave = swDataSpeedTx.isChecked();
+      f.getDataRxSpeed().allowSave = swDataSpeedRx.isChecked();
+      f.getDataDirection().allowSave = swDataDirection.isChecked();
+      f.getIPv4().allowSave = swIpv4.isChecked();
+      f.getIPv6().allowSave = swIpv6.isChecked();
+      f.getAreas().allowSave = swAreas.isChecked();
+      f.writeSave(getActivity());
     } else if(buttonView.equals(chkDisplaySwitch)) {
+      Editor ed = prefs.edit();
       ed.putBoolean(SW_DISPLAY, isChecked);
       ed.commit();
       if(isChecked && switches.getVisibility() != View.VISIBLE) {
@@ -318,24 +301,6 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
         chkDisplaySwitch.setChecked(false);
       }
       return;
-    }
-    ed.commit();
-    updateTowerInfo();
-  }
-  
-  private void updateTowerInfo() {
-    app.getGlobalTowerInfo().lock();
-    try {
-      app.getGlobalTowerInfo().allow(
-          swOperator.isChecked(), swMCC.isChecked(), swMNC.isChecked(), 
-          swCellId.isChecked(), swLAC.isChecked(), swGeolocation.isChecked(), 
-          swPSC.isChecked(), swType.isChecked(), swNetwork.isChecked(), 
-          swASU.isChecked(), swLVL.isChecked(), swSS.isChecked(), 
-          swNeighboring.isChecked(), swProvider.isChecked(), swDistance.isChecked(), 
-          swSatellites.isChecked(), swSpeed.isChecked(), swDataSpeedRx.isChecked(), 
-          swDataSpeedTx.isChecked(), swDataDirection.isChecked(), swIpv4.isChecked(), swIpv6.isChecked(), swAreas.isChecked());
-    } finally {
-      app.getGlobalTowerInfo().unlock();
     }
   }
 }

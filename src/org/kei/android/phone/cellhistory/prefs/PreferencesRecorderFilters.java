@@ -27,54 +27,10 @@ import android.preference.PreferenceFragment;
  *******************************************************************************
  */
 public class PreferencesRecorderFilters extends EffectPreferenceActivity {
-  public static final String   PREFS_RECORDER_FILTERS_KEY_OPERATOR            = "recorderFilterOperator";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_MCC                 = "recorderFilterMCC";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_MNC                 = "recorderFilterMNC";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_CELL_ID             = "recorderFilterCellID";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_LAC                 = "recorderFilterLAC";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_PSC                 = "recorderFilterPSC";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_TYPE                = "recorderFilterType";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_NETOWRK_ID          = "recorderFilterNetworkId";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_ASU                 = "recorderFilterASU";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_LEVEL               = "recorderFilterLevel";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_SIGNAL_STRENGTH     = "recorderFilterSignalStrength";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_NEIGHBORING         = "recorderFilterNeighboring";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_PROVIDER            = "recorderFilterProvider";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_DISTANCE            = "recorderFilterDistance";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_SATELLITES          = "recorderFilterSatellites";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_SPEED               = "recorderFilterSpeed";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_DATA_TX_SPEED       = "recorderFilterDataTxSpeed";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_DATA_RX_SPEED       = "recorderFilterDataRxSpeed";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_DATA_DIRECTION      = "recorderFilterDataDirection";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_IPV4                = "recorderFilterIPv4";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_IPV6                = "recorderFilterIPv6";
-  public static final String   PREFS_RECORDER_FILTERS_KEY_AREAS               = "recorderFilterAreas";
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_OPERATOR        = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_MCC             = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_MNC             = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_CELL_ID         = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_LAC             = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_PSC             = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_TYPE            = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_NETWORK_ID      = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_ASU             = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_LEVEL           = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_SIGNAL_STRENGTH = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_NEIGHBORING     = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_PROVIDER        = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_DISTANCE        = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_SATELLITES      = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_SPEED           = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_DATA_TX_SPEED   = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_DATA_RX_SPEED   = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_DATA_DIRECTION  = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_IPV4            = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_IPV6            = true;
-  public static final boolean  PREFS_RECORDER_FILTERS_DEFAULT_AREAS           = true;
-  private MyPreferenceFragment prefFrag                                       = null;
-  private boolean              exit                                           = false;
-  private boolean              preferences                                    = false;
-  private CellHistoryApp       app                                            = null;
+  private MyPreferenceFragment prefFrag    = null;
+  private boolean              exit        = false;
+  private boolean              preferences = false;
+  private CellHistoryApp       app         = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
