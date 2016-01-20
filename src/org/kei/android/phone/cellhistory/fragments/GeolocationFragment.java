@@ -402,7 +402,7 @@ OnItemSelectedListener, OnClickListener {
       Bundle bundle = intent.getExtras();
       if (bundle != null) {
         int event = bundle.getInt(GpsServiceTask.EVENT);
-        Log.d(getClass().getSimpleName(), "Event: " + event);
+        //Log.d(getClass().getSimpleName(), "Event: " + event);
         if (event == GpsServiceTask.EVENT_CONNECTED) {
           connected = true;
         } else if (event == GpsServiceTask.EVENT_DISABLED) {
