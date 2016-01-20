@@ -113,7 +113,8 @@ public class GpsServiceTask implements LocationListener, Listener  {
     if(n != -1) {
       if(n != 0) {
         publishEvent(EVENT_UPDATE);
-      }
+      } else
+        publishEvent(EVENT_WAIT_FOR_SATELLITES);
       CellHistoryApp.addLog(app, "GPS: Satellites: " + n);
       app.getGlobalTowerInfo().lock();
       try {
@@ -184,8 +185,8 @@ public class GpsServiceTask implements LocationListener, Listener  {
 
   @Override
   public void onProviderEnabled(final String provider) {
+    CellHistoryApp.addLog(app, "onProviderEnabled(" + provider + ")");
     if (provider.equals(LocationManager.GPS_PROVIDER)) {
-      CellHistoryApp.addLog(app, "onProviderEnabled(" + provider + ")");
       disabled = false;
       reset();
       publishEvent(EVENT_ENABLED);
@@ -206,8 +207,8 @@ public class GpsServiceTask implements LocationListener, Listener  {
 
   @Override
   public void onProviderDisabled(final String provider) {
+    CellHistoryApp.addLog(app, "onProviderDisabled(" + provider + ")");
     if (provider.equals(LocationManager.GPS_PROVIDER)) {
-      CellHistoryApp.addLog(app, "onProviderDisabled(" + provider + ")");
       disabled = true;
       reset();
       publishEvent(EVENT_DISABLED);
