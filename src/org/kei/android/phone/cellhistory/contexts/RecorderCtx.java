@@ -78,45 +78,27 @@ public class RecorderCtx {
   
   private void write() {
     if(format.equals(FORMAT_JSON)) {
-      String ss = "";
-      ss += "{" + ((indentation) ? "\n" : "");
-      ss += (indentation ? "  " : "") + "\"towers\": [" + ((indentation) ? "\n" : "");
-      pw.print(ss);
-      size += ss.length();
       int len = frames.size();
       for (int i = 0; i < len; ++i) {
         String s = frames.get(i);
+        if(i < len - 1) {
+          s = s.substring(0, s.length() - 1);
+          s += ",\n";
+        }
         pw.print(s);
         size += s.length();
-        if(i < len - 1) {
-          pw.print(",");
-          size++;
-        }
       }
-      ss = (indentation ? "  " : "") + "]" + ((indentation) ? "\n" : "");
-      ss += "}";
-      pw.print(ss);
-      size += ss.length();
     } else if(format.equals(FORMAT_CSV)) {
       for (final String s : frames) {
         pw.println(s);
         size += s.length() + 1;
       }
     } else if(format.equals(FORMAT_XML)) {
-      String ss = "<towers>";
-      if(indentation) ss += "\n";
-      pw.print(ss);
-      size += ss.length();
       for (final String s : frames) {
         String str = s;
-        if(indentation) str += "\n";
         pw.println(str);
         size += str.length();
       }
-      ss = "</towers>";
-      if(indentation) ss += "\n";
-      pw.print(ss);
-      size += ss.length();
     }
     frames.clear();
     pw.flush();
@@ -150,6 +132,16 @@ public class RecorderCtx {
     if (pw != null) {
       if (!frames.isEmpty())
         write();
+      if(format.equals(FORMAT_XML)) {
+        String ss = "</towers>";
+        pw.print(ss);
+        size += ss.length();
+      } else if(format.equals(FORMAT_JSON)) {
+        String ss = (indentation ? "  " : "") + "]" + ((indentation) ? "\n" : "");
+        ss += "}";
+        pw.print(ss);
+        size += ss.length();
+      }
       pw.close();
       pw = null;
     }
@@ -199,6 +191,15 @@ public class RecorderCtx {
       String s = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
       size = s.length() + 1;
       pw.println(s);
+      s = "<towers>";
+      size += s.length() + 1;
+      pw.println(s);
+    } else if(format.equals(FORMAT_JSON)) {
+      String ss = "";
+      ss += "{" + ((indentation) ? "\n" : "");
+      ss += (indentation ? "  " : "") + "\"towers\": [" + ((indentation) ? "\n" : "");
+      pw.print(ss);
+      size += ss.length();
     }
   }
   
