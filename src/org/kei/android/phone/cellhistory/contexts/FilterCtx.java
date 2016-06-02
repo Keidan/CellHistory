@@ -25,75 +25,78 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class FilterCtx {
-  private static final String PREFS_RECORDER_FILTERS_OPERATOR        = "recorderFilterOperator";
-  private static final String PREFS_RECORDER_FILTERS_MCC             = "recorderFilterMCC";
-  private static final String PREFS_RECORDER_FILTERS_MNC             = "recorderFilterMNC";
-  private static final String PREFS_RECORDER_FILTERS_CELL_ID         = "recorderFilterCellID";
-  private static final String PREFS_RECORDER_FILTERS_LAC             = "recorderFilterLAC";
-  private static final String PREFS_RECORDER_FILTERS_PSC             = "recorderFilterPSC";
-  private static final String PREFS_RECORDER_FILTERS_TYPE            = "recorderFilterType";
-  private static final String PREFS_RECORDER_FILTERS_NETOWRK_ID      = "recorderFilterNetworkId";
-  private static final String PREFS_RECORDER_FILTERS_GEOLOCATION     = "recorderFilterGeolocation";
-  private static final String PREFS_RECORDER_FILTERS_ASU             = "recorderFilterASU";
-  private static final String PREFS_RECORDER_FILTERS_LEVEL           = "recorderFilterLevel";
-  private static final String PREFS_RECORDER_FILTERS_SIGNAL_STRENGTH = "recorderFilterSignalStrength";
-  private static final String PREFS_RECORDER_FILTERS_NEIGHBORING     = "recorderFilterNeighboring";
-  private static final String PREFS_RECORDER_FILTERS_PROVIDER        = "recorderFilterProvider";
-  private static final String PREFS_RECORDER_FILTERS_DISTANCE        = "recorderFilterDistance";
-  private static final String PREFS_RECORDER_FILTERS_SATELLITES      = "recorderFilterSatellites";
-  private static final String PREFS_RECORDER_FILTERS_SPEED           = "recorderFilterSpeed";
-  private static final String PREFS_RECORDER_FILTERS_DATA_TX_SPEED   = "recorderFilterDataTxSpeed";
-  private static final String PREFS_RECORDER_FILTERS_DATA_RX_SPEED   = "recorderFilterDataRxSpeed";
-  private static final String PREFS_RECORDER_FILTERS_DATA_DIRECTION  = "recorderFilterDataDirection";
-  private static final String PREFS_RECORDER_FILTERS_IPV4            = "recorderFilterIPv4";
-  private static final String PREFS_RECORDER_FILTERS_IPV6            = "recorderFilterIPv6";
-  private static final String PREFS_RECORDER_FILTERS_AREAS           = "recorderFilterAreas";
-  private static final String SAVES_RECORDER_FILTERS_OPERATOR        = "swOperator";
-  private static final String SAVES_RECORDER_FILTERS_MCC             = "swMCC";
-  private static final String SAVES_RECORDER_FILTERS_MNC             = "swMNC";
-  private static final String SAVES_RECORDER_FILTERS_CELL_ID         = "swCellID";
-  private static final String SAVES_RECORDER_FILTERS_LAC             = "swLAC";
-  private static final String SAVES_RECORDER_FILTERS_GEOLOCATION     = "swGeolocation";
-  private static final String SAVES_RECORDER_FILTERS_PSC             = "swPSC";
-  private static final String SAVES_RECORDER_FILTERS_TYPE            = "swType";
-  private static final String SAVES_RECORDER_FILTERS_NETWORK_ID      = "swNetworkId";
-  private static final String SAVES_RECORDER_FILTERS_ASU             = "swASU";
-  private static final String SAVES_RECORDER_FILTERS_LVL             = "swLVL";
-  private static final String SAVES_RECORDER_FILTERS_SIGNAL_STRENGTH = "swSignalStrength";
-  private static final String SAVES_RECORDER_FILTERS_NEIGHBORING     = "swNeighboring";
-  private static final String SAVES_RECORDER_FILTERS_PROVIDER        = "swProvider";
-  private static final String SAVES_RECORDER_FILTERS_DISTANCE        = "swDistance";
-  private static final String SAVES_RECORDER_FILTERS_SATELLITES      = "swSatellites";
-  private static final String SAVES_RECORDER_FILTERS_SPEED           = "swSpeed";
-  private static final String SAVES_RECORDER_FILTERS_DATA_RX_SPEED   = "swDataRxSpeed";
-  private static final String SAVES_RECORDER_FILTERS_DATA_TX_SPEED   = "swDataTxSpeed";
-  private static final String SAVES_RECORDER_FILTERS_DATA_DIRECTION  = "swDirection";
-  private static final String SAVES_RECORDER_FILTERS_IPV4            = "swIpv4";
-  private static final String SAVES_RECORDER_FILTERS_IPV6            = "swIpv6";
-  private static final String SAVES_RECORDER_FILTERS_AREAS           = "swAreas";
-  private final Filter        operator                               = new Filter();
-  private final Filter        mcc                                    = new Filter();
-  private final Filter        mnc                                    = new Filter();
-  private final Filter        cellID                                 = new Filter();
-  private final Filter        lac                                    = new Filter();
-  private final Filter        psc                                    = new Filter();
-  private final Filter        type                                   = new Filter();
-  private final Filter        networkId                              = new Filter();
-  private final Filter        geolocation                            = new Filter();
-  private final Filter        asu                                    = new Filter();
-  private final Filter        level                                  = new Filter();
-  private final Filter        signalStrength                         = new Filter();
-  private final Filter        neighboring                            = new Filter();
-  private final Filter        provider                               = new Filter();
-  private final Filter        distance                               = new Filter();
-  private final Filter        satellites                             = new Filter();
-  private final Filter        speed                                  = new Filter();
-  private final Filter        dataTxSpeed                            = new Filter();
-  private final Filter        dataRxSpeed                            = new Filter();
-  private final Filter        dataDirection                          = new Filter();
-  private final Filter        ipv4                                   = new Filter();
-  private final Filter        ipv6                                   = new Filter();
-  private final Filter        areas                                  = new Filter();
+  private static final String PREFS_RECORDER_FILTERS_OPERATOR            = "recorderFilterOperator";
+  private static final String PREFS_RECORDER_FILTERS_MCC                 = "recorderFilterMCC";
+  private static final String PREFS_RECORDER_FILTERS_MNC                 = "recorderFilterMNC";
+  private static final String PREFS_RECORDER_FILTERS_CELL_ID             = "recorderFilterCellID";
+  private static final String PREFS_RECORDER_FILTERS_LAC                 = "recorderFilterLAC";
+  private static final String PREFS_RECORDER_FILTERS_PSC                 = "recorderFilterPSC";
+  private static final String PREFS_RECORDER_FILTERS_TYPE                = "recorderFilterType";
+  private static final String PREFS_RECORDER_FILTERS_NETOWRK_ID          = "recorderFilterNetworkId";
+  private static final String PREFS_RECORDER_FILTERS_CELL_GEOLOCATION    = "recorderFilterCellGeolocation";
+  private static final String PREFS_RECORDER_FILTERS_CURRENT_GEOLOCATION = "recorderFilterCurrentGeolocation";
+  private static final String PREFS_RECORDER_FILTERS_ASU                 = "recorderFilterASU";
+  private static final String PREFS_RECORDER_FILTERS_LEVEL               = "recorderFilterLevel";
+  private static final String PREFS_RECORDER_FILTERS_SIGNAL_STRENGTH     = "recorderFilterSignalStrength";
+  private static final String PREFS_RECORDER_FILTERS_NEIGHBORING         = "recorderFilterNeighboring";
+  private static final String PREFS_RECORDER_FILTERS_PROVIDER            = "recorderFilterProvider";
+  private static final String PREFS_RECORDER_FILTERS_DISTANCE            = "recorderFilterDistance";
+  private static final String PREFS_RECORDER_FILTERS_SATELLITES          = "recorderFilterSatellites";
+  private static final String PREFS_RECORDER_FILTERS_SPEED               = "recorderFilterSpeed";
+  private static final String PREFS_RECORDER_FILTERS_DATA_TX_SPEED       = "recorderFilterDataTxSpeed";
+  private static final String PREFS_RECORDER_FILTERS_DATA_RX_SPEED       = "recorderFilterDataRxSpeed";
+  private static final String PREFS_RECORDER_FILTERS_DATA_DIRECTION      = "recorderFilterDataDirection";
+  private static final String PREFS_RECORDER_FILTERS_IPV4                = "recorderFilterIPv4";
+  private static final String PREFS_RECORDER_FILTERS_IPV6                = "recorderFilterIPv6";
+  private static final String PREFS_RECORDER_FILTERS_AREAS               = "recorderFilterAreas";
+  private static final String SAVES_RECORDER_FILTERS_OPERATOR            = "swOperator";
+  private static final String SAVES_RECORDER_FILTERS_MCC                 = "swMCC";
+  private static final String SAVES_RECORDER_FILTERS_MNC                 = "swMNC";
+  private static final String SAVES_RECORDER_FILTERS_CELL_ID             = "swCellID";
+  private static final String SAVES_RECORDER_FILTERS_LAC                 = "swLAC";
+  private static final String SAVES_RECORDER_FILTERS_CELL_GEOLOCATION    = "swCellGeolocation";
+  private static final String SAVES_RECORDER_FILTERS_CURRENT_GEOLOCATION = "swCurrentGeolocation";
+  private static final String SAVES_RECORDER_FILTERS_PSC                 = "swPSC";
+  private static final String SAVES_RECORDER_FILTERS_TYPE                = "swType";
+  private static final String SAVES_RECORDER_FILTERS_NETWORK_ID          = "swNetworkId";
+  private static final String SAVES_RECORDER_FILTERS_ASU                 = "swASU";
+  private static final String SAVES_RECORDER_FILTERS_LVL                 = "swLVL";
+  private static final String SAVES_RECORDER_FILTERS_SIGNAL_STRENGTH     = "swSignalStrength";
+  private static final String SAVES_RECORDER_FILTERS_NEIGHBORING         = "swNeighboring";
+  private static final String SAVES_RECORDER_FILTERS_PROVIDER            = "swProvider";
+  private static final String SAVES_RECORDER_FILTERS_DISTANCE            = "swDistance";
+  private static final String SAVES_RECORDER_FILTERS_SATELLITES          = "swSatellites";
+  private static final String SAVES_RECORDER_FILTERS_SPEED               = "swSpeed";
+  private static final String SAVES_RECORDER_FILTERS_DATA_RX_SPEED       = "swDataRxSpeed";
+  private static final String SAVES_RECORDER_FILTERS_DATA_TX_SPEED       = "swDataTxSpeed";
+  private static final String SAVES_RECORDER_FILTERS_DATA_DIRECTION      = "swDirection";
+  private static final String SAVES_RECORDER_FILTERS_IPV4                = "swIpv4";
+  private static final String SAVES_RECORDER_FILTERS_IPV6                = "swIpv6";
+  private static final String SAVES_RECORDER_FILTERS_AREAS               = "swAreas";
+  private final Filter        operator                                   = new Filter();
+  private final Filter        mcc                                        = new Filter();
+  private final Filter        mnc                                        = new Filter();
+  private final Filter        cellID                                     = new Filter();
+  private final Filter        lac                                        = new Filter();
+  private final Filter        psc                                        = new Filter();
+  private final Filter        type                                       = new Filter();
+  private final Filter        networkId                                  = new Filter();
+  private final Filter        cellGeolocation                            = new Filter();
+  private final Filter        currentGeolocation                         = new Filter();
+  private final Filter        asu                                        = new Filter();
+  private final Filter        level                                      = new Filter();
+  private final Filter        signalStrength                             = new Filter();
+  private final Filter        neighboring                                = new Filter();
+  private final Filter        provider                                   = new Filter();
+  private final Filter        distance                                   = new Filter();
+  private final Filter        satellites                                 = new Filter();
+  private final Filter        speed                                      = new Filter();
+  private final Filter        dataTxSpeed                                = new Filter();
+  private final Filter        dataRxSpeed                                = new Filter();
+  private final Filter        dataDirection                              = new Filter();
+  private final Filter        ipv4                                       = new Filter();
+  private final Filter        ipv6                                       = new Filter();
+  private final Filter        areas                                      = new Filter();
 
   public void read(final Context context) {
     final SharedPreferences prefs = PreferenceManager
@@ -108,8 +111,10 @@ public class FilterCtx {
     psc.allowChange = prefs.getBoolean(PREFS_RECORDER_FILTERS_PSC, defaults);
     type.allowChange = prefs.getBoolean(PREFS_RECORDER_FILTERS_TYPE, defaults);
     networkId.allowChange = prefs.getBoolean(PREFS_RECORDER_FILTERS_NETOWRK_ID, defaults);
-    geolocation.allowChange = prefs.getBoolean(
-        PREFS_RECORDER_FILTERS_GEOLOCATION, defaults);
+    cellGeolocation.allowChange = prefs.getBoolean(
+        PREFS_RECORDER_FILTERS_CELL_GEOLOCATION, defaults);
+    currentGeolocation.allowChange = prefs.getBoolean(
+        PREFS_RECORDER_FILTERS_CURRENT_GEOLOCATION, defaults);
     asu.allowChange = prefs.getBoolean(PREFS_RECORDER_FILTERS_ASU, defaults);
     level.allowChange = prefs
         .getBoolean(PREFS_RECORDER_FILTERS_LEVEL, defaults);
@@ -146,8 +151,10 @@ public class FilterCtx {
     type.allowSave = prefs.getBoolean(SAVES_RECORDER_FILTERS_TYPE, defaults);
     networkId.allowSave = prefs.getBoolean(SAVES_RECORDER_FILTERS_NETWORK_ID,
         defaults);
-    geolocation.allowSave = prefs.getBoolean(
-        SAVES_RECORDER_FILTERS_GEOLOCATION, defaults);
+    cellGeolocation.allowSave = prefs.getBoolean(
+        SAVES_RECORDER_FILTERS_CELL_GEOLOCATION, defaults);
+    currentGeolocation.allowSave = prefs.getBoolean(
+        SAVES_RECORDER_FILTERS_CURRENT_GEOLOCATION, defaults);
     asu.allowSave = prefs.getBoolean(SAVES_RECORDER_FILTERS_ASU, defaults);
     level.allowSave = prefs.getBoolean(SAVES_RECORDER_FILTERS_LVL, defaults);
     signalStrength.allowSave = prefs.getBoolean(
@@ -185,7 +192,8 @@ public class FilterCtx {
     e.putBoolean(SAVES_RECORDER_FILTERS_PSC, psc.allowSave);
     e.putBoolean(SAVES_RECORDER_FILTERS_TYPE, type.allowSave);
     e.putBoolean(SAVES_RECORDER_FILTERS_NETWORK_ID, networkId.allowSave);
-    e.putBoolean(SAVES_RECORDER_FILTERS_GEOLOCATION, geolocation.allowSave);
+    e.putBoolean(SAVES_RECORDER_FILTERS_CELL_GEOLOCATION, cellGeolocation.allowSave);
+    e.putBoolean(SAVES_RECORDER_FILTERS_CURRENT_GEOLOCATION, currentGeolocation.allowSave);
     e.putBoolean(SAVES_RECORDER_FILTERS_ASU, asu.allowSave);
     e.putBoolean(SAVES_RECORDER_FILTERS_LVL, level.allowSave);
     e.putBoolean(SAVES_RECORDER_FILTERS_SIGNAL_STRENGTH, signalStrength.allowSave);
@@ -260,10 +268,17 @@ public class FilterCtx {
   }
 
   /**
-   * @return the geolocation
+   * @return the cellGeolocation
    */
-  public Filter getGeolocation() {
-    return geolocation;
+  public Filter getCellGeolocation() {
+    return cellGeolocation;
+  }
+
+  /**
+   * @return the currentGeolocation
+   */
+  public Filter getCurrentGeolocation() {
+    return currentGeolocation;
   }
 
   /**

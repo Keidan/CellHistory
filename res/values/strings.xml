@@ -43,7 +43,8 @@
 	<string name="lblSS">Signal strength: </string>
 	<string name="lblSSP">Signal strength (%): </string>
 	
-	<string name="lblGeolocation">Cell location: </string>
+	<string name="lblCellGeolocation">Cell location: </string>
+	<string name="lblCurrentGeolocation">Current location: </string>
 	<string name="geoloc_disabled">Geolocation disabled.</string>
 	<string name="lblGeoProvider">Provider: </string>
 	<string name="lblSatellites">GPS Satellites: </string>
@@ -205,8 +206,10 @@
      <string name="pref_recorder_filter_networkid_title">Mobile network</string>
      <string name="pref_recorder_filter_speed_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_speed_title">GPS Speed</string>
-     <string name="pref_recorder_filter_geolocation_summary">Detect a changes if this value is updated.</string>
-     <string name="pref_recorder_filter_geolocation_title">Cell location</string>
+     <string name="pref_recorder_filter_current_geolocation_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_current_geolocation_title">Current location</string>
+     <string name="pref_recorder_filter_cell_geolocation_summary">Detect a changes if this value is updated.</string>
+     <string name="pref_recorder_filter_cell_geolocation_title">Cell location</string>
      <string name="pref_recorder_filter_distance_summary">Detect a changes if this value is updated.</string>
      <string name="pref_recorder_filter_distance_title">Cell distance</string>
      <string name="pref_recorder_filter_satellites_summary">Detect a changes if this value is updated.</string>

@@ -90,8 +90,8 @@ public class GoogleHiddenRequestEntity implements RequestEntity, CellIdRequestEn
     // Read the error-code
     final int errorCode = dis.readInt();
     if (errorCode == 0) {
-      ti.setLatitude((double) dis.readInt() / 1000000D);
-      ti.setLongitude((double) dis.readInt() / 1000000D);
+      ti.setCellLatitude((double) dis.readInt() / 1000000D);
+      ti.setCellLongitude((double) dis.readInt() / 1000000D);
       // Read the rest of the data
       dis.readInt();
       dis.readInt();

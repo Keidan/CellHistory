@@ -64,8 +64,8 @@ public class TowerInfo {
   private int                   lvl                   = 0;
   private int                   network               = -1;
   private String                networkName           = UNKNOWN;
-  private double                longitude             = Double.NaN;
-  private double                latitude              = Double.NaN;
+  private double                cellLongitude         = Double.NaN;
+  private double                cellLatitude          = Double.NaN;
   private Lock                  lock                  = new ReentrantLock();
   private long                  timestamp             = new Date().getTime();
   private double                speed                 = 0.0;
@@ -101,8 +101,8 @@ public class TowerInfo {
     lvl = ti.lvl;
     network = ti.network;
     networkName = ti.networkName;
-    longitude = ti.longitude;
-    latitude = ti.latitude;
+    cellLongitude = ti.cellLongitude;
+    cellLatitude = ti.cellLatitude;
     speed = ti.speed;
     distance = ti.distance;
     satellites = ti.satellites;
@@ -140,9 +140,13 @@ public class TowerInfo {
     if(filterCtx.getMNC().allowSave) sb.append(indentation ? "      " : "").append("\"mnc\":").append(getMNC()).append(",").append(indentation ? "\n" : "");
     if(filterCtx.getCellID().allowSave) sb.append(indentation ? "      " : "").append("\"cid\":").append(getCellId()).append(",").append(indentation ? "\n" : "");
     if(filterCtx.getLAC().allowSave) sb.append(indentation ? "      " : "").append("\"lac\":").append(getLac()).append(",").append(indentation ? "\n" : "");
-    if(filterCtx.getGeolocation().allowSave) {
-      sb.append(indentation ? "      " : "").append("\"lat\":\"").append(getLatitude()).append("\",").append(indentation ? "\n" : "");
-      sb.append(indentation ? "      " : "").append("\"lon\":\"").append(getLongitude()).append("\",").append(indentation ? "\n" : "");
+    if(filterCtx.getCellGeolocation().allowSave) {
+      sb.append(indentation ? "      " : "").append("\"lat\":\"").append(getCellLatitude()).append("\",").append(indentation ? "\n" : "");
+      sb.append(indentation ? "      " : "").append("\"lon\":\"").append(getCellLongitude()).append("\",").append(indentation ? "\n" : "");
+    }
+    if(filterCtx.getCurrentGeolocation().allowSave) {
+      sb.append(indentation ? "      " : "").append("\"clat\":\"").append(checkCurrentLoc(getCurrentLocation().getLatitude())).append("\",").append(indentation ? "\n" : "");
+      sb.append(indentation ? "      " : "").append("\"clon\":\"").append(checkCurrentLoc(getCurrentLocation().getLongitude())).append("\",").append(indentation ? "\n" : "");
     }
     if(filterCtx.getSatellites().allowSave) sb.append(indentation ? "      " : "").append("\"satellites\":").append(getSatellites()).append(",").append(indentation ? "\n" : "");
     if(filterCtx.getSpeed().allowSave) sb.append(indentation ? "      " : "").append("\"spd\":").append(getSpeed()).append(",").append(indentation ? "\n" : "");
@@ -213,9 +217,13 @@ public class TowerInfo {
     if(filterCtx.getMNC().allowSave) sb.append(lineXML(spaces, "mnc", String.format("%02d", getMNC())));
     if(filterCtx.getCellID().allowSave) sb.append(lineXML(spaces, "cid", getCellId()));
     if(filterCtx.getLAC().allowSave) sb.append(lineXML(spaces, "lac", getLac()));
-    if(filterCtx.getGeolocation().allowSave) {
-      sb.append(lineXML(spaces, "lat", getLatitude()));
-      sb.append(lineXML(spaces, "lon", getLongitude()));
+    if(filterCtx.getCellGeolocation().allowSave) {
+      sb.append(lineXML(spaces, "lat", getCellLatitude()));
+      sb.append(lineXML(spaces, "lon", getCellLongitude()));
+    }
+    if(filterCtx.getCurrentGeolocation().allowSave) {
+      sb.append(lineXML(spaces, "clat", checkCurrentLoc(getCurrentLocation().getLatitude())));
+      sb.append(lineXML(spaces, "clon", checkCurrentLoc(getCurrentLocation().getLongitude())));
     }
     if(filterCtx.getSatellites().allowSave) sb.append(lineXML(spaces, "satellites", getSatellites()));
     if(filterCtx.getSpeed().allowSave) sb.append(lineXML(spaces, "spd", getSpeed()));
@@ -285,9 +293,13 @@ public class TowerInfo {
     else sb.append(sep);
     if(filterCtx.getLAC().allowSave) sb.append(getLac()).append(sep);
     else sb.append(sep);
-    if(filterCtx.getGeolocation().allowSave) {
-      sb.append(getLatitude()).append(sep);
-      sb.append(getLongitude()).append(sep);
+    if(filterCtx.getCellGeolocation().allowSave) {
+      sb.append(getCellLatitude()).append(sep);
+      sb.append(getCellLongitude()).append(sep);
+    } else sb.append(sep).append(sep);
+    if(filterCtx.getCurrentGeolocation().allowSave) {
+      sb.append(checkCurrentLoc(getCurrentLocation().getLatitude())).append(sep);
+      sb.append(checkCurrentLoc(getCurrentLocation().getLongitude())).append(sep);
     } else sb.append(sep).append(sep);
     if(filterCtx.getSatellites().allowSave) sb.append(getSatellites()).append(sep);
     else sb.append(sep);
@@ -341,6 +353,11 @@ public class TowerInfo {
       }
     }
     return sb.toString();
+  }
+  
+  private double checkCurrentLoc(double d) {
+    if(getSatellites() == 0 && d == 0) return Double.NaN;
+    return d;
   }
   
   public static TowerInfo decodeInformations(final FilterCtx filterCtx, final TowerInfo owner, final SignalStrength ss) throws Exception {
@@ -614,31 +631,31 @@ public class TowerInfo {
   }
 
   /**
-   * @return the longitude
+   * @return the cell longitude
    */
-  public double getLongitude() {
-    return longitude;
+  public double getCellLongitude() {
+    return cellLongitude;
   }
 
   /**
-   * @param longitude the longitude to set
+   * @param longitude the cell longitude to set
    */
-  public void setLongitude(double longitude) {
-    this.longitude = longitude;
+  public void setCellLongitude(double longitude) {
+    this.cellLongitude = longitude;
   }
 
   /**
-   * @return the latitude
+   * @return the cell latitude
    */
-  public double getLatitude() {
-    return latitude;
+  public double getCellLatitude() {
+    return cellLatitude;
   }
 
   /**
-   * @param latitude the latitude to set
+   * @param latitude the cell latitude to set
    */
-  public void setLatitude(double latitude) {
-    this.latitude = latitude;
+  public void setCellLatitude(double latitude) {
+    this.cellLatitude = latitude;
   }
 
   /**

@@ -89,8 +89,8 @@ public class OpenCellIdRequestEntity implements RequestEntity,
         String lat, lng;
         lat = object.getString("lat");
         lng = object.getString("lon");
-        ti.setLatitude(Double.parseDouble(lat));
-        ti.setLongitude(Double.parseDouble(lng));
+        ti.setCellLatitude(Double.parseDouble(lat));
+        ti.setCellLongitude(Double.parseDouble(lng));
       } else if (ljson.indexOf("not found") != -1)
         ret = NOT_FOUND;
       else

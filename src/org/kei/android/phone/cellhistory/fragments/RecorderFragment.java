@@ -50,42 +50,43 @@ import android.widget.ToggleButton;
  */
 public class RecorderFragment extends Fragment implements UITaskFragment,
     OnClickListener, OnCheckedChangeListener {
-  private static final String  SW_DISPLAY         = "chkDisplaySwitch";
-  private static final boolean SW_DEFAULT_DISPLAY = false;
+  private static final String  SW_DISPLAY           = "chkDisplaySwitch";
+  private static final boolean SW_DEFAULT_DISPLAY   = false;
   /* UI */
-  private TextView             txtRecords         = null;
-  private ProgressBar          pbBuffer           = null;
-  private TextView             txtSize            = null;
-  private ToggleButton         toggleOnOff        = null;
+  private TextView             txtRecords           = null;
+  private ProgressBar          pbBuffer             = null;
+  private TextView             txtSize              = null;
+  private ToggleButton         toggleOnOff          = null;
   /* context */
-  private SharedPreferences    prefs              = null;
-  private CellHistoryApp       app                = null;
-  private Switch               swOperator         = null;
-  private Switch               swMCC              = null;
-  private Switch               swMNC              = null;
-  private Switch               swCellId           = null;
-  private Switch               swLAC              = null;
-  private Switch               swGeolocation      = null;
-  private Switch               swPSC              = null;
-  private Switch               swType             = null;
-  private Switch               swNetwork          = null;
-  private Switch               swASU              = null;
-  private Switch               swLVL              = null;
-  private Switch               swSS               = null;
-  private Switch               swNeighboring      = null;
-  private Switch               swProvider         = null;
-  private Switch               swDistance         = null;
-  private Switch               swSatellites       = null;
-  private Switch               swSpeed            = null;
-  private Switch               swDataSpeedRx      = null;
-  private Switch               swDataSpeedTx      = null;
-  private Switch               swDataDirection    = null;
-  private Switch               swIpv4             = null;
-  private Switch               swIpv6             = null;
-  private Switch               swAreas            = null;
-  private CheckBox             chkDisplaySwitch   = null;
-  private ScrollView           switches           = null;
-  private boolean              fromResume         = false;
+  private SharedPreferences    prefs                = null;
+  private CellHistoryApp       app                  = null;
+  private Switch               swOperator           = null;
+  private Switch               swMCC                = null;
+  private Switch               swMNC                = null;
+  private Switch               swCellId             = null;
+  private Switch               swLAC                = null;
+  private Switch               swCellGeolocation    = null;
+  private Switch               swCurrentGeolocation = null;
+  private Switch               swPSC                = null;
+  private Switch               swType               = null;
+  private Switch               swNetwork            = null;
+  private Switch               swASU                = null;
+  private Switch               swLVL                = null;
+  private Switch               swSS                 = null;
+  private Switch               swNeighboring        = null;
+  private Switch               swProvider           = null;
+  private Switch               swDistance           = null;
+  private Switch               swSatellites         = null;
+  private Switch               swSpeed              = null;
+  private Switch               swDataSpeedRx        = null;
+  private Switch               swDataSpeedTx        = null;
+  private Switch               swDataDirection      = null;
+  private Switch               swIpv4               = null;
+  private Switch               swIpv6               = null;
+  private Switch               swAreas              = null;
+  private CheckBox             chkDisplaySwitch     = null;
+  private ScrollView           switches             = null;
+  private boolean              fromResume           = false;
   
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -116,7 +117,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swMNC = (Switch) getView().findViewById(R.id.swMNC);
     swCellId = (Switch) getView().findViewById(R.id.swCellId);
     swLAC = (Switch) getView().findViewById(R.id.swLAC);
-    swGeolocation = (Switch) getView().findViewById(R.id.swGeolocation);
+    swCellGeolocation = (Switch) getView().findViewById(R.id.swCellGeolocation);
+    swCurrentGeolocation = (Switch) getView().findViewById(R.id.swCurrentGeolocation);
     swPSC = (Switch) getView().findViewById(R.id.swPSC);
     swType = (Switch) getView().findViewById(R.id.swType);
     swNetwork = (Switch) getView().findViewById(R.id.swNetwork);
@@ -141,7 +143,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swMNC.setOnCheckedChangeListener(this);
     swCellId.setOnCheckedChangeListener(this);
     swLAC.setOnCheckedChangeListener(this);
-    swGeolocation.setOnCheckedChangeListener(this);
+    swCellGeolocation.setOnCheckedChangeListener(this);
+    swCurrentGeolocation.setOnCheckedChangeListener(this);
     swPSC.setOnCheckedChangeListener(this);
     swType.setOnCheckedChangeListener(this);
     swNetwork.setOnCheckedChangeListener(this);
@@ -180,7 +183,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
     swMNC.setChecked(f.getMNC().allowSave);
     swCellId.setChecked(f.getCellID().allowSave);
     swLAC.setChecked(f.getLAC().allowSave);
-    swGeolocation.setChecked(f.getGeolocation().allowSave);
+    swCellGeolocation.setChecked(f.getCellGeolocation().allowSave);
+    swCurrentGeolocation.setChecked(f.getCurrentGeolocation().allowSave);
     swPSC.setChecked(f.getPSC().allowSave);
     swType.setChecked(f.getType().allowSave);
     swNetwork.setChecked(f.getNetworkId().allowSave);
@@ -245,7 +249,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
             buttonView.equals(swMNC) ||
             buttonView.equals(swCellId) ||
             buttonView.equals(swLAC) ||
-            buttonView.equals(swGeolocation) ||
+            buttonView.equals(swCurrentGeolocation) ||
+            buttonView.equals(swCellGeolocation) ||
             buttonView.equals(swPSC) ||
             buttonView.equals(swType) ||
             buttonView.equals(swNetwork) ||
@@ -273,7 +278,8 @@ public class RecorderFragment extends Fragment implements UITaskFragment,
       f.getPSC().allowSave = swPSC.isChecked();
       f.getType().allowSave = swType.isChecked();
       f.getNetworkId().allowSave = swNetwork.isChecked();
-      f.getGeolocation().allowSave = swGeolocation.isChecked();
+      f.getCellGeolocation().allowSave = swCellGeolocation.isChecked();
+      f.getCurrentGeolocation().allowSave = swCurrentGeolocation.isChecked();
       f.getASU().allowSave = swASU.isChecked();
       f.getLevel().allowSave = swLVL.isChecked();
       f.getSignalStrength().allowSave = swSS.isChecked();

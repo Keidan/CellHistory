@@ -82,7 +82,7 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_row="1"
-                android:text="@string/lblGeolocation"
+                android:text="@string/lblCellGeolocation"
                 android:textColor="?attr/labelTextColor" />
 
             <TextView

@@ -156,12 +156,21 @@
                 android:textColor="?attr/labelTextColor" />
             
             <Switch
-                android:id="@+id/swGeolocation"
+                android:id="@+id/swCurrentGeolocation"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
 	            android:textOff="@string/empty"
 	            android:textOn="@string/empty"
-                android:text="@string/lblGeolocation"
+                android:text="@string/lblCurrentGeolocation"
+                android:textColor="?attr/labelTextColor" />
+            
+            <Switch
+                android:id="@+id/swCellGeolocation"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textOff="@string/empty"
+	            android:textOn="@string/empty"
+                android:text="@string/lblCellGeolocation"
                 android:textColor="?attr/labelTextColor" />
             
             <Switch

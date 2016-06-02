@@ -208,11 +208,11 @@ public class TowerServiceTask extends TimerTask {
       app.getGlobalTowerInfo().setRecords(app.getRecorderCtx().getCounter());
       if (app.getProviderCtx().isValid()) {
         final String[] split = app.getProviderCtx().getOldLoc().split(",");
-        app.getGlobalTowerInfo().setLatitude(Double.parseDouble(split[0]));
-        app.getGlobalTowerInfo().setLongitude(Double.parseDouble(split[1]));
+        app.getGlobalTowerInfo().setCellLatitude(Double.parseDouble(split[0]));
+        app.getGlobalTowerInfo().setCellLongitude(Double.parseDouble(split[1]));
       } else {
-        app.getGlobalTowerInfo().setLatitude(Double.NaN);
-        app.getGlobalTowerInfo().setLongitude(Double.NaN);
+        app.getGlobalTowerInfo().setCellLatitude(Double.NaN);
+        app.getGlobalTowerInfo().setCellLongitude(Double.NaN);
       }
       /* Force a default value for the telephony type */
       if (tm != null

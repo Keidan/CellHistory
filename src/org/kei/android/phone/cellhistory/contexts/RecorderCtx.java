@@ -173,7 +173,7 @@ public class RecorderCtx {
       final StringBuilder sb = new StringBuilder();
       sb.append("#TIMESTAMP").append(sep).append("OPE").append(sep).append("PROVIDER").append(sep).append("MCC")
           .append(sep).append("MNC").append(sep).append("CID").append(sep)
-      .append("LAC").append(sep).append("LAT").append(sep).append("LON")
+      .append("LAC").append(sep).append("LAT").append(sep).append("LON").append(sep).append("CLAT").append(sep).append("CLON")
           .append(sep).append("SAT").append(sep).append("SPD").append(sep).append("DIST").append(sep).append("PSC").append(sep)
       .append("TYPE").append(sep).append("NET").append(sep).append("LVL")
           .append(sep).append("ASU").append(sep).append("STR").append(sep)
@@ -234,8 +234,10 @@ public class RecorderCtx {
     }
     if(f.getSpeed().allowChange && f.getSpeed().allowSave) 
       if(!(backup.getSpeed() == current.getSpeed())) return false;
-    if(f.getGeolocation().allowChange && f.getGeolocation().allowSave) 
-      if(!(backup.getLatitude() == current.getLatitude()) || !(backup.getLongitude() == current.getLongitude())) return false;
+    if(f.getCellGeolocation().allowChange && f.getCellGeolocation().allowSave) 
+      if(!(backup.getCellLatitude() == current.getCellLatitude()) || !(backup.getCellLongitude() == current.getCellLongitude())) return false;
+    if(f.getCurrentGeolocation().allowChange && f.getCurrentGeolocation().allowSave) 
+      if(!(backup.getCurrentLocation().getLatitude() == current.getCurrentLocation().getLatitude()) || !(backup.getCurrentLocation().getLongitude() == current.getCurrentLocation().getLongitude())) return false;
     if(f.getDistance().allowChange && f.getDistance().allowSave) 
       if(!(backup.getDistance() == current.getDistance())) return false;
     if(f.getSatellites().allowChange && f.getSatellites().allowSave) 

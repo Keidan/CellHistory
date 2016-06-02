@@ -136,10 +136,10 @@ public class GpsServiceTask implements LocationListener, Listener  {
     try {
       speed = location.getSpeed();
       app.getGlobalTowerInfo().setSpeed(speed);
-      if (!Double.isNaN(app.getGlobalTowerInfo().getLatitude())
-          && !Double.isNaN(app.getGlobalTowerInfo().getLongitude())) {
-        loc1.setLatitude(app.getGlobalTowerInfo().getLatitude());
-        loc1.setLongitude(app.getGlobalTowerInfo().getLongitude());
+      if (!Double.isNaN(app.getGlobalTowerInfo().getCellLatitude())
+          && !Double.isNaN(app.getGlobalTowerInfo().getCellLongitude())) {
+        loc1.setLatitude(app.getGlobalTowerInfo().getCellLatitude());
+        loc1.setLongitude(app.getGlobalTowerInfo().getCellLongitude());
         app.getGlobalTowerInfo().setDistance(loc1.distanceTo(location));
         CellHistoryApp.addLog(app, "New distance: "
             + app.getGlobalTowerInfo().getDistance() + " m.");

@@ -75,7 +75,7 @@ public class ProviderServiceTask extends TimerTask {
                     PreferencesGeolocationOpenCellID.PREFS_DEFAULT_API_KEY));
         retryLoc = 0;
         if (r == CellIdRequestEntity.OK)
-          oldLoc = ti.getLatitude() + "," + ti.getLongitude();
+          oldLoc = ti.getCellLatitude() + "," + ti.getCellLongitude();
         else if (r == CellIdRequestEntity.NOT_FOUND)
           oldLoc = ProviderCtx.LOC_NOT_FOUND;
         else if (r == CellIdRequestEntity.BAD_REQUEST)
@@ -83,8 +83,8 @@ public class ProviderServiceTask extends TimerTask {
         CellHistoryApp.addLog(context, "Geolocation: " + oldLoc);
         app.getGlobalTowerInfo().lock();
         try {
-          app.getGlobalTowerInfo().setLatitude(ti.getLatitude());
-          app.getGlobalTowerInfo().setLongitude(ti.getLongitude());
+          app.getGlobalTowerInfo().setCellLatitude(ti.getCellLatitude());
+          app.getGlobalTowerInfo().setCellLongitude(ti.getCellLongitude());
         } finally {
           app.getGlobalTowerInfo().unlock();
         }

@@ -59,8 +59,8 @@ public class CellIdHelper {
     else
       baseURL = "http://www.google.com/glm/mmap";
     HttpConnection connection = null;
-    ti.setLatitude(Double.NaN);
-    ti.setLongitude(Double.NaN);
+    ti.setCellLatitude(Double.NaN);
+    ti.setCellLongitude(Double.NaN);
     try { 
       // Setup the connection
       HttpURL httpURL = null;
